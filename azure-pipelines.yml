@@ -59,7 +59,9 @@ stages:
     - task: AzureRmWebAppDeployment@4
       inputs:
         ConnectionType: 'AzureRM'
-        azureSubscription: 'Azure 구독 1(2)(185e59d1-4622-46a7-adc6-2833eccf83ef)'
-        appType: 'webApp'
+        azureSubscription: 'Azure 구독 1(3)(185e59d1-4622-46a7-adc6-2833eccf83ef)'
+        appType: 'webAppLinux'
         WebAppName: 'DailyTimeSchedulerApp'
-        packageForLinux: '$(System.ArtifactsDirectory/**/*.zip'
+        packageForLinux: '$(System.ArtifactsDirectory)/**/*.zip'
+
+
