@@ -21,5 +21,10 @@ namespace DailyTimeScheduler.Model
         /// Foreign nubmer which indicate the number of schedule (Unique).
         /// </summary>
         int ScheduleNo { get; set; }
+
+        /// <summary>
+        /// Foreign key from user Number to specifies the owner of the schedule
+        /// </summary>
+        int UserNo { get; set; }
     }
 }

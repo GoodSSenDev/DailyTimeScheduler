@@ -1,3 +1,6 @@
+using DailyTimeScheduler.DAL;
+using DailyTimeScheduler.IDAL;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -21,13 +24,17 @@ namespace DailyTimeSchedulerApp
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddTransient<ITimeBlockDal, TimeBlockDal>();
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/build";
+                configuration.RootPath = "ClientApp/build"; 
             });
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,13 +57,17 @@ namespace DailyTimeSchedulerApp
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
             });
-
+             
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
