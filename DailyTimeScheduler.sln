@@ -3,7 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyTimeSchedulerApp", "DailyTimeSchedulerApp\DailyTimeSchedulerApp.csproj", "{6DCE072E-F477-454B-85BB-FC2982D39392}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DailyTimeSchedulerApp", "DailyTimeSchedulerApp\DailyTimeSchedulerApp.csproj", "{6DCE072E-F477-454B-85BB-FC2982D39392}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PresentationLayer", "PresentationLayer", "{9905F4FE-1BEB-4A52-9DAA-3A0147EC6F3E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccessLayer", "DataAccessLayer", "{AAA89007-810C-4444-AFEA-54FB4F0678E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{F6DDF802-DB25-456A-A547-1F05ED6A6A6E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BusinesssLayer", "BusinesssLayer", "{AD918223-B79B-4264-8CDC-0BEE048209F6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DailyTimeScheduler.Model", "DailyTimeScheduler.Model\DailyTimeScheduler.Model.csproj", "{28112E04-5BCD-4E48-84BC-C1708B447C5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyTimeScheduler.DAL", "DailyTimeScheduler.DAL\DailyTimeScheduler.DAL.csproj", "{55A03B1D-699F-4A83-BA93-31304299C8CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyTimeScheduler.IDAL", "DailyTimeScheduler.IDAL\DailyTimeScheduler.IDAL.csproj", "{FE1CBF9F-ECCA-4610-9381-91496773B29C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +29,27 @@ Global
 		{6DCE072E-F477-454B-85BB-FC2982D39392}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DCE072E-F477-454B-85BB-FC2982D39392}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DCE072E-F477-454B-85BB-FC2982D39392}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28112E04-5BCD-4E48-84BC-C1708B447C5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28112E04-5BCD-4E48-84BC-C1708B447C5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28112E04-5BCD-4E48-84BC-C1708B447C5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28112E04-5BCD-4E48-84BC-C1708B447C5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55A03B1D-699F-4A83-BA93-31304299C8CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55A03B1D-699F-4A83-BA93-31304299C8CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55A03B1D-699F-4A83-BA93-31304299C8CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55A03B1D-699F-4A83-BA93-31304299C8CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE1CBF9F-ECCA-4610-9381-91496773B29C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE1CBF9F-ECCA-4610-9381-91496773B29C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE1CBF9F-ECCA-4610-9381-91496773B29C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE1CBF9F-ECCA-4610-9381-91496773B29C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6DCE072E-F477-454B-85BB-FC2982D39392} = {9905F4FE-1BEB-4A52-9DAA-3A0147EC6F3E}
+		{28112E04-5BCD-4E48-84BC-C1708B447C5B} = {F6DDF802-DB25-456A-A547-1F05ED6A6A6E}
+		{55A03B1D-699F-4A83-BA93-31304299C8CA} = {AAA89007-810C-4444-AFEA-54FB4F0678E8}
+		{FE1CBF9F-ECCA-4610-9381-91496773B29C} = {AAA89007-810C-4444-AFEA-54FB4F0678E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {18045486-7143-4141-8173-B50BF4A2AB35}
