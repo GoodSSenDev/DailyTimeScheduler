@@ -3,14 +3,16 @@ using DailyTimeScheduler.DAL.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DailyTimeScheduler.DAL.Migrations
 {
     [DbContext(typeof(DailyTimeSchedulerDbContext))]
-    partial class DailyTimeSchedulerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201203023318_ChangeDataValueType")]
+    partial class ChangeDataValueType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,19 +147,19 @@ namespace DailyTimeScheduler.DAL.Migrations
                     b.HasOne("DailyTimeScheduler.Model.Schedule", "Schedule")
                         .WithMany()
                         .HasForeignKey("ScheduleNo")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DailyTimeScheduler.Model.TimeBlock", "TimeBlock")
                         .WithMany()
                         .HasForeignKey("TimeBlockNo")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DailyTimeScheduler.Model.AppUser", "AppUser")
                         .WithMany()
                         .HasForeignKey("UserNo")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AppUser");
@@ -172,7 +174,7 @@ namespace DailyTimeScheduler.DAL.Migrations
                     b.HasOne("DailyTimeScheduler.Model.AppUser", "AppUser")
                         .WithMany()
                         .HasForeignKey("UserNo")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AppUser");
@@ -183,7 +185,7 @@ namespace DailyTimeScheduler.DAL.Migrations
                     b.HasOne("DailyTimeScheduler.Model.Schedule", "Schedule")
                         .WithMany()
                         .HasForeignKey("ScheduleNo")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Schedule");

@@ -18,12 +18,14 @@ namespace DailyTimeScheduler.Model
         /// Title of Scheduel
         /// </summary>
         [Required]
+        [MaxLength(50)]
         public string Title { get; set; }
         
         /// <summary>
         /// Description of this Schedule
         /// </summary>
         [Required]
+        [MaxLength(200)]
         public string Description { get; set; }
 
         /// <summary>

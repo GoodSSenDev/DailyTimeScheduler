@@ -20,10 +20,10 @@ namespace DailyTimeScheduler.Model
         /// </summary>
         [Required]
         public long SetTimeUTC { get; set; }
+
         /// <summary>
         /// bool value of task done or not.
         /// </summary>
-        
         [Required]
         public bool IsTaskDone { get; set; }
 
