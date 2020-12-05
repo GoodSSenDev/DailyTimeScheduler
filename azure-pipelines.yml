@@ -17,7 +17,7 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: false
-    projects: '**/DailyTimeSchedulerApp.csproj'
+    projects: 'DailyTimeSchedulerApp/DailyTimeSchedulerApp.csproj'
     arguments: '--configuration $(buildConfiguration) --output $(Build.BinariesDirectory)/$(Build.BuildId)'
     modifyOutputPath: false
 
