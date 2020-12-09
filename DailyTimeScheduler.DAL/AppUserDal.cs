@@ -12,6 +12,36 @@ namespace DailyTimeScheduler.DAL
 {
     public class AppUserDal : IAppUserDal
     {
+        #region Create
+        /// <summary>
+        /// Create NewAppUser return true if success else false  
+        /// </summary>
+        /// <param name="newAppUser"></param>
+        public bool CreateNewAppUser(AppUser newUser)
+        {
+            using (var db = new DailyTimeSchedulerDbContext())
+            {
+                db.Users.Add(newUser);
+                return (db.SaveChanges() > 0);
+            }
+        }
+
+        /// <summary>
+        /// Create NewAppUser return true if success else false
+        /// Async
+        /// </summary>
+        /// <param name="newAppUser"></param>
+        public async Task<bool> CreateNewAppUserAsync(AppUser newUser)
+        {
+            using (var db = new DailyTimeSchedulerDbContext())
+            {
+                await db.Users.AddAsync(newUser);
+                return (db.SaveChanges() > 0);
+            }
+        }
+        #endregion
+
+        #region Read
         /// <summary>
         /// Get all the Users in the database 
         /// </summary>
@@ -121,5 +151,246 @@ namespace DailyTimeScheduler.DAL
                 return user;
             }
         }
+
+        #endregion  
+
+        #region Update
+
+        /// <summary>
+        /// Update exisiting app user's nickname using userNo to locate 
+        /// </summary>
+        /// <param name="userNo"></param>
+        /// <param name="newUserNickName"></param>
+        /// <returns> return true if success else false </returns>
+        public bool UpdateAppUserNickNameByNo(int userNo, string newUserNickName)
+        {
+            using (var db = new DailyTimeSchedulerDbContext())
+            {
+                var userRecord = db.Users.Where(user => user.No == userNo).FirstOrDefault();
+                if (userRecord == null) 
+                    return false;
+                userRecord.NickName = newUserNickName;
+                
+                return (db.SaveChanges() > 0);
+            }
+        }
+
+        /// <summary>
+        /// Update exisiting app user's nickname using userNo to locate async 
+        /// </summary>
+        /// <param name="userNo"></param>
+        /// <param name="newUserNickName"></param>
+        /// <returns> return true if success else false </returns>
+        public async Task<bool> UpdateAppUserNickNameByNoAsync(int userNo, string newUserNickName)
+        {
+            using (var db = new DailyTimeSchedulerDbContext())
+            {
+                var userRecord = await db.Users.Where(user => user.No == userNo).FirstOrDefaultAsync();
+                if (userRecord == null)
+                    return false;
+                userRecord.NickName = newUserNickName;
+
+                return (await db.SaveChangesAsync() > 0);
+            }
+        }
+
+        /// <summary>
+        /// Update exisiting app user's nickname using user Id to locate 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newUserNickName"></param>
+        /// <returns> return true if success else false </returns>
+        public bool UpdateAppUserNickNameById(string userId, string newUserNickName)
+        {
+            using (var db = new DailyTimeSchedulerDbContext())
+            {
+                var userRecord = db.Users.Where(user => user.Id == userId).FirstOrDefault();
+                if (userRecord == null)
+                    return false;
+                userRecord.NickName = newUserNickName;
+
+                return (db.SaveChanges() > 0);
+            }
+        }
+
+        /// <summary>
+        /// Update exisiting app user's nickname using user Id to locate async 
+        /// </summary>
+        /// <param name="userNo"></param>
+        /// <param name="newUserNickName"></param>
+        /// <returns> return true if success else false </returns>
+        public async Task<bool> UpdateAppUserNickNameByIdAsync(string userId, string newUserNickName)
+        {
+            using (var db = new DailyTimeSchedulerDbContext())
+            {
+                var userRecord = await db.Users.Where(user => user.Id == userId).FirstOrDefaultAsync();
+                if (userRecord == null)
+                    return false;
+                userRecord.NickName = newUserNickName;
+
+                return (await db.SaveChangesAsync() > 0);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Update exisiting app user's password using userNo to locate 
+        /// </summary>
+        /// <param name="userNo"></param>
+        /// <param name="newUserNickName"></param>
+        /// <returns> return true if success else false </returns>
+        public bool UpdateAppUsePasswordByNo(int userNo, string newUserPassword)
+        {
+            using (var db = new DailyTimeSchedulerDbContext())
+            {
+                var userRecord =  db.Users.Where(user => user.No == userNo).FirstOrDefault();
+                if (userRecord == null)
+                    return false;
+                userRecord.Password = newUserPassword;
+
+                return (db.SaveChanges() > 0);
+            }
+        }
+
+
+        /// <summary>
+        /// Update exisiting app user's password using userNo to locate async 
+        /// </summary>
+        /// <param name="userNo"></param>
+        /// <param name="newUserNickName"></param>
+        /// <returns> return true if success else false </returns>
+        public async Task<bool> UpdateAppUserPasswordByNoAsync(int userNo, string newUserPassword)
+        {
+            using (var db = new DailyTimeSchedulerDbContext())
+            {
+                var userRecord = await db.Users.Where(user => user.No == userNo).FirstOrDefaultAsync();
+                if (userRecord == null)
+                    return false;
+                userRecord.Password = newUserPassword;
+
+                return (await db.SaveChangesAsync() > 0);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Update exisiting app user's password using user Id to locate 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newUserPassword"></param>
+        /// <returns>True if Success else false </returns>
+        public bool UpdateAppUserPasswordById(string userId, string newUserPassword)
+        {
+            using (var db = new DailyTimeSchedulerDbContext())
+            {
+                var userRecord = db.Users.Where(user => user.Id == userId).FirstOrDefault();
+                if (userRecord == null)
+                    return false;
+                userRecord.Password = newUserPassword;
+
+                return (db.SaveChanges() > 0);
+            }
+        }
+
+        /// <summary>
+        /// Update exisiting app user's password using user Id to locate async 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newUserPassword"></param>
+        /// <returns>True if Success else false </returns>
+        public async Task<bool> UpdateAppUserPasswordByIdAsync(string userId, string newUserPassword)
+        {
+            using (var db = new DailyTimeSchedulerDbContext())
+            {
+                var userRecord = await db.Users.Where(user => user.Id == userId).FirstOrDefaultAsync();
+                if (userRecord == null)
+                    return false;
+                userRecord.Password = newUserPassword;
+
+                return (await db.SaveChangesAsync() > 0);
+            }
+        }
+
+        #endregion
+
+        #region Delete
+        /// <summary>
+        /// Delete an exisiting app user by Id 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>True if Success else false </returns>
+        public bool DeleteAppUserById(string userId)
+        {
+            using (var db = new DailyTimeSchedulerDbContext())
+            {
+                var userRecord = db.Users.Where(user => user.Id == userId).FirstOrDefault();
+                if (userRecord == null)
+                    return false;
+                db.Users.Remove(userRecord);
+
+                return (db.SaveChanges() > 0);
+            }
+        }
+
+        /// <summary>
+        /// Delete an exisiting app user by Id Async
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>True if Success else false </returns>
+        public async Task<bool> DeleteAppUserByIdAsync(string userId)
+        {
+            using (var db = new DailyTimeSchedulerDbContext())
+            {
+                var userRecord = await db.Users.Where(user => user.Id == userId).FirstOrDefaultAsync();
+                if (userRecord == null)
+                    return false;
+                db.Users.Remove(userRecord);
+
+                return (await db.SaveChangesAsync() > 0);
+            }
+        }
+
+
+        /// <summary>
+        /// Delete an exisiting app user by userNo (unique key)  
+        /// </summary>
+        /// <param name="userNo"></param>
+        /// <returns>True if Success else false </returns>
+        public bool DeleteAppUserByNo(int userNo)
+        {
+            using (var db = new DailyTimeSchedulerDbContext())
+            {
+                var userRecord = db.Users.Where(user => user.No == userNo).FirstOrDefault();
+                if (userRecord == null)
+                    return false;
+                db.Users.Remove(userRecord);
+
+                return (db.SaveChanges() > 0);
+            }
+        }
+
+        /// <summary>
+        /// Delete an exisiting app user by userNo (unique key) Async  
+        /// </summary>
+        /// <param name="userNo"></param>
+        /// <returns>True if Success else false </returns>
+        public async Task<bool> DeleteAppUserByNoAsync(int userNo)
+        {
+            using (var db = new DailyTimeSchedulerDbContext())
+            {
+                var userRecord = await db.Users.Where(user => user.No == userNo).FirstOrDefaultAsync();
+                if (userRecord == null)
+                    return false;
+                db.Users.Remove(userRecord);
+
+                return (await db.SaveChangesAsync() > 0);
+            }
+        }
+
+        #endregion
+
+
     }
 }
