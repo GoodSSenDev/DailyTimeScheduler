@@ -25,7 +25,8 @@ namespace DailyTimeScheduler.Tests
             //Mocking
             //1. Arrange
             var mockDalClass = new Mock<IAppUserDal>();
-            var realPassword = "qwer1234";
+            //hash of password qwer1234
+            var hashedPassword = "$2a$16$0UJrbazKwuxDpjOJGmfWXesGbJRLNobfJv5PqaCF9HmjzgQwW7Uuq";
             mockDalClass.Setup(x => x.GetAppUserByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync( new AppUser()
                 {
@@ -33,19 +34,17 @@ namespace DailyTimeScheduler.Tests
                     Id = "test123",
                     NickName = "nickDan"
                     ,
-                    Password = realPassword,
+                    Password = hashedPassword,
                     AccessLevel = 1
                 });
 
             var userDal = new AppUserBll(mockDalClass.Object);
 
             //2. Act
-            var returnAppUser = await userDal.LoginAsync("test123");
+            var returnAppUser = await userDal.LoginAsync("test123", "qwer1234");
 
             //3.Assert
             Assert.NotNull(returnAppUser);
-
-            Assert.False(realPassword == returnAppUser.Password);
         }
         /// <summary>
         /// Register Async Method expected check the duplication exist on unique field(Id, NickName) and 
@@ -82,7 +81,7 @@ namespace DailyTimeScheduler.Tests
 
             //3.Assert
 
-            Assert.True(returnAppUser.Password);
+            Assert.NotNull(returnAppUser);
         }
     }
 }
