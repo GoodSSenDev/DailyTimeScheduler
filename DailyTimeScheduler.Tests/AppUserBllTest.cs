@@ -15,11 +15,11 @@ namespace DailyTimeScheduler.Tests
     public class AppUserBllTest 
     {
         /// <summary>
-        /// Login Async Method  expected return an AppUser object that have different password. (hashed password)
+        /// Varify Async Method  expected return an AppUser object that have different password. (hashed password)
         /// This testing method test it returns an AppUser object with different password
         /// </summary>
         [Fact]
-        public async void LoginAsync_ShouldReturnAppUserObject()
+        public async void VarifyUserAsync_ShouldReturnAppUserObject()
         {
             //preparing the Data Access Layer class that going in the Busineess Logic class
             //Mocking
@@ -41,7 +41,7 @@ namespace DailyTimeScheduler.Tests
             var userDal = new AppUserBll(mockDalClass.Object);
 
             //2. Act
-            var returnAppUser = await userDal.LoginAsync("test123", "qwer1234");
+            var returnAppUser = await userDal.VarifyUserAsync("test123", "qwer1234");
 
             //3.Assert
             Assert.NotNull(returnAppUser);

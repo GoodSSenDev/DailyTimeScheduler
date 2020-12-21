@@ -1,5 +1,8 @@
+using DailyTimeScheduler.BLL;
 using DailyTimeScheduler.DAL;
 using DailyTimeScheduler.IDAL;
+using DailyTimeSchedulerApp.Middleware;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +12,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Text;
 
 namespace DailyTimeSchedulerApp
 {
@@ -17,7 +21,10 @@ namespace DailyTimeSchedulerApp
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            StaticConfig = configuration;
         }
+
+        public static IConfiguration StaticConfig { get; private set; }
 
         public IConfiguration Configuration { get; }
 
@@ -25,17 +32,29 @@ namespace DailyTimeSchedulerApp
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddTransient<ITimeBlockDal, TimeBlockDal>();
+            services.AddTransient<AppUserBll>(provider => new AppUserBll(
+                        new AppUserDal(Configuration.GetSection("ConnectionString").GetSection("DbCon").Value)
+                    ));
+
             services.AddControllersWithViews();
 
-            // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
+
+            services.AddAntiforgery(options =>
             {
-                configuration.RootPath = "ClientApp/build"; 
+                options.HeaderName = "X-XSRF-TOKEN";
+                options.Cookie = new CookieBuilder()
+                {
+                    Name = "XSRF"
+                };
             });
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
+            // In production, the React files will be served from this directory
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/build";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +79,9 @@ namespace DailyTimeSchedulerApp
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseCookiePolicy();
+
+            app.UseJwtCookieMiddleware(app.ApplicationServices.GetService<IAntiforgery>(), Encoding.ASCII.GetBytes("signing key"));
 
             app.UseEndpoints(endpoints =>
             {
@@ -68,7 +90,9 @@ namespace DailyTimeSchedulerApp
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
             });
-             
+
+            app.UseAntiforgeryCookieMiddleware(app.ApplicationServices.GetService<IAntiforgery>());
+
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";

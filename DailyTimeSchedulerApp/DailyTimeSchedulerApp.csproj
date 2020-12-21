@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DailyTimeScheduler.BLL\DailyTimeScheduler.BLL.csproj" />
     <ProjectReference Include="..\DailyTimeScheduler.DAL\DailyTimeScheduler.DAL.csproj" />
     <ProjectReference Include="..\DailyTimeScheduler.IDAL\DailyTimeScheduler.IDAL.csproj" />
   </ItemGroup>

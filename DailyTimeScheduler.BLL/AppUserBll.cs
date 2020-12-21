@@ -1,6 +1,7 @@
 ﻿using DailyTimeScheduler.IDAL;
 using DailyTimeScheduler.Model;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DailyTimeScheduler.BLL
@@ -18,12 +19,12 @@ namespace DailyTimeScheduler.BLL
         }
 
         /// <summary>
-        /// login system of this function 
+        /// Varify system of this function 
         /// </summary>
         /// <param name="id"></param>
         /// <param name="password"></param>
         /// <returns>if success return AppUser that matches, otherwise return null</returns>
-        public async Task<AppUser> LoginAsync(string id, string password)
+        public async Task<AppUser> VarifyUserAsync(string id, string password)
         {
             var matchedUser = await _userDal.GetAppUserByIdAsync(id);
             if (matchedUser == null)
@@ -56,7 +57,18 @@ namespace DailyTimeScheduler.BLL
                 return appUser;
             else
                 return null;
+        }
 
+
+        public ClaimsIdentity GenerateClaimsIdentity(AppUser appUser)
+        {
+            return new ClaimsIdentity(new[] { 
+                new Claim("no", appUser.No.ToString()),
+                new Claim("id", appUser.Id),
+                new Claim("nickName", appUser.NickName),
+                new Claim("password", appUser.Password),
+                new Claim("accessLevel", appUser.AccessLevel.ToString()) 
+            });
         }
 
 

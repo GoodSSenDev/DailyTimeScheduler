@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DailyTimeScheduler.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -39,5 +40,12 @@ namespace DailyTimeSchedulerApp.Controllers
 
             return data;
         }
+
+        [HttpPost("data")]
+        public async Task<ActionResult<AppUser>> Post([FromBody]AppUser da)
+        {
+            return da;
+        }
+        
     }
 }
