@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DailyTimeScheduler.BLL;
 using DailyTimeScheduler.Model;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -28,7 +29,6 @@ namespace DailyTimeSchedulerApp.Controllers
         }
 
         [HttpPost("login")]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult<AppUser>> LogicAsync([FromBody]AppUser userDto)
         {
             var resultUser = await _userBll.VarifyUserAsync(userDto.Id,userDto.Password);
@@ -42,8 +42,30 @@ namespace DailyTimeSchedulerApp.Controllers
             HttpContext.User = new ClaimsPrincipal(userClaims);
             this.RefreshCSRFToken();
 
-            HttpContext.Response.Cookies.Append("jwt", jwtToken, new CookieOptions() { HttpOnly = true });
+            HttpContext.Response.Cookies.Append("jwt", jwtToken, new CookieOptions() { HttpOnly =  false });
             
+            return Ok();
+        }
+
+        [HttpGet("logout")]
+        public IActionResult LogoutAsync()
+        {
+            HttpContext.User = new ClaimsPrincipal();
+            this.RefreshCSRFToken();
+
+            HttpContext.Response.Cookies.Delete("jwt");
+
+            return Ok();
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> RegisterAsync([FromBody] AppUser userDto)
+        {
+            var returnUser = await _userBll.RegisterAsync(userDto);
+
+            if (returnUser == null)
+                return Conflict();
+
             return Ok();
         }
 

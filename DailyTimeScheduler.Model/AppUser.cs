@@ -38,7 +38,7 @@ namespace DailyTimeScheduler.Model
         /// </summary>
         [Required]
         [MinLength(4)]
-        [MaxLength(50)]
+        [MaxLength(100)]
         public string Password { get; set; }
 
         /// <summary>

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 using System.Text;
 
 namespace DailyTimeSchedulerApp
@@ -31,7 +32,7 @@ namespace DailyTimeSchedulerApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddTransient<ITimeBlockDal, TimeBlockDal>();
             services.AddTransient<AppUserBll>(provider => new AppUserBll(
                         new AppUserDal(Configuration.GetSection("ConnectionString").GetSection("DbCon").Value)
                     ));
@@ -62,6 +63,7 @@ namespace DailyTimeSchedulerApp
         {
             if (env.IsDevelopment())
             {
+                IdentityModelEventSource.ShowPII = true;
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -71,6 +73,7 @@ namespace DailyTimeSchedulerApp
                 app.UseHsts();
             }
 
+            
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
