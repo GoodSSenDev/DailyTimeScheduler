@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -11,6 +10,7 @@ using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DailyTimeSchedulerApp.Controllers
@@ -52,6 +52,7 @@ namespace DailyTimeSchedulerApp.Controllers
         {
             HttpContext.User = new ClaimsPrincipal();
             this.RefreshCSRFToken();
+
 
             HttpContext.Response.Cookies.Delete("jwt");
 
