@@ -49,7 +49,6 @@ export default class extends PureComponent {
     }
 
     render() {
-
         const btnTheme = createMuiTheme({
             palette: {
                 secondary: {
@@ -71,7 +70,7 @@ export default class extends PureComponent {
 
 
         return (
-            <Dialog open={this.props.open}>
+            <Dialog open={this.props.isOpen}>
                 <DialogTitle>{"Register"}</DialogTitle>
                 <ThemeProvider theme={btnTheme}>
                     <DialogContent>
@@ -124,7 +123,8 @@ export default class extends PureComponent {
                             onMouseDown={() => this.setCancelBtn(true)}
                             onMouseUp={() => this.setCancelBtn(false)}
                             onMouseLeave={() => this.setCancelBtn(false)}
-                            color={this.state.isCancelBtnDown ? "secondary" : ""}
+                            onClick={() => this.props.closeDialogCallBack(false)}
+                            color={this.state.isCancelBtnDown ? "secondary" : "default"}
                             variant="contained"
                         >
                             CANCEL

@@ -22,9 +22,10 @@ export default class SignInButton extends PureComponent {
     }
 
     //this method for opening the dialog by chaning the state 
-    openSignInDialog(){
-        this.setState({isDialogOpen: true})
-        console.log("asda");
+    setSignInDialog(bool){
+        if (this.state.isDialogOpen !== bool) {
+            this.setState({isDialogOpen: bool})
+        }
     }
 
     render() {
@@ -44,14 +45,15 @@ export default class SignInButton extends PureComponent {
                         onMouseDown={() => this.setSignInBtn(true)}
                         onMouseUp={() => this.setSignInBtn(false)}
                         onMouseLeave={() => this.setSignInBtn(false)}
-                        onClick={() => this.openSignInDialog()}
+                        onClick={() => this.setSignInDialog(true)}
                         color={this.state.isSigInBtnDown ? "secondary" : "default"}
                         variant="contained"
                     >
                         SIGN IN
                     </Button>
                 </ThemeProvider>
-                <SigninDialog open={this.state.isDialogOpen}/>
+                <SigninDialog isOpen={this.state.isDialogOpen} 
+                    closeDialogCallBack={(bool) => this.setSignInDialog(bool)} />
             </Fragment>
         )
 

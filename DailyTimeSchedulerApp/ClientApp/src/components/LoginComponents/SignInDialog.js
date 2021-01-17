@@ -22,13 +22,13 @@ export default class SignInForm extends PureComponent {
             isSignInBtnDown: false
           };
     }
-
+    // if isCancelBtnDown true means the Cancel button is pressed and the color changed
     setCancelBtn(bool) {
         if (this.state.isCancelBtnDown !== bool) {
           this.setState({ isCancelBtnDown: bool });
-          console.log(bool);
         }
     }
+
     setSignInBtn(bool) {
         if (this.state.isSignInBtnDown !== bool) {
           this.setState({ isSignInBtnDown: bool });
@@ -46,7 +46,7 @@ export default class SignInForm extends PureComponent {
         });
 
         return(
-            <Dialog open={this.props.open}>
+            <Dialog open={this.props.isOpen}>
                 <DialogTitle>{"Sign In"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>{}</DialogContentText>
@@ -65,7 +65,8 @@ export default class SignInForm extends PureComponent {
                             onMouseDown={() => this.setCancelBtn(true)}
                             onMouseUp={() => this.setCancelBtn(false)}
                             onMouseLeave={() => this.setCancelBtn(false)}
-                            color={this.state.isCancelBtnDown ? "secondary" : ""}
+                            onClick={()=> this.props.closeDialogCallBack(false)}
+                            color={this.state.isCancelBtnDown ? "secondary" : "default"}
                             variant="contained"
                         >
                         CANCEL

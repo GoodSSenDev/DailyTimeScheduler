@@ -11,7 +11,7 @@ export default class RegisterButton extends PureComponent {
     constructor(props) {
         super(props)
 
-        this.state = { isRegisterBtnDown: false, isDialogOpen: false}
+        this.state = { isRegisterBtnDown: false, isDialogOpen: false }
     }
 
     //this method for the button change color when press happen
@@ -22,9 +22,10 @@ export default class RegisterButton extends PureComponent {
     }
 
     //this method for opening the dialog by chaning the state 
-    openRegisterDialog(){
-        this.setState({isDialogOpen: true})
-        console.log("asda");
+    setRegisterDialog(bool) {
+        if (this.state.isDialogOpen !== bool) {
+            this.setState({ isDialogOpen: bool })
+        }
     }
 
     render() {
@@ -44,14 +45,16 @@ export default class RegisterButton extends PureComponent {
                         onMouseDown={() => this.setRegisterBtn(true)}
                         onMouseUp={() => this.setRegisterBtn(false)}
                         onMouseLeave={() => this.setRegisterBtn(false)}
-                        onClick={() => this.openRegisterDialog()}
+                        onClick={() => this.setRegisterDialog(true)}
                         color={this.state.isRegisterBtnDown ? "secondary" : "primary"}
                         variant="contained"
                     >
                         REGISTER
                     </Button>
                 </ThemeProvider>
-                <RegisterDialog open={this.state.isDialogOpen}/>
+                <RegisterDialog 
+                    isOpen={this.state.isDialogOpen} 
+                    closeDialogCallBack={(bool) => this.setRegisterDialog(bool)} />
             </Fragment>
         )
 
