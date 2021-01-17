@@ -1,14 +1,23 @@
-import { Dialog, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core'
-import { Label } from '@material-ui/icons';
-import React, { Component } from 'react'
+import React, { PureComponent } from "react";
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    TextField,
+    Grid,
+    Button,
+    DialogActions
+} from "@material-ui/core";
+import { createMuiTheme } from "@material-ui/core/styles";
+import { ThemeProvider } from "@material-ui/styles";
 
 
-export default class SignInForm extends Component {
+export default class SignInForm extends PureComponent {
 
     constructor (props) {
         super(props)
         this.state ={
-            exercises,
             isCancelBtnDown: false,
             isSignInBtnDown: false
           };
@@ -28,10 +37,16 @@ export default class SignInForm extends Component {
 
     render(){
         
-        const [isOpen, setOpen] = React.useState(false); 
-    
+        const btnTheme = createMuiTheme({
+            palette: {
+                secondary: {
+                    main: "#212121"
+                }
+            }
+        });
+
         return(
-            <Dialog open={true}>
+            <Dialog open={this.props.open}>
                 <DialogTitle>{"Sign In"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>{}</DialogContentText>
@@ -45,7 +60,7 @@ export default class SignInForm extends Component {
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <ThemeProvider theme={theme}>
+                    <ThemeProvider theme={btnTheme}>
                         <Button
                             onMouseDown={() => this.setCancelBtn(true)}
                             onMouseUp={() => this.setCancelBtn(false)}

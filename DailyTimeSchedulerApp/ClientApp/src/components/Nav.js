@@ -4,16 +4,18 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Grid from '@material-ui/core/Grid';
 import DateRangeSharpIcon from '@material-ui/icons/DateRangeSharp';
 import TimelineSharpIcon from '@material-ui/icons/TimelineSharp';
-
-
-
+import HomeIcon from '@material-ui/icons/Home';
+import RegisterButton from './LoginComponents/RegisterButton'
+import SignInButton from './LoginComponents/SignInButton'
 
 const useStyles = makeStyles({
   root: {
     type: "light",
     flexGrow: 1,
+    marginBottom:10,
   },
   tabLabel:{
     fontWeight: 'bold'
@@ -33,6 +35,9 @@ const useStyles = makeStyles({
   tab5Bc: {
     backgroundColor: "#F35844",
   },
+  tab6Bc: {
+    backgroundColor: "#2c387e",
+  }
 });
 
 export default function CenteredTabs() {
@@ -43,26 +48,48 @@ export default function CenteredTabs() {
     setValue(newValue);
   };
 
-  return (
-    <Paper className={classes.root} > 
-      <Tabs
-        value={value}
-        onChange={handleChange}
-        indicatorColor="primary"
-        textColor="primary"
-        aria-label="icon label tabs example"
-        
-      >
-        <Tab className={classNames(classes.tab1Bc,classes.tabLabel)} label="Calendar" icon={<DateRangeSharpIcon fontSize="large"/>}  />
-        <Tab className={classNames(classes.tab2Bc,classes.tabLabel)} label="Analysis"  icon={<TimelineSharpIcon fontSize="large"/>}/>
-        <Tab className={classNames(classes.tab3Bc,classes.tabLabel)} label="Item Three" />
-        <Tab className={classNames(classes.tab4Bc,classes.tabLabel)} label="Item Three" />
-        <Tab className={classNames(classes.tab5Bc,classes.tabLabel)} label="Item Three" />
+  if(true)
+    return (
+      <Grid container >
 
-        
-      </Tabs>
-
-    </Paper>
-    
-  );
+        <Grid item xs={10}>
+          <Paper className={classes.root} elevation={3}> 
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              aria-label="icon label tabs example"       
+            >
+              <Tab className={classNames(classes.tab6Bc,classes.tabLabel)} label="Home" icon={<HomeIcon fontSize="large"/>}  />
+              <Tab className={classNames(classes.tab1Bc,classes.tabLabel)} label="Calendar" icon={<DateRangeSharpIcon fontSize="large"/>}  />
+              <Tab className={classNames(classes.tab2Bc,classes.tabLabel)} label="Analysis"  icon={<TimelineSharpIcon fontSize="large"/>}/>
+              <Tab className={classNames(classes.tab3Bc,classes.tabLabel)} label="Item Three" />
+              <Tab className={classNames(classes.tab4Bc,classes.tabLabel)} label="Item Three" />
+              <Tab className={classNames(classes.tab5Bc,classes.tabLabel)} label="Item Three" />      
+            </Tabs>
+          </Paper> 
+        </Grid>
+        <Grid item xs={2}>
+          <Paper className={classes.root} elevation={3}> 
+            <RegisterButton/>
+            <SignInButton/>
+          </Paper> 
+        </Grid>
+      </Grid>  
+    );
+  else
+    return (
+      <Paper className={classes.root} elevation={3}> 
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          indicatorColor="primary"
+          textColor="primary"
+          aria-label="icon label tabs example"       
+        >
+          <Tab className={classNames(classes.tab6Bc,classes.tabLabel)} label="Home" icon={<HomeIcon fontSize="large"/>}  />  
+        </Tabs>
+      </Paper>   
+    ); 
 }
