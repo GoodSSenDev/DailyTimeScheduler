@@ -24,7 +24,7 @@ namespace DailyTimeScheduler.BLL
         /// <param name="id"></param>
         /// <param name="password"></param>
         /// <returns>if success return AppUser that matches, otherwise return null</returns>
-        public async Task<AppUser> VarifyUserAsync(string id, string password)
+        public async Task<AppUser> VerifyUserAsync(string id, string password)
         {
             var matchedUser = await _userDal.GetAppUserByIdAsync(id);
             if (matchedUser == null)
@@ -58,8 +58,26 @@ namespace DailyTimeScheduler.BLL
             else
                 return null;
         }
+        
+        /// <summary>
+        /// check ID Duplication 
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns>true if ID exist false it not </returns>
+        public async Task<bool> CheckIDDuplicationAsync(string ID)
+        {
+            if (await _userDal.GetAppUserByIdAsync(ID) == null)
+                return false;
+            else
+                return true;
+        }
 
 
+        /// <summary>
+        /// This method is for generating Identity for JWT token 
+        /// </summary>
+        /// <param name="appUser"></param>
+        /// <returns></returns>
         public ClaimsIdentity GenerateClaimsIdentity(AppUser appUser)
         {
             return new ClaimsIdentity(new[] { 

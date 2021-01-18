@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { createRef, PureComponent } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -9,20 +9,42 @@ import {
     Button,
     DialogActions
 } from "@material-ui/core";
+import CheckIcon from "@material-ui/icons/Check";
+import CloseIcon from "@material-ui/icons/Close";
 import { createMuiTheme } from "@material-ui/core/styles";
-import { ThemeProvider } from "@material-ui/styles";
+import { ThemeProvider, withStyles } from "@material-ui/styles";
+import green from '@material-ui/core/colors/green';
 
-export default class extends PureComponent {
+
+const styles = (theme) => ({
+    buttonProgress: {
+        color: green[500],
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+})
+
+class RegisterDialog extends PureComponent {
 
     constructor(props) {
         super(props);
         this.state = {
+            isIDChecked: false,
+            isNickNameChecked: false,
+            isIDDupCheckBtnDiabled: false,
+            isNickNameDupCheckBtnDiabled: false,
             isCancelBtnDown: false,
             isSignInBtnDown: false,
-            isIDValifyBtnDown: false,
-            isNickNameValifyBtnDown: false
+            isIDDupCheckBtnDown: false,
+            isNickNameDupCheckBtnDown: false
         };
+        this.inputIDRef = createRef();
     }
+
+    //#region button state functions
 
     setCancelBtn(bool) {
         if (this.state.isCancelBtnDown !== bool) {
@@ -36,17 +58,35 @@ export default class extends PureComponent {
         }
     }
 
-    setIDValifyBtn(bool) {
-        if (this.state.isIDValifyBtnDown !== bool) {
+    //function for set state for ID duplication check button for color change
+    setIDDupCheckBtn(bool) {
+        if (this.state.isIDDupCheckBtnDown !== bool) {
             this.setState({ isIDValifyBtnDown: bool });
         }
     }
 
-    setNickNameValifyBtn(bool) {
-        if (this.state.isNickNameValifyBtnDown !== bool) {
+    setNickNameDupCheckBtn(bool) {
+        if (this.state.isNickNameDupCheckBtnDown !== bool) {
             this.setState({ isNickNameValifyBtnDown: bool });
         }
     }
+
+    //#endregion
+
+    async checkIDDuplication() {
+        this.setState({ isIDDupCheckBtnDiabled: true })
+        await this.sendCheckData()
+        this.setState({ isIDDupCheckBtnDiabled: false })
+    }
+
+    async sendCheckData() {
+        const response = await fetch(`api/Auth/checkIDDuplication=${this.inputIDRef.current.value}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        console.log(response);
+    }
+
 
     render() {
         const btnTheme = createMuiTheme({
@@ -57,7 +97,7 @@ export default class extends PureComponent {
             }
         });
 
-        const valifyBtnTheme = createMuiTheme({
+        const verifyBtnTheme = createMuiTheme({
             palette: {
                 primary: {
                     main: "#43a047"
@@ -76,30 +116,33 @@ export default class extends PureComponent {
                     <DialogContent>
                         <DialogContentText>{ }</DialogContentText>
                         <Grid container>
-                            <ThemeProvider theme={valifyBtnTheme}>
+                            <ThemeProvider theme={verifyBtnTheme}>
                                 <Grid item xs={12}>
-                                    <TextField label="ID" />
+                                    <TextField label="ID" inputRef={this.inputIDRef} />
                                     <Button
-                                        onMouseDown={() => this.setIDValifyBtn(true)}
-                                        onMouseUp={() => this.setIDValifyBtn(false)}
-                                        onMouseLeave={() => this.setIDValifyBtn(false)}
+                                        disabled={this.state.isIDDupCheckBtnDiabled}
+                                        onMouseDown={() => this.setIDDupCheckBtn(true)}
+                                        onMouseUp={() => this.setIDDupCheckBtn(false)}
+                                        onMouseLeave={() => this.setIDDupCheckBtn(false)}
+                                        onClick={async () => this.checkIDDuplication()}
                                         color={
-                                            this.state.isIDValifyBtnDown ? "secondary" : "primary"
+                                            this.state.isIDDupCheckBtnDown ? "secondary" : "primary"
                                         }
                                         variant="contained"
                                         style={{ position: "relative", top: "11px" }}
                                     >
-                                        CHECK
-                                </Button>
+                                        CHECK {this.state.isIDChecked ? <CheckIcon /> : <CloseIcon />}
+                                    </Button>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField label="Nick Name" />
                                     <Button
-                                        onMouseDown={() => this.setNickNameValifyBtn(true)}
-                                        onMouseUp={() => this.setNickNameValifyBtn(false)}
-                                        onMouseLeave={() => this.setNickNameValifyBtn(false)}
+                                        disabled={this.state.isNickNameDupCheckBtnDiabled}
+                                        onMouseDown={() => this.setNickNameDupCheckBtn(true)}
+                                        onMouseUp={() => this.setNickNameDupCheckBtn(false)}
+                                        onMouseLeave={() => this.setNickNameDupCheckBtn(false)}
                                         color={
-                                            this.state.isNickNameValifyBtnDown
+                                            this.state.isNickNameDupCheckBtnDown
                                                 ? "secondary"
                                                 : "primary"
                                         }
@@ -144,3 +187,6 @@ export default class extends PureComponent {
         );
     }
 }
+
+
+export default withStyles(styles)(RegisterDialog);

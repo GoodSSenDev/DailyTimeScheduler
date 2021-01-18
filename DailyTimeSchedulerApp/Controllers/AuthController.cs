@@ -16,7 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace DailyTimeSchedulerApp.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AuthController : Controller
     {
         private readonly AppUserBll _userBll;
@@ -31,7 +31,7 @@ namespace DailyTimeSchedulerApp.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<AppUser>> LogicAsync([FromBody]AppUser userDto)
         {
-            var resultUser = await _userBll.VarifyUserAsync(userDto.Id,userDto.Password);
+            var resultUser = await _userBll.VerifyUserAsync(userDto.Id,userDto.Password);
             if (resultUser == null)
                 return Unauthorized();
 
@@ -70,6 +70,17 @@ namespace DailyTimeSchedulerApp.Controllers
             return Ok();
         }
 
+        [HttpGet("checkIDDuplication={id}")]
+        public async Task<IActionResult> CheckID([FromRoute]string id)
+        {
+            Console.WriteLine(id);
+           
+            if (await _userBll.CheckIDDuplicationAsync(id))
+                return Conflict("asdthis is wrong");
+            
+                return Ok("this is right "); 
+        }
+
         private string GenerateJwtToken(ClaimsIdentity userClaims)
         {
             
@@ -90,7 +101,7 @@ namespace DailyTimeSchedulerApp.Controllers
         {
             var tokens = _antiforgery.GetAndStoreTokens(HttpContext);
             HttpContext.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken,
-                new CookieOptions() { HttpOnly = false });
+                new CookieOptions() { HttpOnly = false });  
         }
     }
 }

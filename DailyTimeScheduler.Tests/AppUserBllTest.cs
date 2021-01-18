@@ -41,7 +41,7 @@ namespace DailyTimeScheduler.Tests
             var userDal = new AppUserBll(mockDalClass.Object);
 
             //2. Act
-            var returnAppUser = await userDal.VarifyUserAsync("test123", "qwer1234");
+            var returnAppUser = await userDal.VerifyUserAsync("test123", "qwer1234");
 
             //3.Assert
             Assert.NotNull(returnAppUser);
