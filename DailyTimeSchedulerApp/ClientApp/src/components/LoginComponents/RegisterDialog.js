@@ -39,7 +39,8 @@ class RegisterDialog extends PureComponent {
             isCancelBtnDown: false,
             isSignInBtnDown: false,
             isIDDupCheckBtnDown: false,
-            isNickNameDupCheckBtnDown: false
+            isNickNameDupCheckBtnDown: false,
+            errorMessage: ""
         };
         this.inputIDRef = createRef();
     }
@@ -73,20 +74,42 @@ class RegisterDialog extends PureComponent {
 
     //#endregion
 
+
+    //#region  IDDupCheck
+    unCheckIDDup() {
+        if (this.state.isIDChecked) {
+            this.setState({ isIDChecked: false })
+        }
+    }
+
     async checkIDDuplication() {
         this.setState({ isIDDupCheckBtnDiabled: true })
-        await this.sendCheckData()
+        const statusCode = await this.sendIDCheckDup()
+
+        if (statusCode == 200) {
+            this.setState({ isIDChecked: true })
+        }
+        else if (statusCode == 409) {
+            this.setState({ errorMessage: "Selected ID Already exist" })
+        }
+        else (
+            this.setState({ errorMessage: "Unknown error occurs while ID Duplication Check" })
+        )
+
         this.setState({ isIDDupCheckBtnDiabled: false })
     }
 
-    async sendCheckData() {
+    //this method send 
+    async sendIDCheckDup() {
         const response = await fetch(`api/Auth/checkIDDuplication=${this.inputIDRef.current.value}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         });
-        console.log(response);
-    }
 
+        return response.status;
+
+    }
+    //#endregion
 
     render() {
         const btnTheme = createMuiTheme({
@@ -114,7 +137,7 @@ class RegisterDialog extends PureComponent {
                 <DialogTitle>{"Register"}</DialogTitle>
                 <ThemeProvider theme={btnTheme}>
                     <DialogContent>
-                        <DialogContentText>{ }</DialogContentText>
+                        <DialogContentText>{this.state.errorMessage}</DialogContentText>
                         <Grid container>
                             <ThemeProvider theme={verifyBtnTheme}>
                                 <Grid item xs={12}>
@@ -141,6 +164,7 @@ class RegisterDialog extends PureComponent {
                                         onMouseDown={() => this.setNickNameDupCheckBtn(true)}
                                         onMouseUp={() => this.setNickNameDupCheckBtn(false)}
                                         onMouseLeave={() => this.setNickNameDupCheckBtn(false)}
+                                        onChange={() => this.unCheckIDDup()}
                                         color={
                                             this.state.isNickNameDupCheckBtnDown
                                                 ? "secondary"

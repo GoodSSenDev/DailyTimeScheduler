@@ -76,9 +76,9 @@ namespace DailyTimeSchedulerApp.Controllers
             Console.WriteLine(id);
            
             if (await _userBll.CheckIDDuplicationAsync(id))
-                return Conflict("asdthis is wrong");
-            
-                return Ok("this is right "); 
+                return Conflict();
+      
+            return Ok(); 
         }
 
         private string GenerateJwtToken(ClaimsIdentity userClaims)

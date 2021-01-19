@@ -63,7 +63,7 @@ namespace DailyTimeScheduler.BLL
         /// check ID Duplication 
         /// </summary>
         /// <param name="ID"></param>
-        /// <returns>true if ID exist false it not </returns>
+        /// <returns>true if ID exist false if not </returns>
         public async Task<bool> CheckIDDuplicationAsync(string ID)
         {
             if (await _userDal.GetAppUserByIdAsync(ID) == null)
