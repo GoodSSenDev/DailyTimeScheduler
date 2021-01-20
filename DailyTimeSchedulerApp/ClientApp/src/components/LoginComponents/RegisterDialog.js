@@ -40,10 +40,15 @@ class RegisterDialog extends PureComponent {
             isSignInBtnDown: false,
             isIDDupCheckBtnDown: false,
             isNickNameDupCheckBtnDown: false,
-            errorMessage: ""
+            errorMessage: "",
+            isPasswordConfirmed: false,
+            isPasswordEnough: false,
+
         };
         this.inputIDRef = createRef();
         this.inputNickNameRef = createRef();
+        this.inputPWRef = createRef();
+        this.inputConfirmPWRef = createRef();
     }
 
     //#region button state functions
@@ -83,15 +88,15 @@ class RegisterDialog extends PureComponent {
         }
     }
 
-    async checkIDDuplication() {
+    async checkIDDuplicationAsync() {
         if (!this.state.isIDChecked) {
             this.setState({ isIDDupCheckBtnDiabled: true })
-            const statusCode = await this.sendIDCheckDup()
+            const statusCode = await this.sendIDCheckDupAsync()
 
-            if (statusCode == 200) {
+            if (statusCode === 200) {
                 this.setState({ isIDChecked: true })
             }
-            else if (statusCode == 409) {
+            else if (statusCode === 409) {
                 this.setState({ errorMessage: "Selected ID Already exist" })
             }
             else (
@@ -103,7 +108,7 @@ class RegisterDialog extends PureComponent {
     }
 
     //this method send  ID to check if there is duplicate ID exist and return status 200 : ok , 409: already exist
-    async sendIDCheckDup() {
+    async sendIDCheckDupAsync() {
         const response = await fetch(`api/Auth/checkIDDuplication=${this.inputIDRef.current.value}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
@@ -121,15 +126,15 @@ class RegisterDialog extends PureComponent {
         }
     }
 
-    async checkNickNameDuplication() {
+    async checkNickNameDuplicationAsync() {
         if (!this.state.isNickNameChecked) {
             this.setState({ isNickNameDupCheckBtnDiabled: true })
-            const statusCode = await this.sendNickNameCheckDup()
+            const statusCode = await this.sendNickNameCheckDupAsync()
 
-            if (statusCode == 200) {
+            if (statusCode === 200) {
                 this.setState({ isNickNameChecked: true })
             }
-            else if (statusCode == 409) {
+            else if (statusCode === 409) {
                 this.setState({ errorMessage: "Selected NickName Already exist" })
             }
             else (
@@ -141,7 +146,7 @@ class RegisterDialog extends PureComponent {
     }
 
     //this method send nickname to check if there is duplicate nickname exist and return status 200 : ok , 409: already exist
-    async sendNickNameCheckDup() {
+    async sendNickNameCheckDupAsync() {
         const response = await fetch(`api/Auth/checkNickNameDuplication=${this.inputNickNameRef.current.value}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
@@ -151,6 +156,72 @@ class RegisterDialog extends PureComponent {
 
     }
     //#endregion
+
+
+
+    checkPasswordFollowingRule(e) {
+        if (e.target.value.length > 5) {
+            return true
+        }
+        else {
+            this.setState({ errorMessage: "The length of the password have to be longer than 5" })
+            return false
+        }
+    }
+
+    confirmPassword(e) {
+        if (this.checkPasswordFollowingRule(e)) {
+
+
+            if (this.inputPWRef.current.value === this.inputConfirmPWRef.current.value) {
+                this.setState({ isPasswordConfirmed: true })
+                this.setState({ errorMessage: "The PW is confrimed" })
+            }
+            else {
+                this.setState({ isPasswordConfirmed: false })
+                this.setState({ errorMessage: "The PW is not confrimed" })
+            }
+        }
+    }
+
+    async registerAccount(){
+        await this.checkIDDuplicationAsync()
+        await this.checkNickNameDuplicationAsync()
+        console.log(this.state.isIDChecked)
+        console.log(this.state.isNickNameChecked)
+        console.log(this.state.isPasswordConfirmed)
+
+        if(this.state.isIDChecked && this.state.isNickNameChecked && this.state.isPasswordConfirmed){
+
+            let statusCode = await this.sendRegisterAsync()
+            console.log(statusCode)
+
+            if(statusCode === 200){
+                return true
+            } else { 
+                this.setState({ errorMessage: "Unknown Error occured on registering" })
+                
+            }
+        }
+        return false
+    }
+    
+    async sendRegisterAsync() {
+        let registerData = {
+            Id: this.inputIDRef.current.value,
+            NickName:this.inputNickNameRef.current.value,
+            Password:this.inputPWRef.current.value,
+            AccessLevel:1
+        }
+
+        const response = await fetch(`api/Auth/Register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(registerData)
+        });
+
+        return response.status
+    }
 
     render() {
         const btnTheme = createMuiTheme({
@@ -188,7 +259,7 @@ class RegisterDialog extends PureComponent {
                                         onMouseDown={() => this.setIDDupCheckBtn(true)}
                                         onMouseUp={() => this.setIDDupCheckBtn(false)}
                                         onMouseLeave={() => this.setIDDupCheckBtn(false)}
-                                        onClick={async () => this.checkIDDuplication()}
+                                        onClick={async () => this.checkIDDuplicationAsync()}
                                         color={
                                             this.state.isIDDupCheckBtnDown ? "secondary" : "primary"
                                         }
@@ -205,7 +276,7 @@ class RegisterDialog extends PureComponent {
                                         onMouseDown={() => this.setNickNameDupCheckBtn(true)}
                                         onMouseUp={() => this.setNickNameDupCheckBtn(false)}
                                         onMouseLeave={() => this.setNickNameDupCheckBtn(false)}
-                                        onClick={async () => this.checkNickNameDuplication()}
+                                        onClick={async () => this.checkNickNameDuplicationAsync()}
                                         color={
                                             this.state.isNickNameDupCheckBtnDown
                                                 ? "secondary"
@@ -219,10 +290,10 @@ class RegisterDialog extends PureComponent {
                                 </Grid>
                             </ThemeProvider>
                             <Grid item xs={12}>
-                                <TextField label="Password" />
+                                <TextField label="Password" type="password" onChange={(e) => this.confirmPassword(e)} inputRef={this.inputPWRef} />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField label="Confirm Password" />
+                                <TextField label="Confirm Password" type="password" onChange={(e) => this.confirmPassword(e)} inputRef={this.inputConfirmPWRef} />
                             </Grid>
                         </Grid>
                     </DialogContent>
@@ -236,11 +307,12 @@ class RegisterDialog extends PureComponent {
                             variant="contained"
                         >
                             CANCEL
-                    </Button>
+                        </Button>
                         <Button
                             onMouseDown={() => this.setSignInBtn(true)}
                             onMouseUp={() => this.setSignInBtn(false)}
                             onMouseLeave={() => this.setSignInBtn(false)}
+                            onClick={async () => this.registerAccount()}
                             color={this.state.isSignInBtnDown ? "secondary" : "primary"}
                             variant="contained"
                         >
