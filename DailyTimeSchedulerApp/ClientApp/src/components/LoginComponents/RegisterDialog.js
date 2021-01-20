@@ -43,6 +43,7 @@ class RegisterDialog extends PureComponent {
             errorMessage: ""
         };
         this.inputIDRef = createRef();
+        this.inputNickNameRef = createRef();
     }
 
     //#region button state functions
@@ -76,32 +77,72 @@ class RegisterDialog extends PureComponent {
 
 
     //#region  IDDupCheck
-    unCheckIDDup() {
+    uncheckIDDup() {
         if (this.state.isIDChecked) {
             this.setState({ isIDChecked: false })
         }
     }
 
     async checkIDDuplication() {
-        this.setState({ isIDDupCheckBtnDiabled: true })
-        const statusCode = await this.sendIDCheckDup()
+        if (!this.state.isIDChecked) {
+            this.setState({ isIDDupCheckBtnDiabled: true })
+            const statusCode = await this.sendIDCheckDup()
 
-        if (statusCode == 200) {
-            this.setState({ isIDChecked: true })
-        }
-        else if (statusCode == 409) {
-            this.setState({ errorMessage: "Selected ID Already exist" })
-        }
-        else (
-            this.setState({ errorMessage: "Unknown error occurs while ID Duplication Check" })
-        )
+            if (statusCode == 200) {
+                this.setState({ isIDChecked: true })
+            }
+            else if (statusCode == 409) {
+                this.setState({ errorMessage: "Selected ID Already exist" })
+            }
+            else (
+                this.setState({ errorMessage: "Unknown error occurs while ID Duplication Check" })
+            )
 
-        this.setState({ isIDDupCheckBtnDiabled: false })
+            this.setState({ isIDDupCheckBtnDiabled: false })
+        }
     }
 
-    //this method send 
+    //this method send  ID to check if there is duplicate ID exist and return status 200 : ok , 409: already exist
     async sendIDCheckDup() {
         const response = await fetch(`api/Auth/checkIDDuplication=${this.inputIDRef.current.value}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        return response.status;
+
+    }
+    //#endregion
+
+    //#region  NickNameDupCheck
+    uncheckNickNameDup() {
+        if (this.state.isNickNameChecked) {
+            this.setState({ isNickNameChecked: false })
+        }
+    }
+
+    async checkNickNameDuplication() {
+        if (!this.state.isNickNameChecked) {
+            this.setState({ isNickNameDupCheckBtnDiabled: true })
+            const statusCode = await this.sendNickNameCheckDup()
+
+            if (statusCode == 200) {
+                this.setState({ isNickNameChecked: true })
+            }
+            else if (statusCode == 409) {
+                this.setState({ errorMessage: "Selected NickName Already exist" })
+            }
+            else (
+                this.setState({ errorMessage: "Unknown error occurs while NickName Duplication Check" })
+            )
+
+            this.setState({ isNickNameDupCheckBtnDiabled: false })
+        }
+    }
+
+    //this method send nickname to check if there is duplicate nickname exist and return status 200 : ok , 409: already exist
+    async sendNickNameCheckDup() {
+        const response = await fetch(`api/Auth/checkNickNameDuplication=${this.inputNickNameRef.current.value}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         });
@@ -141,7 +182,7 @@ class RegisterDialog extends PureComponent {
                         <Grid container>
                             <ThemeProvider theme={verifyBtnTheme}>
                                 <Grid item xs={12}>
-                                    <TextField label="ID" inputRef={this.inputIDRef} />
+                                    <TextField label="ID" inputRef={this.inputIDRef} onChange={() => this.uncheckIDDup()} />
                                     <Button
                                         disabled={this.state.isIDDupCheckBtnDiabled}
                                         onMouseDown={() => this.setIDDupCheckBtn(true)}
@@ -158,13 +199,13 @@ class RegisterDialog extends PureComponent {
                                     </Button>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField label="Nick Name" />
+                                    <TextField label="Nick Name" inputRef={this.inputNickNameRef} onChange={() => this.uncheckNickNameDup()} />
                                     <Button
                                         disabled={this.state.isNickNameDupCheckBtnDiabled}
                                         onMouseDown={() => this.setNickNameDupCheckBtn(true)}
                                         onMouseUp={() => this.setNickNameDupCheckBtn(false)}
                                         onMouseLeave={() => this.setNickNameDupCheckBtn(false)}
-                                        onChange={() => this.unCheckIDDup()}
+                                        onClick={async () => this.checkNickNameDuplication()}
                                         color={
                                             this.state.isNickNameDupCheckBtnDown
                                                 ? "secondary"
@@ -173,8 +214,8 @@ class RegisterDialog extends PureComponent {
                                         variant="contained"
                                         style={{ position: "relative", top: "11px" }}
                                     >
-                                        CHECK
-                                </Button>
+                                        CHECK {this.state.isNickNameChecked ? <CheckIcon /> : <CloseIcon />}
+                                    </Button>
                                 </Grid>
                             </ThemeProvider>
                             <Grid item xs={12}>

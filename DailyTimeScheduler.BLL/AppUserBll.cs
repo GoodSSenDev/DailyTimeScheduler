@@ -64,9 +64,22 @@ namespace DailyTimeScheduler.BLL
         /// </summary>
         /// <param name="ID"></param>
         /// <returns>true if ID exist false if not </returns>
-        public async Task<bool> CheckIDDuplicationAsync(string ID)
+        public async Task<bool> CheckIDDuplicationAsync(string id)
         {
-            if (await _userDal.GetAppUserByIdAsync(ID) == null)
+            if (await _userDal.GetAppUserByIdAsync(id) == null)
+                return false;
+            else
+                return true;
+        }
+
+        /// <summary>
+        /// check nickname Duplication 
+        /// </summary>
+        /// <param name="nickname"></param>
+        /// <returns>true if nickName exist false if not </returns>
+        public async Task<bool> CheckNickNameDuplicationAsync(string nickname)
+        {
+            if (await _userDal.GetAppUserByNickNameAsync(nickname) == null)
                 return false;
             else
                 return true;

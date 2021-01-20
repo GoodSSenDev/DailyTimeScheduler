@@ -81,6 +81,18 @@ namespace DailyTimeSchedulerApp.Controllers
             return Ok(); 
         }
 
+        [HttpGet("checkNickNameDuplication={nickname}")]
+        public async Task<IActionResult> CheckNickName([FromRoute] string nickname)
+        {
+            Console.WriteLine(nickname);
+
+            if (await _userBll.CheckNickNameDuplicationAsync(nickname))
+                return Conflict();
+
+            return Ok();
+        }
+
+
         private string GenerateJwtToken(ClaimsIdentity userClaims)
         {
             
