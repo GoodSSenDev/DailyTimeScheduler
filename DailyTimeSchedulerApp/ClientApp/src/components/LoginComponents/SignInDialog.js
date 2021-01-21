@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent, createRef } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -15,28 +15,70 @@ import { ThemeProvider } from "@material-ui/styles";
 
 export default class SignInForm extends PureComponent {
 
-    constructor (props) {
+    constructor(props) {
         super(props)
-        this.state ={
+        this.state = {
             isCancelBtnDown: false,
-            isSignInBtnDown: false
-          };
+            isSignInBtnDown: false,
+            isSignIning: false,
+            errorMessage: ""
+        };
+        this.inputIDRef = createRef();
+        this.inputPWRef = createRef();
     }
     // if isCancelBtnDown true means the Cancel button is pressed and the color changed
     setCancelBtn(bool) {
         if (this.state.isCancelBtnDown !== bool) {
-          this.setState({ isCancelBtnDown: bool });
+            this.setState({ isCancelBtnDown: bool });
         }
     }
 
     setSignInBtn(bool) {
         if (this.state.isSignInBtnDown !== bool) {
-          this.setState({ isSignInBtnDown: bool });
+            this.setState({ isSignInBtnDown: bool });
         }
     }
 
-    render(){
-        
+
+    async signInAsync() {
+        this.setState({ isSignIning: true })
+        let statusCode = await this.sendSignInDataAsync()
+        if(statusCode === 401){
+            this.setState({errorMessage:"ID or Password is incorrect"})
+            this.setState({ isSignIning: false })
+            return;
+        }
+        else if (statusCode === 200){
+            this.props.signInSuccess()
+            this.props.closeDialogCallBack(false)
+            return;
+        }
+        else {
+            this.setState({errorMessage:"Unknown Error 1 occured"})
+            this.setState({ isSignIning: false })
+            return;
+        }
+    }
+
+    async sendSignInDataAsync() {
+        let signInData = {
+            Id: this.inputIDRef.current.value,
+            NickName: "d",
+            Password: this.inputPWRef.current.value,
+            AccessLevel: 1,
+        }
+
+        const response = await fetch(`api/Auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(signInData)
+        });
+        return response.status
+    }
+
+
+
+    render() {
         const btnTheme = createMuiTheme({
             palette: {
                 secondary: {
@@ -45,17 +87,17 @@ export default class SignInForm extends PureComponent {
             }
         });
 
-        return(
+        return (
             <Dialog open={this.props.isOpen}>
                 <DialogTitle>{"Sign In"}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>{}</DialogContentText>
+                    <DialogContentText>{this.state.errorMessage}</DialogContentText>
                     <Grid container>
                         <Grid item xs={12}>
-                            <TextField label="ID" />
+                            <TextField inputRef={this.inputIDRef} label="ID" />
                         </Grid>
                         <Grid item xs={12} style={{ marginTop: 20 }}>
-                            <TextField label="Password" />
+                            <TextField inputRef={this.inputPWRef} type="password" label="Password" />
                         </Grid>
                     </Grid>
                 </DialogContent>
@@ -65,24 +107,26 @@ export default class SignInForm extends PureComponent {
                             onMouseDown={() => this.setCancelBtn(true)}
                             onMouseUp={() => this.setCancelBtn(false)}
                             onMouseLeave={() => this.setCancelBtn(false)}
-                            onClick={()=> this.props.closeDialogCallBack(false)}
+                            onClick={() => this.props.closeDialogCallBack(false)}
                             color={this.state.isCancelBtnDown ? "secondary" : "default"}
                             variant="contained"
                         >
-                        CANCEL
+                            CANCEL
                         </Button>
                         <Button
+                            disabled={this.state.isSignIning}
                             onMouseDown={() => this.setSignInBtn(true)}
                             onMouseUp={() => this.setSignInBtn(false)}
                             onMouseLeave={() => this.setSignInBtn(false)}
+                            onClick={async () => this.signInAsync()}
                             color={this.state.isSignInBtnDown ? "secondary" : "primary"}
                             variant="contained"
                         >
-                        SIGN IN
+                            SIGN IN
                         </Button>
                     </ThemeProvider>
                 </DialogActions>
-            </Dialog>           
+            </Dialog>
         )
 
     }

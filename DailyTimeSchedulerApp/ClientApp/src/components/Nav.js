@@ -15,9 +15,9 @@ const useStyles = makeStyles({
   root: {
     type: "light",
     flexGrow: 1,
-    marginBottom:10,
+    marginBottom: 10,
   },
-  tabLabel:{
+  tabLabel: {
     fontWeight: 'bold'
   },
   tab1Bc: {
@@ -42,54 +42,67 @@ const useStyles = makeStyles({
 
 export default function CenteredTabs() {
   const classes = useStyles();
+  const [isSignIn, setIsSignIn] = React.useState(false);
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  if(true)
+  const signInSuccess = () => {
+    setIsSignIn(true)
+    console.log("Login Success")
+  }
+
+  if (isSignIn)
     return (
       <Grid container >
 
         <Grid item xs={10}>
-          <Paper className={classes.root} elevation={3}> 
+          <Paper className={classes.root} elevation={3}>
             <Tabs
               value={value}
               onChange={handleChange}
               indicatorColor="primary"
               textColor="primary"
-              aria-label="icon label tabs example"       
+              aria-label="icon label tabs example"
             >
-              <Tab className={classNames(classes.tab6Bc,classes.tabLabel)} label="Home" icon={<HomeIcon fontSize="large"/>}  />
-              <Tab className={classNames(classes.tab1Bc,classes.tabLabel)} label="Calendar" icon={<DateRangeSharpIcon fontSize="large"/>}  />
-              <Tab className={classNames(classes.tab2Bc,classes.tabLabel)} label="Analysis"  icon={<TimelineSharpIcon fontSize="large"/>}/>
-              <Tab className={classNames(classes.tab3Bc,classes.tabLabel)} label="Item Three" />
-              <Tab className={classNames(classes.tab4Bc,classes.tabLabel)} label="Item Three" />
-              <Tab className={classNames(classes.tab5Bc,classes.tabLabel)} label="Item Three" />      
+              <Tab className={classNames(classes.tab6Bc, classes.tabLabel)} label="Home" icon={<HomeIcon fontSize="large" />} />
+              <Tab className={classNames(classes.tab1Bc, classes.tabLabel)} label="Calendar" icon={<DateRangeSharpIcon fontSize="large" />} />
+              <Tab className={classNames(classes.tab2Bc, classes.tabLabel)} label="Analysis" icon={<TimelineSharpIcon fontSize="large" />} />
+              <Tab className={classNames(classes.tab3Bc, classes.tabLabel)} label="Item Three" />
+              <Tab className={classNames(classes.tab4Bc, classes.tabLabel)} label="Item Three" />
+              <Tab className={classNames(classes.tab5Bc, classes.tabLabel)} label="Item Three" />
             </Tabs>
-          </Paper> 
+          </Paper>
         </Grid>
-        <Grid item xs={2}>
-          <Paper className={classes.root} elevation={3}> 
-            <RegisterButton/>
-            <SignInButton/>
-          </Paper> 
-        </Grid>
-      </Grid>  
+      </Grid>
     );
   else
     return (
-      <Paper className={classes.root} elevation={3}> 
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          aria-label="icon label tabs example"       
-        >
-          <Tab className={classNames(classes.tab6Bc,classes.tabLabel)} label="Home" icon={<HomeIcon fontSize="large"/>}  />  
-        </Tabs>
-      </Paper>   
-    ); 
+
+      <Grid container >
+
+        <Grid item xs={10}>
+          <Paper className={classes.root} elevation={3}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              aria-label="icon label tabs example"
+            >
+              <Tab className={classNames(classes.tab6Bc, classes.tabLabel)} label="Home" icon={<HomeIcon fontSize="large" />} />
+            </Tabs>
+          </Paper>
+        </Grid>
+        <Grid item xs={2}>
+          <Paper className={classes.root} elevation={3}>
+            <RegisterButton />
+            <SignInButton signInSuccess={signInSuccess} />
+          </Paper>
+        </Grid>
+      </Grid>
+
+    );
 }

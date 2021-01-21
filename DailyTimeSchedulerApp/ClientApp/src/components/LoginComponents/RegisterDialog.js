@@ -15,7 +15,6 @@ import CloseIcon from "@material-ui/icons/Close";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider, withStyles } from "@material-ui/styles";
 import green from '@material-ui/core/colors/green';
-import { isIdentifier } from "typescript";
 
 
 const styles = (theme) => ({
@@ -114,8 +113,6 @@ class RegisterDialog extends PureComponent {
             else (
                 this.setState({ errorMessage: "Unknown error occurs while ID Duplication Check" })
             )
-            setTimeout(function() {
-            }, 10000);
             this.setState({ isIDDupCheckBtnDiabled: false })
         }
     }
@@ -213,6 +210,7 @@ class RegisterDialog extends PureComponent {
 
             if (statusCode === 200) {
                 this.setState({isRegistering: false})
+                this.props.closeDialogCallBack(false)
                 return true
             } else {
                 this.setState({ errorMessage: "Unknown Error occured on registering" })
