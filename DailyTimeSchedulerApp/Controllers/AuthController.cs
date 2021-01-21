@@ -62,7 +62,7 @@ namespace DailyTimeSchedulerApp.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync([FromBody] AppUser userDto)
         {
-            var returnUser = await _userBll.RegisterAsync(userDto);
+                var returnUser = await _userBll.RegisterAsync(userDto);
 
             if (returnUser == null)
                 return Conflict();

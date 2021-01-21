@@ -7,23 +7,35 @@ import {
     TextField,
     Grid,
     Button,
-    DialogActions
+    DialogActions, 
+    CircularProgress
 } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 import CloseIcon from "@material-ui/icons/Close";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider, withStyles } from "@material-ui/styles";
 import green from '@material-ui/core/colors/green';
+import { isIdentifier } from "typescript";
 
 
 const styles = (theme) => ({
-    buttonProgress: {
+    buttonProgressID: {
         color: green[500],
         position: 'absolute',
-        top: '50%',
-        left: '50%',
-        marginTop: -12,
-        marginLeft: -12,
+        top: '100px',
+        left: '330px',
+    },
+    buttonProgressNickName: {
+        color: green[500],
+        position: 'absolute',
+        top: '147px',
+        left: '330px',
+    },
+    buttonProgressRegister: {
+        color: green[500],
+        position: 'absolute',   
+        bottom: '12px',
+        right: '47px',
     },
 })
 
@@ -43,7 +55,7 @@ class RegisterDialog extends PureComponent {
             errorMessage: "",
             isPasswordConfirmed: false,
             isPasswordEnough: false,
-
+            isRegistering: false
         };
         this.inputIDRef = createRef();
         this.inputNickNameRef = createRef();
@@ -102,7 +114,8 @@ class RegisterDialog extends PureComponent {
             else (
                 this.setState({ errorMessage: "Unknown error occurs while ID Duplication Check" })
             )
-
+            setTimeout(function() {
+            }, 10000);
             this.setState({ isIDDupCheckBtnDiabled: false })
         }
     }
@@ -184,34 +197,39 @@ class RegisterDialog extends PureComponent {
         }
     }
 
-    async registerAccount(){
+    async registerAccount() {
+        this.setState({isRegistering: true})
         await this.checkIDDuplicationAsync()
         await this.checkNickNameDuplicationAsync()
         console.log(this.state.isIDChecked)
         console.log(this.state.isNickNameChecked)
         console.log(this.state.isPasswordConfirmed)
 
-        if(this.state.isIDChecked && this.state.isNickNameChecked && this.state.isPasswordConfirmed){
+        if (this.state.isIDChecked && this.state.isNickNameChecked && this.state.isPasswordConfirmed) {
 
             let statusCode = await this.sendRegisterAsync()
             console.log(statusCode)
 
-            if(statusCode === 200){
+
+            if (statusCode === 200) {
+                this.setState({isRegistering: false})
                 return true
-            } else { 
+            } else {
                 this.setState({ errorMessage: "Unknown Error occured on registering" })
-                
+
             }
         }
+        this.setState({isRegistering: false})
+
         return false
     }
-    
+
     async sendRegisterAsync() {
         let registerData = {
             Id: this.inputIDRef.current.value,
-            NickName:this.inputNickNameRef.current.value,
-            Password:this.inputPWRef.current.value,
-            AccessLevel:1
+            NickName: this.inputNickNameRef.current.value,
+            Password: this.inputPWRef.current.value,
+            AccessLevel: 1
         }
 
         const response = await fetch(`api/Auth/Register`, {
@@ -243,6 +261,7 @@ class RegisterDialog extends PureComponent {
             }
         });
 
+        const { classes } = this.props;
 
         return (
             <Dialog open={this.props.isOpen}>
@@ -268,6 +287,7 @@ class RegisterDialog extends PureComponent {
                                     >
                                         CHECK {this.state.isIDChecked ? <CheckIcon /> : <CloseIcon />}
                                     </Button>
+                                    {this.state.isIDDupCheckBtnDiabled && <CircularProgress size={28} className={classes.buttonProgressID}/>}
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField label="Nick Name" inputRef={this.inputNickNameRef} onChange={() => this.uncheckNickNameDup()} />
@@ -287,6 +307,7 @@ class RegisterDialog extends PureComponent {
                                     >
                                         CHECK {this.state.isNickNameChecked ? <CheckIcon /> : <CloseIcon />}
                                     </Button>
+                                    {this.state.isNickNameDupCheckBtnDiabled && <CircularProgress size={28} className={classes.buttonProgress}/>}
                                 </Grid>
                             </ThemeProvider>
                             <Grid item xs={12}>
@@ -308,7 +329,9 @@ class RegisterDialog extends PureComponent {
                         >
                             CANCEL
                         </Button>
+
                         <Button
+                            disabled ={this.state.isRegistering}
                             onMouseDown={() => this.setSignInBtn(true)}
                             onMouseUp={() => this.setSignInBtn(false)}
                             onMouseLeave={() => this.setSignInBtn(false)}
@@ -318,6 +341,7 @@ class RegisterDialog extends PureComponent {
                         >
                             REGISTER
                     </Button>
+                    {this.state.isRegistering && <CircularProgress size={28} className={classes.buttonProgressRegister}/>}
                     </DialogActions>
                 </ThemeProvider>
             </Dialog>
