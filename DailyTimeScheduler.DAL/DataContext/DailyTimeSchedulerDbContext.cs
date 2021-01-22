@@ -17,9 +17,15 @@ namespace DailyTimeScheduler.DAL.DataContext
         
         public DbSet<BoolScheduleRecord> BoolRecords { get; set; }
 
+        private readonly string _connectionString;
+
+        public DailyTimeSchedulerDbContext(string connectionString = @"Server = localhost; Database=DailyTimeSchedulerDb;User Id = sa; Password=nl6329nl;" )
+        {
+            _connectionString = connectionString;
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=tcp:database-sql-server.database.windows.net,1433;Initial Catalog=ProductionDB;Persist Security Info=False;User ID=tierZero;Password=#Nl8837nl;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            optionsBuilder.UseSqlServer(_connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
