@@ -84,7 +84,7 @@ namespace DailyTimeSchedulerApp
             app.UseAuthorization();
             app.UseCookiePolicy();
 
-            app.UseJwtCookieMiddleware(app.ApplicationServices.GetService<IAntiforgery>(), Encoding.ASCII.GetBytes("signing key"));
+            app.UseJwtCookieMiddleware(app.ApplicationServices.GetService<IAntiforgery>(), Encoding.UTF8.GetBytes(Startup.StaticConfig.GetSection("SecurityKey1").Value));
 
             app.UseEndpoints(endpoints =>
             {

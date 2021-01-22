@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { Fragment, useEffect } from 'react';
 import classNames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Typography from'@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import DateRangeSharpIcon from '@material-ui/icons/DateRangeSharp';
 import TimelineSharpIcon from '@material-ui/icons/TimelineSharp';
 import HomeIcon from '@material-ui/icons/Home';
 import RegisterButton from './LoginComponents/RegisterButton'
 import SignInButton from './LoginComponents/SignInButton'
+import { Label } from '@material-ui/icons';
 
 const useStyles = makeStyles({
   root: {
@@ -42,67 +44,64 @@ const useStyles = makeStyles({
 
 export default function CenteredTabs() {
   const classes = useStyles();
-  const [isSignIn, setIsSignIn] = React.useState(false);
   const [value, setValue] = React.useState(0);
+  const [isSignedIn, setIsSignedIn] = React.useState(false);
+  const [nickName, setNickName] = React.useState("");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  useEffect(() => {
+    let userNickName = localStorage.getItem('user')
+    if (userNickName != null) {
+      setIsSignedIn(true)
+      setNickName(userNickName)
+    }
+    else {
+      setIsSignedIn(false)
+    }
+  })
+
   const signInSuccess = () => {
-    setIsSignIn(true)
+
     console.log("Login Success")
   }
 
-  if (isSignIn)
-    return (
-      <Grid container >
 
-        <Grid item xs={10}>
-          <Paper className={classes.root} elevation={3}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              indicatorColor="primary"
-              textColor="primary"
-              aria-label="icon label tabs example"
-            >
-              <Tab className={classNames(classes.tab6Bc, classes.tabLabel)} label="Home" icon={<HomeIcon fontSize="large" />} />
-              <Tab className={classNames(classes.tab1Bc, classes.tabLabel)} label="Calendar" icon={<DateRangeSharpIcon fontSize="large" />} />
-              <Tab className={classNames(classes.tab2Bc, classes.tabLabel)} label="Analysis" icon={<TimelineSharpIcon fontSize="large" />} />
-              <Tab className={classNames(classes.tab3Bc, classes.tabLabel)} label="Item Three" />
-              <Tab className={classNames(classes.tab4Bc, classes.tabLabel)} label="Item Three" />
-              <Tab className={classNames(classes.tab5Bc, classes.tabLabel)} label="Item Three" />
-            </Tabs>
-          </Paper>
-        </Grid>
+
+  return (
+
+    <Grid container >
+
+      <Grid item xs={10}>
+        <Paper className={classes.root} elevation={3}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            aria-label="icon label tabs example"
+          >
+            <Tab className={classNames(classes.tab6Bc, classes.tabLabel)} label="Home" icon={<HomeIcon fontSize="large" />} />
+            <Tab className={classNames(classes.tab1Bc, classes.tabLabel)} label="Calendar" icon={<DateRangeSharpIcon fontSize="large" />} />
+            <Tab className={classNames(classes.tab2Bc, classes.tabLabel)} label="Analysis" icon={<TimelineSharpIcon fontSize="large" />} />
+            <Tab className={classNames(classes.tab3Bc, classes.tabLabel)} label="Item Three" />
+            <Tab className={classNames(classes.tab4Bc, classes.tabLabel)} label="Item Three" />
+            <Tab className={classNames(classes.tab5Bc, classes.tabLabel)} label="Item Three" />
+          </Tabs>
+        </Paper>
       </Grid>
-    );
-  else
-    return (
-
-      <Grid container >
-
-        <Grid item xs={10}>
-          <Paper className={classes.root} elevation={3}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              indicatorColor="primary"
-              textColor="primary"
-              aria-label="icon label tabs example"
-            >
-              <Tab className={classNames(classes.tab6Bc, classes.tabLabel)} label="Home" icon={<HomeIcon fontSize="large" />} />
-            </Tabs>
-          </Paper>
-        </Grid>
-        <Grid item xs={2}>
-          <Paper className={classes.root} elevation={3}>
-            <RegisterButton />
-            <SignInButton signInSuccess={signInSuccess} />
-          </Paper>
-        </Grid>
+      <Grid item xs={2}>
+        <Paper className={classes.root} elevation={3}>
+          {isSignedIn ? (<Typography variant="h6" > Hello {nickName}</Typography>) :
+           (<Fragment>
+              <RegisterButton />
+              <SignInButton signInSuccess={signInSuccess} /> 
+            </Fragment>)}
+        </Paper>
       </Grid>
+    </Grid>
 
-    );
+  );
 }

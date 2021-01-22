@@ -10,7 +10,30 @@ import './custom.css'
 export default class App extends Component {
   static displayName = App.name;
 
-  render () {
+  constructor(props){
+    super(props)
+    
+  }
+
+  
+  async componentDidMount() {
+    await this.checkIsSignedIn()
+  } 
+
+  async checkIsSignedIn() {
+    const response = await fetch(`api/Auth/checkSignedIn`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json'},
+    });
+    if(response.status == 200){
+      localStorage.setItem('user',await response.json())
+    } 
+    else {
+      localStorage.removeItem('user')
+    }
+  }
+
+  render() {
     return (
       <Layout>
         <Route exact path='/' component={TimeTable} />

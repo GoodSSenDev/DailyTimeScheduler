@@ -44,7 +44,7 @@ namespace DailyTimeSchedulerApp.Controllers
 
             HttpContext.Response.Cookies.Append("jwt", jwtToken, new CookieOptions() { HttpOnly =  false });
             
-            return Ok();
+            return Ok(resultUser.NickName);
         }
 
         [HttpGet("logout")]
@@ -90,6 +90,18 @@ namespace DailyTimeSchedulerApp.Controllers
                 return Conflict();
 
             return Ok();
+        }
+
+
+        [HttpGet("checkSignedIn")]
+        public async Task<IActionResult> CheckSignIn()
+        {
+            if (HttpContext.User != null)
+                foreach (var claim in HttpContext.User.Claims)
+                    if (claim.Type == "nickName")
+                        return Ok(claim.Value);
+
+            return NotFound();
         }
 
 

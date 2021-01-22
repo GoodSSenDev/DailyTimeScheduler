@@ -42,15 +42,17 @@ export default class SignInForm extends PureComponent {
 
     async signInAsync() {
         this.setState({ isSignIning: true })
-        let statusCode = await this.sendSignInDataAsync()
-        if(statusCode === 401){
+        let response = await this.sendSignInDataAsync()
+        if(response.status === 401){
             this.setState({errorMessage:"ID or Password is incorrect"})
             this.setState({ isSignIning: false })
             return;
         }
-        else if (statusCode === 200){
+        else if (response.status === 200){
+            localStorage.setItem('user',await response.json())
             this.props.signInSuccess()
             this.props.closeDialogCallBack(false)
+            window.location.reload();
             return;
         }
         else {
@@ -63,17 +65,17 @@ export default class SignInForm extends PureComponent {
     async sendSignInDataAsync() {
         let signInData = {
             Id: this.inputIDRef.current.value,
-            NickName: "d",
+            NickName: "ID_Check",
             Password: this.inputPWRef.current.value,
             AccessLevel: 1,
         }
 
         const response = await fetch(`api/Auth/login`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' ,'Accept': 'application/json'},
             body: JSON.stringify(signInData)
         });
-        return response.status
+        return response
     }
 
 
