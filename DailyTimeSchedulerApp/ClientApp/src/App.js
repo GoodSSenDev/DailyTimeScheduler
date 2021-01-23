@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
-import { Home } from './components/Home';
+import { Home } from './components/PageComponents/Home';
 import { FetchData } from './components/FetchData';
 import { Counter } from './components/Counter';
-import TimeTable from './components/TimeTable';
+import TimeTable from './components/PageComponents/TimeTable';
 import './custom.css'
 
 export default class App extends Component {
@@ -38,7 +38,7 @@ export default class App extends Component {
       <Layout>
         <Route exact path='/' component={TimeTable} />
         <Route path='/counter' component={Counter} />
-        <Route path='/fetch-data' component={FetchData} />
+        <Route path='/tempHome' component={Home} />
       </Layout>
     );
   }

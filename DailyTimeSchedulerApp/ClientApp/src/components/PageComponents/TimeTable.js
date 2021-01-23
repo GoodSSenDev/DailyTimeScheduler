@@ -7,7 +7,7 @@ import {
   DragDropProvider,
   EditRecurrenceMenu, MonthView, Scheduler,
   Toolbar,
-
+  DateNavigator,
 
   ViewSwitcher, WeekView
 } from '@devexpress/dx-react-scheduler-material-ui';
@@ -22,7 +22,7 @@ import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import * as React from 'react';
-import AppointmentFormTask from './AppointmentFormTask';
+import AppointmentFormTask from '../AppointmentFormTask';
 
 
 
@@ -99,8 +99,10 @@ class TimeTable extends React.PureComponent {
       startDayHour: 9,
       endDayHour: 19,
       isNewAppointment: false,
+      
     };
 
+    this.currentDateChange = (currentDate) => { this.setState({ currentDate }); };
     this.toggleConfirmationVisible = this.toggleConfirmationVisible.bind(this);
     this.commitDeletedAppointment = this.commitDeletedAppointment.bind(this);
     this.toggleEditingFormVisibility = this.toggleEditingFormVisibility.bind(this);
@@ -224,6 +226,7 @@ class TimeTable extends React.PureComponent {
         >
           <ViewState
             currentDate={currentDate}
+            onCurrentDateChange={this.currentDateChange}
           />
           <EditingState
             onCommitChanges={this.commitChanges}
@@ -244,6 +247,7 @@ class TimeTable extends React.PureComponent {
             showDeleteButton
           />
           <Toolbar />
+          <DateNavigator />
           <ViewSwitcher />
           <AppointmentForm
             overlayComponent={this.appointmentForm}

@@ -43,7 +43,7 @@ const useStyles = makeStyles({
   }
 });
 
-export default function CenteredTabs() {
+export default function NavMenuTab() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const [isSignedIn, setIsSignedIn] = React.useState(false);
@@ -99,7 +99,9 @@ export default function CenteredTabs() {
             <Tab
               value={2}
               className={classNames(classes.tab2Bc, classes.tabLabel)}
-              label="Analysis" icon={<TimelineSharpIcon fontSize="large" />} />
+              to='/tempHome' component={Link}
+              label="Analysis" 
+              icon={<TimelineSharpIcon fontSize="large" />} />
             <Tab
               value={3}
               className={classNames(classes.tab3Bc, classes.tabLabel)}
