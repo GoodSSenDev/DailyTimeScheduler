@@ -4,13 +4,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from'@material-ui/core/Typography';
+import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import DateRangeSharpIcon from '@material-ui/icons/DateRangeSharp';
 import TimelineSharpIcon from '@material-ui/icons/TimelineSharp';
 import HomeIcon from '@material-ui/icons/Home';
 import RegisterButton from './LoginComponents/RegisterButton'
 import SignInButton from './LoginComponents/SignInButton'
+import { Link } from 'react-router-dom';
 import { Label } from '@material-ui/icons';
 
 const useStyles = makeStyles({
@@ -83,21 +84,43 @@ export default function CenteredTabs() {
             textColor="primary"
             aria-label="icon label tabs example"
           >
-            <Tab className={classNames(classes.tab6Bc, classes.tabLabel)} label="Home" icon={<HomeIcon fontSize="large" />} />
-            <Tab className={classNames(classes.tab1Bc, classes.tabLabel)} label="Calendar" icon={<DateRangeSharpIcon fontSize="large" />} />
-            <Tab className={classNames(classes.tab2Bc, classes.tabLabel)} label="Analysis" icon={<TimelineSharpIcon fontSize="large" />} />
-            <Tab className={classNames(classes.tab3Bc, classes.tabLabel)} label="Item Three" />
-            <Tab className={classNames(classes.tab4Bc, classes.tabLabel)} label="Item Three" />
-            <Tab className={classNames(classes.tab5Bc, classes.tabLabel)} label="Item Three" />
+            <Tab 
+              value={0}
+              className={classNames(classes.tab6Bc, classes.tabLabel)}
+              to='/' component={Link}
+              label="Home"
+              icon={<HomeIcon fontSize="large" />} />
+            <Tab
+              value={1}
+              className={classNames(classes.tab1Bc, classes.tabLabel)}
+              to='/counter' component={Link}
+              label="Calendar"
+              icon={<DateRangeSharpIcon fontSize="large" />} />
+            <Tab
+              value={2}
+              className={classNames(classes.tab2Bc, classes.tabLabel)}
+              label="Analysis" icon={<TimelineSharpIcon fontSize="large" />} />
+            <Tab
+              value={3}
+              className={classNames(classes.tab3Bc, classes.tabLabel)}
+              label="Item Three" />
+            <Tab
+              value={4}
+              className={classNames(classes.tab4Bc, classes.tabLabel)}
+              label="Item Three" />
+            <Tab
+              value={5}
+              className={classNames(classes.tab5Bc, classes.tabLabel)}
+              label="Item Three" />
           </Tabs>
         </Paper>
       </Grid>
       <Grid item xs={2}>
         <Paper className={classes.root} elevation={3}>
           {isSignedIn ? (<Typography variant="h6" > Hello {nickName}</Typography>) :
-           (<Fragment>
+            (<Fragment>
               <RegisterButton />
-              <SignInButton signInSuccess={signInSuccess} /> 
+              <SignInButton signInSuccess={signInSuccess} />
             </Fragment>)}
         </Paper>
       </Grid>
