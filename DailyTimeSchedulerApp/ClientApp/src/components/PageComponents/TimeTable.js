@@ -3,12 +3,11 @@ import { EditingState, ViewState } from '@devexpress/dx-react-scheduler';
 import {
   AllDayPanel, AppointmentForm, Appointments,
   AppointmentTooltip,
-
   DragDropProvider,
   EditRecurrenceMenu, MonthView, Scheduler,
   Toolbar,
   DateNavigator,
-
+  CurrentTimeIndicator,
   ViewSwitcher, WeekView
 } from '@devexpress/dx-react-scheduler-material-ui';
 import Button from '@material-ui/core/Button';
@@ -96,8 +95,8 @@ class TimeTable extends React.PureComponent {
       editingAppointment: undefined,
       previousAppointment: undefined,
       addedAppointment: {},
-      startDayHour: 9,
-      endDayHour: 19,
+      startDayHour: -1,
+      endDayHour: 24,
       isNewAppointment: false,
       
     };
@@ -143,6 +142,7 @@ class TimeTable extends React.PureComponent {
     });
   }
 
+
   componentDidUpdate() {
     this.appointmentForm.update();
   }
@@ -151,6 +151,9 @@ class TimeTable extends React.PureComponent {
     let dateStrings = new Date().toLocaleDateString().split("/");
     return `${dateStrings[2]}-${dateStrings[0]}-${dateStrings[1]}`;
   }
+
+
+//#region Appointment
 
   onEditingAppointmentChange(editingAppointment) {
     this.setState({ editingAppointment });
@@ -212,6 +215,10 @@ class TimeTable extends React.PureComponent {
     });
   }
 
+//#endregion
+
+
+
   render() {
     const {
       currentDate,
@@ -262,6 +269,8 @@ class TimeTable extends React.PureComponent {
             onVisibilityChange={this.toggleEditingFormVisibility}
           />
           <DragDropProvider />
+          <CurrentTimeIndicator/>
+
         </Scheduler>
 
         <Dialog
