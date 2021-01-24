@@ -89,7 +89,7 @@ class TimeTable extends React.PureComponent {
     super(props);
     this.state = {
       data: [],
-      currentDate: '2018-06-27',
+      currentDate: this.getLocalDataString(),
       confirmationVisible: false,
       editingFormVisible: false,
       deletedAppointmentId: undefined,
@@ -145,6 +145,11 @@ class TimeTable extends React.PureComponent {
 
   componentDidUpdate() {
     this.appointmentForm.update();
+  }
+  
+  getLocalDataString() {
+    let dateStrings = new Date().toLocaleDateString().split("/");
+    return `${dateStrings[2]}-${dateStrings[0]}-${dateStrings[1]}`;
   }
 
   onEditingAppointmentChange(editingAppointment) {
@@ -217,6 +222,8 @@ class TimeTable extends React.PureComponent {
       endDayHour,
     } = this.state;
     const { classes } = this.props;
+
+    console.log("asdasd" + this.state.count )
 
     return (
       <Paper>
