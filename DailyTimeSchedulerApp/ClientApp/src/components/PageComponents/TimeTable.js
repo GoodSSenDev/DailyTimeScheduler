@@ -95,7 +95,7 @@ class TimeTable extends React.PureComponent {
       editingAppointment: undefined,
       previousAppointment: undefined,
       addedAppointment: {},
-      startDayHour: -1,
+      startDayHour: 0,
       endDayHour: 24,
       isNewAppointment: false,
       
@@ -230,7 +230,6 @@ class TimeTable extends React.PureComponent {
     } = this.state;
     const { classes } = this.props;
 
-    console.log("asdasd" + this.state.count )
 
     return (
       <Paper>
