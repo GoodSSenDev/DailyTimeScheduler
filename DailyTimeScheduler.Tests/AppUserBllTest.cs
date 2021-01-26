@@ -4,12 +4,13 @@ using DailyTimeScheduler.IDAL;
 using DailyTimeScheduler.Model;
 using Moq;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DailyTimeScheduler.Tests
 {
     /// <summary>
-    /// This is test class for testing Async or sync function of Business logic about user using mocking for DB access.  
+    /// This is test class for testing Async or sync function of Business logic about user Auth control using mocking for DB access.  
     /// </summary>
     [Collection("Sequential")]
     public class AppUserBllTest 
@@ -19,7 +20,7 @@ namespace DailyTimeScheduler.Tests
         /// This testing method test it returns an AppUser object with different password
         /// </summary>
         [Fact]
-        public async void VarifyUserAsync_ShouldReturnAppUserObject()
+        public async Task VarifyUserAsync_ShouldReturnAppUserObject()
         {
             //preparing the Data Access Layer class that going in the Busineess Logic class
             //Mocking
@@ -38,20 +39,21 @@ namespace DailyTimeScheduler.Tests
                     AccessLevel = 1
                 });
 
-            var userDal = new AppUserBll(mockDalClass.Object);
+            var userBll = new AppUserBll(mockDalClass.Object);
 
             //2. Act
-            var returnAppUser = await userDal.VerifyUserAsync("test123", "qwer1234");
+            var returnAppUser = await userBll.VerifyUserAsync("test123", "qwer1234");
 
             //3.Assert
             Assert.NotNull(returnAppUser);
         }
+
         /// <summary>
         /// Register Async Method expected check the duplication exist on unique field(Id, NickName) and 
         /// return true if success 
         /// </summary>
         [Fact]
-        public async void RegisterAsync_ShouldReturnAppUserObject()
+        public async Task RegisterAsync_ShouldReturnAppUserObject()
         {
             //preparing the Data Access Layer class that going in the Busineess Logic class
             //Mocking
