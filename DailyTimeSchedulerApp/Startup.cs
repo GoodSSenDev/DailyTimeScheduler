@@ -36,6 +36,7 @@ namespace DailyTimeSchedulerApp
             services.AddTransient<AppUserBll>(provider => new AppUserBll(
                         new AppUserDal(Configuration.GetSection("ConnectionString").GetSection("DbCon").Value)
                     ));
+            later deal with this
 
             services.AddControllersWithViews();
 

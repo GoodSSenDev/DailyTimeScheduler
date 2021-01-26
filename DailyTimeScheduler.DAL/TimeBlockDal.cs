@@ -267,10 +267,9 @@ namespace DailyTimeScheduler.DAL
 
         #endregion
 
-
         #region Delete
         /// <summary>
-        /// Delete an TimeBlock with certain Schedule No
+        /// Delete TimeBlocks which have specific Schedule No
         /// </summary>
         /// <returns>True if Success else false </returns>
         public bool DeleteTimeBlockByScheduleNo(int scheduleNo)

@@ -34,7 +34,7 @@ namespace DailyTimeScheduler.Model
         /// <summary>
         /// hashed Password
         /// minimum 4 Letters 
-        /// Max 50 Letter
+        /// Max 100 Letter
         /// </summary>
         [Required]
         [MinLength(4)]
