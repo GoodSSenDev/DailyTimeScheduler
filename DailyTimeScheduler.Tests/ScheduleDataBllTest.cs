@@ -25,7 +25,8 @@ namespace DailyTimeScheduler.Tests
             //1. Arrange
             var mockTimeBlockDalClass = new Mock<ITimeBlockDal>();
 
-            var testTimeBlocksOne = new List<TimeBlock> { new TimeBlock()
+            var testTimeBlockList = new List<TimeBlock> { 
+                new TimeBlock()
                 {
                     No = 1,
                     IntialUTCTime = 5954484981710000,
@@ -57,9 +58,7 @@ namespace DailyTimeScheduler.Tests
                     RepeatPeriod = 40000,
                     ScheduleNo = 1
 
-                }};
-
-            var testTimeBlocksTwo = new List<TimeBlock> { new TimeBlock()
+                },new TimeBlock()
                 {
                     No = 5,
                     IntialUTCTime = 5954484981750000,
@@ -85,7 +84,26 @@ namespace DailyTimeScheduler.Tests
 
                 }};
 
-            mockTimeBlockDalClass.Setup(x => x.GetTimeBlocksByScheduleNoAsync(It.Is<int>(x => x == 1)))
+            var testScheduleList = new List<Schedule> {
+                new Schedule()
+                {
+                    No=1,
+                    Title="This is Test Schedule Class 1",
+                    Description="This is Test 1",
+                    IsScheduleEnd= false,
+                    UserNo = 1,
+                    TaskType = ScheduleType.NORMAL,
+                },new Schedule()
+                {
+                    No=2,
+                    Title="This is Test Schedule Class 2",
+                    Description="This is Test 2",
+                    IsScheduleEnd= true,
+                    UserNo = 1,
+                    TaskType = ScheduleType.NORMAL,
+                }};
+
+            mockTimeBlockDalClass.Setup(x => x.GetTimeBlocksByUserNoAsync(It.IsAny<int>()))
                 .ReturnsAsync(new List<TimeBlock> { new TimeBlock()
                 {
                     No = 1,
@@ -118,10 +136,7 @@ namespace DailyTimeScheduler.Tests
                     RepeatPeriod = 40000,
                     ScheduleNo = 1
 
-                }});
-
-            mockTimeBlockDalClass.Setup(x => x.GetTimeBlocksByScheduleNoAsync(It.Is<int>(x => x == 2)))
-                .ReturnsAsync(new List<TimeBlock> { new TimeBlock()
+                },new TimeBlock()
                 {
                     No = 5,
                     IntialUTCTime = 5954484981750000,
@@ -146,6 +161,7 @@ namespace DailyTimeScheduler.Tests
                     ScheduleNo = 2
 
                 }});
+
             var mockScheduleDalClass = new Mock<IScheduleDal>();
 
             mockScheduleDalClass.Setup(x => x.GetSchedulesByUserNoAsync(It.IsAny<int>()))
@@ -171,42 +187,19 @@ namespace DailyTimeScheduler.Tests
             var scheduleDataBll = new ScheduleDataBll(mockTimeBlockDalClass.Object, mockScheduleDalClass.Object);
 
 
-            List<ScheduleDto> testScheduleDtoList = new List<ScheduleDto>{ new ScheduleDto()
-                {
-                    Schedule = new Schedule()
-                    {
-                        No=1,
-                        Title="This is Test Schedule Class 1",
-                        Description="This is Test 1",
-                        IsScheduleEnd= false,
-                        UserNo = 1,
-                        TaskType = ScheduleType.NORMAL,
-                    },
-                    Timeblocks = testTimeBlocksOne
-                },
-                new ScheduleDto()
-                {
-                    Schedule = new Schedule()
-                    {
-                        No=2,
-                        Title="This is Test Schedule Class 2",
-                        Description="This is Test 2",
-                        IsScheduleEnd= true,
-                        UserNo = 1,
-                        TaskType = ScheduleType.NORMAL,
-                    },
-                    Timeblocks = testTimeBlocksTwo
-                }
-            };
+            SchedulesDto testScheduleDtoList = new SchedulesDto() { Schedules = testScheduleList, Timeblocks = testTimeBlockList };
 
 
             //2.Act
-            var jsonDataActual = await scheduleDataBll.GetScheduleDataAsJsonAsync();
+            var jsonDataActual = await scheduleDataBll.GetScheduleDataAsJsonAsync(1);
 
             var jsonDataExpect = JsonConvert.SerializeObject(testScheduleDtoList);
 
             //3.Assert
             Assert.Equal(jsonDataExpect, jsonDataActual);
         }
+
+
+
     }
 }

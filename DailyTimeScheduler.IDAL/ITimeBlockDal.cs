@@ -34,6 +34,9 @@ namespace DailyTimeScheduler.IDAL
 
         Task<List<TimeBlock>> GetTimeBlocksByScheduleNoAsync(int scheduleNo);
 
+        List<TimeBlock> GetTimeBlocksByUserNo(int userNo);
+
+        Task<List<TimeBlock>> GetTimeBlocksByUserNoAsync(int userNo);
         #endregion
 
         #region Update

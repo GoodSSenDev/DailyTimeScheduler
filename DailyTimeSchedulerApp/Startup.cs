@@ -33,10 +33,13 @@ namespace DailyTimeSchedulerApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<ITimeBlockDal, TimeBlockDal>();
+            var dbKey = Configuration.GetSection("ConnectionString").GetSection("DbCon").Value;
+
+
             services.AddTransient<AppUserBll>(provider => new AppUserBll(
-                        new AppUserDal(Configuration.GetSection("ConnectionString").GetSection("DbCon").Value)
-                    ));
-            later deal with this
+                        new AppUserDal(dbKey)));
+            services.AddTransient<ScheduleDataBll>(provider => new ScheduleDataBll(
+                        new TimeBlockDal(dbKey), new ScheduleDal(dbKey)));
 
             services.AddControllersWithViews();
 

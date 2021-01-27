@@ -159,6 +159,33 @@ namespace DailyTimeScheduler.DAL
             }
         }
 
+        /// <summary>
+        /// Get all the TimeBlocks that has specific user No in the database 
+        /// </summary>
+        /// <returns></returns>
+        public List<TimeBlock> GetTimeBlocksByUserNo(int userNo)
+        {
+            using (var db = new DailyTimeSchedulerDbContext(_connectionString))
+            {
+                var timeblockList = db.TimeBlocks.Where(timeblock => timeblock.Schedule.UserNo == userNo).ToList<TimeBlock>();
+                return timeblockList;
+            }
+        }
+
+
+        /// <summary>
+        /// Get all the TimeBlocks that has specific user No in the database Async
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<TimeBlock>> GetTimeBlocksByUserNoAsync(int userNo)
+        {
+            using (var db = new DailyTimeSchedulerDbContext(_connectionString))
+            {
+                var timeblockList = await db.TimeBlocks.Where(timeblock => timeblock.Schedule.UserNo == userNo).ToListAsync<TimeBlock>();
+                return timeblockList;
+            }
+        }
+
         #endregion
 
         #region Update
