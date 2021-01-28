@@ -40,6 +40,45 @@ namespace DailyTimeScheduler.BLL
 
             return JsonConvert.SerializeObject(schedulesDto);
         }
+        /// <summary>
+        /// Method that can create new schedule with timeBlock Async Parallel
+        /// </summary>
+        /// <param name="scheduleDto"></param>
+        /// <returns>retrun true if success or no error else return false </returns>
+        public async Task<bool> CreateNewScheduleAsyncParallel(ScheduleDto scheduleDto)
+        {
+            if (!await this._scheduleDal.CreateNewScheduleAsync(scheduleDto.Schedule))
+                return false;
+
+            await Task.Run(() =>
+            {
+                Parallel.ForEach(scheduleDto.Timeblocks, async (timeBlock) =>
+                {
+                    await this._timeBlockDal.CreateNewTimeBlockAsync(timeBlock);
+                });
+            });
+
+            return true;
+        }
+
+        /// <summary>
+        /// Method that can create new schedule with timeBlock Async 
+        /// </summary>
+        /// <param name="scheduleDto"></param>
+        /// <returns>retrun true if success or no error else return false </returns>
+        public async Task<bool> CreateNewScheduleAsync(ScheduleDto scheduleDto)
+        {
+            if (!await this._scheduleDal.CreateNewScheduleAsync(scheduleDto.Schedule))
+                return false;
+
+            for(int i = 0; i < scheduleDto.Timeblocks.Count; i++)
+            {
+                if (!await this._timeBlockDal.CreateNewTimeBlockAsync(scheduleDto.Timeblocks[i]))
+                    return false;
+            }
+
+            return true;
+        }
     }
 
     //Make (already decided) data passing object on Common model
