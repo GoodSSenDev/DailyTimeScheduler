@@ -40,6 +40,29 @@ namespace DailyTimeScheduler.BLL
 
             return JsonConvert.SerializeObject(schedulesDto);
         }
+
+        /// <summary>
+        /// method That returns all the data with SchedulesDto as  SchedulesDto object
+        /// </summary>
+        /// <param name="userNo"></param>
+        /// <returns>if fail returns null else schedulesDto</returns>
+        public async Task<SchedulesDto> GetScheduleDataAsync(int userNo)
+        {
+            var scheduleList = await this._scheduleDal.GetSchedulesByUserNoAsync(userNo);
+            if (scheduleList.Count == 0)
+                return null;
+
+            var timeBlockList = await this._timeBlockDal.GetTimeBlocksByUserNoAsync(userNo);
+
+            timeBlockList.Sort((x, y) => x.ScheduleNo.CompareTo(y.ScheduleNo));
+
+
+            SchedulesDto schedulesDto = new SchedulesDto() { Schedules = scheduleList, Timeblocks = timeBlockList };
+
+
+            return schedulesDto;
+        }
+
         /// <summary>
         /// Method that can create new schedule with timeBlock Async Parallel
         /// </summary>
