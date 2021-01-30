@@ -13,6 +13,10 @@ namespace DailyTimeScheduler.IDAL
 
         Task<bool> CreateNewScheduleAsync(Schedule schedule);
 
+        int CreateNewScheduleReturnNo(Schedule schedule);
+
+        Task<int> CreateNewScheduleReturnNoAsync(Schedule schedule);
+
         #endregion
 
         #region Read

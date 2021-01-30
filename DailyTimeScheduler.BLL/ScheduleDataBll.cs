@@ -70,13 +70,15 @@ namespace DailyTimeScheduler.BLL
         /// <returns>retrun true if success or no error else return false </returns>
         public async Task<bool> CreateNewScheduleAsyncParallel(ScheduleDto scheduleDto)
         {
-            if (!await this._scheduleDal.CreateNewScheduleAsync(scheduleDto.Schedule))
+            var scheduleNo = await this._scheduleDal.CreateNewScheduleReturnNoAsync(scheduleDto.Schedule);
+            if(scheduleNo == -1)
                 return false;
 
             await Task.Run(() =>
             {
                 Parallel.ForEach(scheduleDto.Timeblocks, async (timeBlock) =>
                 {
+                    timeBlock.ScheduleNo = scheduleNo;
                     await this._timeBlockDal.CreateNewTimeBlockAsync(timeBlock);
                 });
             });
@@ -91,11 +93,13 @@ namespace DailyTimeScheduler.BLL
         /// <returns>retrun true if success or no error else return false </returns>
         public async Task<bool> CreateNewScheduleAsync(ScheduleDto scheduleDto)
         {
-            if (!await this._scheduleDal.CreateNewScheduleAsync(scheduleDto.Schedule))
+            var scheduleNo = await this._scheduleDal.CreateNewScheduleReturnNoAsync(scheduleDto.Schedule);
+            if (scheduleNo == -1)
                 return false;
 
-            for(int i = 0; i < scheduleDto.Timeblocks.Count; i++)
+            for (int i = 0; i < scheduleDto.Timeblocks.Count; i++)
             {
+                scheduleDto.Timeblocks[i].ScheduleNo = scheduleNo;
                 if (!await this._timeBlockDal.CreateNewTimeBlockAsync(scheduleDto.Timeblocks[i]))
                     return false;
             }

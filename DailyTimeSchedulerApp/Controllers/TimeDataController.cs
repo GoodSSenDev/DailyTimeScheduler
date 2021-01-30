@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using DailyTimeScheduler.BLL;
 using DailyTimeScheduler.Model;
@@ -18,33 +19,42 @@ namespace DailyTimeSchedulerApp.Controllers
     {
         private readonly ScheduleDataBll _scheduleDataBll;
 
-        [Authorize]
-        [HttpPost("LoadSchedules")]
-        public async Task<ActionResult<SchedulesDto>> LoadSchedulesAsync()
+
+        public TimeDataController(ScheduleDataBll scheduleDataBll)
         {
-            foreach (var claim in HttpContext.User.Claims)
-            {
-                if (claim.Type == "no")
-                {
-
-                    if(! Int32.TryParse(claim.Value, out int noValue))
-                        return NotFound("User no can not be transfered to int32");
-
-                    return Ok(await this._scheduleDataBll.GetScheduleDataAsync(noValue));
-                    break;
-                }                  
-            }
-            return NotFound();
+            this._scheduleDataBll = scheduleDataBll;
         }
 
-        [Authorize]
-        [HttpGet("CreateSchedule")]
-        public async Task<IActionResult> CreateScheduleAsync(ScheduleDto scheduleDto)
+        [HttpGet("LoadSchedules")]
+        public async Task<ActionResult<SchedulesDto>> LoadSchedulesAsync()
         {
+            var userNo = HttpContext.User.FindFirstValue("no");
+            if (userNo == null)
+                return Unauthorized();
+
+            if (!Int32.TryParse(userNo, out int noValue))
+                    return NotFound("User no can not be transfered to int32");
+
+            return Ok(await this._scheduleDataBll.GetScheduleDataAsync(noValue));                                  
+             
+        }
+
+        [HttpPost("CreateSchedule")]
+        public async Task<IActionResult> CreateScheduleAsync([FromBody] ScheduleDto scheduleDto)
+        {
+            var userNo = HttpContext.User.FindFirstValue("no");
+            if (userNo == null)
+                return Unauthorized();
+
+            if (!Int32.TryParse(userNo, out int noValue))
+                return NotFound("User no can not be transfered to int32");
+
+            scheduleDto.Schedule.UserNo = noValue;
             if (await this._scheduleDataBll.CreateNewScheduleAsyncParallel(scheduleDto))
                 return Ok();
-            else
-                return Conflict();
+            
+
+            return Conflict();
         }
 
     }

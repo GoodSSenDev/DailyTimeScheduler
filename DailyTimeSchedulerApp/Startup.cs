@@ -32,7 +32,7 @@ namespace DailyTimeSchedulerApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<ITimeBlockDal, TimeBlockDal>();
+
             var dbKey = Configuration.GetSection("ConnectionString").GetSection("DbCon").Value;
 
 

@@ -46,7 +46,7 @@ namespace DailyTimeScheduler.Model
         /// Schedule Task Type Currently their is only a Bool type 
         /// </summary>
         [Required]
-        public ScheduleType TaskType { get; set; }
+        public ScheduleType Type { get; set; }
     }
 
     /// <summary>

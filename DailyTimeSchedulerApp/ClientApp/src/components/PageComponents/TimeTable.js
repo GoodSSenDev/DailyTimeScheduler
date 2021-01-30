@@ -1,14 +1,18 @@
 import { connectProps } from '@devexpress/dx-react-core';
-import { EditingState, ViewState } from '@devexpress/dx-react-scheduler';
+import { EditingState, ViewState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
 import {
   AllDayPanel, AppointmentForm, Appointments,
   AppointmentTooltip,
   DragDropProvider,
-  EditRecurrenceMenu, MonthView, Scheduler,
+  EditRecurrenceMenu, 
+  MonthView, 
+  Scheduler,
   Toolbar,
   DateNavigator,
   CurrentTimeIndicator,
-  ViewSwitcher, WeekView
+  ViewSwitcher,
+  WeekView, 
+  ConfirmationDialog
 } from '@devexpress/dx-react-scheduler-material-ui';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -211,6 +215,7 @@ class TimeTable extends React.PureComponent {
         this.setDeletedAppointmentId(deleted);
         this.toggleConfirmationVisible();
       }
+      console.log(this.state.data);
       return { data, addedAppointment: {} };
     });
   }
@@ -246,13 +251,15 @@ class TimeTable extends React.PureComponent {
             onEditingAppointmentChange={this.onEditingAppointmentChange}
             onAddedAppointmentChange={this.onAddedAppointmentChange}
           />
+          <IntegratedEditing />
           <WeekView
             startDayHour={startDayHour}
             endDayHour={endDayHour}
           />
           <MonthView />
-          <AllDayPanel />
           <EditRecurrenceMenu />
+          <ConfirmationDialog />
+          <AllDayPanel />
           <Appointments />
           <AppointmentTooltip
             showOpenButton
@@ -263,10 +270,11 @@ class TimeTable extends React.PureComponent {
           <DateNavigator />
           <ViewSwitcher />
           <AppointmentForm
-            overlayComponent={this.appointmentForm}
             visible={editingFormVisible}
             onVisibilityChange={this.toggleEditingFormVisibility}
           />
+
+          
           <DragDropProvider />
           <CurrentTimeIndicator/>
 

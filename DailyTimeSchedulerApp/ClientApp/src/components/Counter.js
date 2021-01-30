@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button } from '@material-ui/core';
 
 export class Counter extends Component {
   static displayName = Counter.name;
@@ -15,6 +16,77 @@ export class Counter extends Component {
     });
   }
 
+
+  //method that get the data by fetching from the server
+  async getScheduleDataFromServerAsync() {
+    const response = await fetch(`api/TimeData/LoadSchedules`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+
+    });
+
+    //if unauthorized 
+    if (response.status === 200) {
+      console.log(JSON.stringify((await response.json())).toString());
+      return await response.json
+    }
+    else {
+      console.log("Error occur on getScheduleDataFromServer")
+      return null
+    }
+  }
+  // { "schedules": 
+  //     [{ "no": 2, "title": "Testing1", 
+  //     "description": "This is testing", 
+  //     "isScheduleEnd": false, 
+  //     "userNo": 4, 
+  //     "appUser": null, 
+  //     "type": 0 }],
+      
+  //     "timeblocks": 
+  //     [{ "no": 1, 
+  //     "intialUTCTime": 637475701635460000, 
+  //     "blockSize": 6000000000, 
+  //     "repeatPeriod": 0, "scheduleNo": 2, 
+  //     "schedule": null }] }
+  async createNewScheduleAsync() {
+
+    let scheduleDto = {
+      Schedule: {
+        Title: 'Testing1',
+        Description: `This is testing`,
+        IsScheduleEnd: false,
+        UserNo: 0,
+        Type: 0
+      },
+      TimeBlocks: [{
+        IntialUTCTime: ((new Date().getTime() * 10000) + 621355968000000000),
+        BlockSize: 6000000000,
+        RepeatPeriod: 0,
+        ScheduleNo: -1
+      }]
+    }
+
+
+    const response = await fetch(`api/TimeData/CreateSchedule`, {
+      method: 'POST',
+
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(scheduleDto)
+    });
+
+    console.log(response)
+    //if unauthorized 
+    if (response.status === 200) {
+      console.log(response.json.toString());
+      return await response.json
+    }
+    else {
+      console.log("Error occur on TimeData Creating new Schedule")
+      return null
+    }
+  }
+
   render() {
     return (
       <div>
@@ -24,7 +96,8 @@ export class Counter extends Component {
 
         <p aria-live="polite">Current count: <strong>{this.state.currentCount}</strong></p>
 
-        <button className="btn btn-primary" onClick={this.incrementCounter}>Increment</button>
+        <button className="btn btn-primary" onClick={async () => { await this.createNewScheduleAsync() }}>Test ButtonCreate</button>
+        <button className="btn btn-primary" onClick={async () => { await this.getScheduleDataFromServerAsync() }}>Test ButtonGetData</button>
       </div>
     );
   }

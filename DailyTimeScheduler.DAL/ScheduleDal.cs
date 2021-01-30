@@ -45,6 +45,39 @@ namespace DailyTimeScheduler.DAL
                 return (db.SaveChanges() > 0);
             }
         }
+
+
+        /// <summary>
+        /// Create newSchedule return Schedule No if success else return -1
+        /// </summary>
+        /// <param name="schedule"></param>
+        public int CreateNewScheduleReturnNo(Schedule schedule)
+        {
+            using (var db = new DailyTimeSchedulerDbContext(_connectionString))
+            {
+                var returnObject = db.Schedules.Add(schedule);
+                if (!(db.SaveChanges() > 0))
+                    return -1;
+                else
+                    return returnObject.Entity.No;
+            }
+        }
+
+        /// <summary>
+        /// Create newSchedule return Schedule No if success else return -1  Async
+        /// </summary>
+        /// <param name="schedule"></param>
+        public async Task<int> CreateNewScheduleReturnNoAsync(Schedule schedule)
+        {
+            using (var db = new DailyTimeSchedulerDbContext(_connectionString))
+            {
+                var returnObject = await db.Schedules.AddAsync(schedule);
+                if (!(db.SaveChanges() > 0))
+                    return -1;
+                else 
+                    return returnObject.Entity.No;
+            }
+        }
         #endregion
 
         #region Read
