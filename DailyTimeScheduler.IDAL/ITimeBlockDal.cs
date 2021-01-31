@@ -46,6 +46,10 @@ namespace DailyTimeScheduler.IDAL
 
         Task<bool> UpdateTimeBlockIntialUTCTimeByNoAsync(int timeBlockNo, long intialUTCTime);
 
+        bool UpdateTimeBlockEndUTCTimeByNo(int timeBlockNo, long endUTCTime);
+
+        Task<bool> UpdateTimeBlockEndUTCTimeByNoAsync(int timeBlockNo, long endUTCTime);
+
         bool UpdateTimeBlockSizeByNo(int timeBlockNo, long blockSize);
 
         Task<bool> UpdateTimeBlockSizeByNoAsync(int timeBlockNo, long blockSize);

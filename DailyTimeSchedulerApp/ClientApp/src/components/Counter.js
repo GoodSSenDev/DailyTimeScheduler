@@ -27,7 +27,10 @@ export class Counter extends Component {
 
     //if unauthorized 
     if (response.status === 200) {
-      console.log(JSON.stringify((await response.json())).toString());
+      let value = await response.json();
+      console.log(value.schedules[0].no);
+      console.log(value.schedules[0].title);
+      console.log(JSON.stringify(value).toString());
       return await response.json
     }
     else {

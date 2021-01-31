@@ -92,7 +92,7 @@ namespace DailyTimeScheduler.Tests
                     Description="This is Test 1",
                     IsScheduleEnd= false,
                     UserNo = 1,
-                    TaskType = ScheduleType.NORMAL,
+                    Type = ScheduleType.NORMAL,
                 },new Schedule()
                 {
                     No=2,
@@ -100,7 +100,7 @@ namespace DailyTimeScheduler.Tests
                     Description="This is Test 2",
                     IsScheduleEnd= true,
                     UserNo = 1,
-                    TaskType = ScheduleType.NORMAL,
+                    Type = ScheduleType.NORMAL,
                 }};
 
             mockTimeBlockDalClass.Setup(x => x.GetTimeBlocksByUserNoAsync(It.IsAny<int>()))
@@ -172,7 +172,7 @@ namespace DailyTimeScheduler.Tests
                     Description="This is Test 1",
                     IsScheduleEnd= false,
                     UserNo = 1,
-                    TaskType = ScheduleType.NORMAL,
+                    Type = ScheduleType.NORMAL,
                 },new Schedule()
                 {
                     No=2,
@@ -180,7 +180,7 @@ namespace DailyTimeScheduler.Tests
                     Description="This is Test 2",
                     IsScheduleEnd= true,
                     UserNo = 1,
-                    TaskType = ScheduleType.NORMAL,
+                    Type = ScheduleType.NORMAL,
                 }});
 
 

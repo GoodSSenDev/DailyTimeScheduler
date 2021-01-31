@@ -225,6 +225,40 @@ namespace DailyTimeScheduler.DAL
         }
 
         /// <summary>
+        /// Update EndUTCTime using timeBlockNo
+        /// </summary>
+        /// <returns> return true if success else false </returns>
+        public bool UpdateTimeBlockEndUTCTimeByNo(int timeBlockNo, long endUTCTime)
+        {
+            using (var db = new DailyTimeSchedulerDbContext(_connectionString))
+            {
+                var userRecord = db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefault();
+                if (userRecord == null)
+                    return false;
+                userRecord.EndUTCTime = endUTCTime;
+
+                return (db.SaveChanges() > 0);
+            }
+        }
+
+        /// <summary>
+        /// Update EndUTCTime using timeBlockNo Async
+        /// </summary>
+        /// <returns> return true if success else false </returns>
+        public async Task<bool> UpdateTimeBlockEndUTCTimeByNoAsync(int timeBlockNo, long endUTCTime)
+        {
+            using (var db = new DailyTimeSchedulerDbContext(_connectionString))
+            {
+                var userRecord = await db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefaultAsync();
+                if (userRecord == null)
+                    return false;
+                userRecord.EndUTCTime = endUTCTime;
+
+                return (db.SaveChanges() > 0);
+            }
+        }
+
+        /// <summary>
         /// Update TimeBlock's Size by timeblock number  
         /// </summary>
         /// <returns> return true if success else false </returns>

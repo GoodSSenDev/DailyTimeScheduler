@@ -1,6 +1,7 @@
 using DailyTimeScheduler.BLL;
 using DailyTimeScheduler.DAL;
 using DailyTimeScheduler.IDAL;
+using DailyTimeScheduler.Model;
 using DailyTimeSchedulerApp.Middleware;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -35,7 +36,7 @@ namespace DailyTimeSchedulerApp
 
             var dbKey = Configuration.GetSection("ConnectionString").GetSection("DbCon").Value;
 
-
+            services.AddTransient<TimeBlock>();
             services.AddTransient<AppUserBll>(provider => new AppUserBll(
                         new AppUserDal(dbKey)));
             services.AddTransient<ScheduleDataBll>(provider => new ScheduleDataBll(
