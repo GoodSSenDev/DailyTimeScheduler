@@ -66,6 +66,7 @@ export class Counter extends Component {
         IntialUTCTime: ((new Date().getTime() * 10000) + 621355968000000000),
         BlockSize: 6000000000,
         RepeatPeriod: 0,
+        EndUTCTime: 0,
         ScheduleNo: -1
       }]
     }
