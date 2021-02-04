@@ -41,6 +41,12 @@ namespace DailyTimeScheduler.Model
         public long RepeatPeriod { get; set; }
 
         /// <summary>
+        /// Is timeblock is on allday colum
+        /// </summary>
+        [Required]
+        public bool IsAllDay { get; set; }
+
+        /// <summary>
         /// Schedule Number foregin 
         /// </summary>
         [Required]

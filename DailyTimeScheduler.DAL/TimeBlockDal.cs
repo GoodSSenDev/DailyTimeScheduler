@@ -198,10 +198,10 @@ namespace DailyTimeScheduler.DAL
         {
             using (var db = new DailyTimeSchedulerDbContext(_connectionString))
             {
-                var userRecord = db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefault();
-                if (userRecord == null)
+                var timeBlockRecord = db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefault();
+                if (timeBlockRecord == null)
                     return false;
-                userRecord.IntialUTCTime = intialUTCTime;
+                timeBlockRecord.IntialUTCTime = intialUTCTime;
 
                 return (db.SaveChanges() > 0);
             }
@@ -215,10 +215,10 @@ namespace DailyTimeScheduler.DAL
         {
             using (var db = new DailyTimeSchedulerDbContext(_connectionString))
             {
-                var userRecord = await db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefaultAsync();
-                if (userRecord == null)
+                var timeBlockRecord = await db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefaultAsync();
+                if (timeBlockRecord == null)
                     return false;
-                userRecord.IntialUTCTime = intialUTCTime;
+                timeBlockRecord.IntialUTCTime = intialUTCTime;
 
                 return (db.SaveChanges() > 0);
             }
@@ -232,10 +232,10 @@ namespace DailyTimeScheduler.DAL
         {
             using (var db = new DailyTimeSchedulerDbContext(_connectionString))
             {
-                var userRecord = db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefault();
-                if (userRecord == null)
+                var timeBlockRecord = db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefault();
+                if (timeBlockRecord == null)
                     return false;
-                userRecord.EndUTCTime = endUTCTime;
+                timeBlockRecord.EndUTCTime = endUTCTime;
 
                 return (db.SaveChanges() > 0);
             }
@@ -249,10 +249,44 @@ namespace DailyTimeScheduler.DAL
         {
             using (var db = new DailyTimeSchedulerDbContext(_connectionString))
             {
-                var userRecord = await db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefaultAsync();
-                if (userRecord == null)
+                var timeBlockRecord = await db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefaultAsync();
+                if (timeBlockRecord == null)
                     return false;
-                userRecord.EndUTCTime = endUTCTime;
+                timeBlockRecord.EndUTCTime = endUTCTime;
+
+                return (db.SaveChanges() > 0);
+            }
+        }
+
+        /// <summary>
+        /// Update EndUTCTime using timeBlockNo
+        /// </summary>
+        /// <returns> return true if success else false </returns>
+        public bool UpdateIsAllDayByNo(int timeBlockNo, bool isAllDay)
+        {
+            using (var db = new DailyTimeSchedulerDbContext(_connectionString))
+            {
+                var timeBlockRecord = db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefault();
+                if (timeBlockRecord == null)
+                    return false;
+                timeBlockRecord.IsAllDay = isAllDay;
+
+                return (db.SaveChanges() > 0);
+            }
+        }
+
+        /// <summary>
+        /// Update EndUTCTime using timeBlockNo Async
+        /// </summary>
+        /// <returns> return true if success else false </returns>
+        public async Task<bool> UpdateIsAllDayByNoAsync(int timeBlockNo, bool isAllDay)
+        {
+            using (var db = new DailyTimeSchedulerDbContext(_connectionString))
+            {
+                var timeBlockRecord = await db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefaultAsync();
+                if (timeBlockRecord == null)
+                    return false;
+                timeBlockRecord.IsAllDay = isAllDay;
 
                 return (db.SaveChanges() > 0);
             }
@@ -266,10 +300,10 @@ namespace DailyTimeScheduler.DAL
         {
             using (var db = new DailyTimeSchedulerDbContext(_connectionString))
             {
-                var userRecord = db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefault();
-                if (userRecord == null)
+                var timeBlockRecord = db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefault();
+                if (timeBlockRecord == null)
                     return false;
-                userRecord.BlockSize = blockSize;
+                timeBlockRecord.BlockSize = blockSize;
 
                 return (db.SaveChanges() > 0);
             }
@@ -283,10 +317,10 @@ namespace DailyTimeScheduler.DAL
         {
             using (var db = new DailyTimeSchedulerDbContext(_connectionString))
             {
-                var userRecord = await db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefaultAsync();
-                if (userRecord == null)
+                var timeBlockRecord = await db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefaultAsync();
+                if (timeBlockRecord == null)
                     return false;
-                userRecord.BlockSize = blockSize;
+                timeBlockRecord.BlockSize = blockSize;
 
                 return (db.SaveChanges() > 0);
             }
@@ -300,10 +334,10 @@ namespace DailyTimeScheduler.DAL
         {
             using (var db = new DailyTimeSchedulerDbContext(_connectionString))
             {
-                var userRecord = db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefault();
-                if (userRecord == null)
+                var timeBlockRecord = db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefault();
+                if (timeBlockRecord == null)
                     return false;
-                userRecord.RepeatPeriod = repeatPeriod;
+                timeBlockRecord.RepeatPeriod = repeatPeriod;
 
                 return (db.SaveChanges() > 0);
             }
@@ -317,10 +351,10 @@ namespace DailyTimeScheduler.DAL
         {
             using (var db = new DailyTimeSchedulerDbContext(_connectionString))
             {
-                var userRecord = await db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefaultAsync();
-                if (userRecord == null)
+                var timeBlockRecord = await db.TimeBlocks.Where(timeBlock => timeBlock.No == timeBlockNo).FirstOrDefaultAsync();
+                if (timeBlockRecord == null)
                     return false;
-                userRecord.RepeatPeriod = repeatPeriod;
+                timeBlockRecord.RepeatPeriod = repeatPeriod;
 
                 return (db.SaveChanges() > 0);
             }

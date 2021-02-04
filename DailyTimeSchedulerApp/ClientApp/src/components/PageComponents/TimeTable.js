@@ -26,8 +26,7 @@ import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import * as React from 'react';
 import AppointmentFormTask from '../AppointmentFormTask';
-
-
+import ScheduleDataControl from '../Model/ScheduleDataControl'
 
 const containerStyles = theme => ({
   container: {
@@ -102,7 +101,7 @@ class TimeTable extends React.PureComponent {
       startDayHour: 0,
       endDayHour: 24,
       isNewAppointment: false,
-      
+      scheduleDataController : new ScheduleDataControl()
     };
 
     this.currentDateChange = (currentDate) => { this.setState({ currentDate }); };
@@ -204,14 +203,20 @@ class TimeTable extends React.PureComponent {
     this.setState((state) => {
       let { data } = state;
       if (added) {
+        console.log("this is adding")
+        console.log(added)
         const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
         data = [...data, { id: startingAddedId, ...added }];
       }
       if (changed) {
+        console.log("this is Changing")
+        console.log(changed)
         data = data.map(appointment => (
           changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
       }
       if (deleted !== undefined) {
+        console.log("this is Deleting")
+        console.log(deleted)
         this.setDeletedAppointmentId(deleted);
         this.toggleConfirmationVisible();
       }
@@ -222,6 +227,18 @@ class TimeTable extends React.PureComponent {
 
 //#endregion
 
+  async loadAppointmentData() {
+
+      
+
+      let scheduleData = await this.state.scheduleDataController.loadDataFromServerAsync()
+      if(scheduleData == null){
+        return;
+      }
+
+
+      this.setState({data:scheduleData})
+  }
 
 
   render() {
@@ -235,9 +252,10 @@ class TimeTable extends React.PureComponent {
     } = this.state;
     const { classes } = this.props;
 
-
     return (
       <Paper>
+
+        <Button onClick = {async () => this.loadAppointmentData()}>loadData</Button>
         <Scheduler
           data={data}
           height={'auto'}

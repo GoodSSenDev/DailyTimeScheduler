@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from '@material-ui/core';
+import ScheduleDataControl from './Model/ScheduleDataControl'
 
 export class Counter extends Component {
   static displayName = Counter.name;
@@ -24,13 +25,16 @@ export class Counter extends Component {
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
 
     });
-
+    console.log(response.status)
     //if unauthorized 
     if (response.status === 200) {
       let value = await response.json();
       console.log(value.schedules[0].no);
       console.log(value.schedules[0].title);
       console.log(JSON.stringify(value).toString());
+      let controller = new ScheduleDataControl()
+      console.log(controller.convertDataToAppointments(value))
+      console.log(controller.convertDataToAppointments(value).toString())
       return await response.json
     }
     else {
@@ -45,7 +49,7 @@ export class Counter extends Component {
   //     "userNo": 4, 
   //     "appUser": null, 
   //     "type": 0 }],
-      
+
   //     "timeblocks": 
   //     [{ "no": 1, 
   //     "intialUTCTime": 637475701635460000, 

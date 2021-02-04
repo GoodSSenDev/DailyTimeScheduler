@@ -25,7 +25,7 @@ export default class App extends Component {
       method: 'GET',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json'},
     });
-    if(response.status == 200){
+    if(response.status === 200){
       localStorage.setItem('user',await response.json())
     } 
     else {

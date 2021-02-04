@@ -9,35 +9,54 @@ export default class ScheduleDataControl {
         }
     }
 
-    checkIsDataExist() {
 
+    //Function that check Data exist in local storage else load the data in the server.
+    async loadData() {
+        let appointmentData = window.localStorage.getItem('AppointmentData');
+        if (appointmentData != null) {
+            return JSON.parse(appointmentData);
+        }
+
+        let appointmentDataFromServer = await this.loadDataFromServerAsync()
+        
+        if(appointmentDataFromServer == null){
+            return null;
+        }
+
+        window.localStorage.setItem('AppointmentData',JSON.stringify(appointmentDataFromServer))
+        return appointmentDataFromServer
     }
 
+    async loadDataFromServerAsync() {
 
-    async loadData() {
-        let schedulesData = await this.loadDataFromServer()
+        let result = await this.getScheduleDataFromServerAsync()
 
-        this.convertDataToAppointments(schedulesData)
+        if (result == null) {
+            return null;
+        }
 
+        let appointmentData = this.convertDataToAppointments(result)
+        console.log(appointmentData)
+        return appointmentData;
     }
 
     //method that get the data by fetching from the server
-    async loadDataFromServer() {
-        const response = await fetch(`api/`, {
+    async getScheduleDataFromServerAsync() {
+        const response = await fetch(`api/TimeData/LoadSchedules`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        });
 
+        });
+        console.log(response.status)
         //if unauthorized 
         if (response.status === 200) {
-            return await response.json
+            return await response.json()
         }
         else {
             console.log("Error occur on getScheduleDataFromServer")
             return null
         }
     }
-
 
     //method that get the TimeBlockData(Schedule has TimeBlocks) by fetching from the server
     async getTimeBlockDataFromServer() {
@@ -48,7 +67,7 @@ export default class ScheduleDataControl {
 
         //if unauthorized 
         if (response.status === 200) {
-            return await response.json
+            return (await response.json())
         }
         else {
             console.log("Error occur on getTimeBlockDataFromServer")
@@ -57,41 +76,56 @@ export default class ScheduleDataControl {
     }
 
     //method that gets(scheduleData, timeblocks)data and returns Appointments 
-    convertAppointmentsToScheduleData(scheduleData, timeBlockdata) {
+    convertAppointmentsToScheduleData(appointment) {
+
 
 
 
     }
 
     //method that getsdata and returns Appointments 
-
     convertDataToAppointments(schedulesData) {
-        if (schedulesData.schedules.length <= 0)
-            return null;
-
-        let schedulesMap = new Map();
-
-        for (const schedule in schedulesData.schedules) {
-            schedulesMap.set(schedule.no, { schedule: schedule })
+        if (schedulesData.schedules.length <= 0) {
+            return [];
         }
 
+        let schedulesMap = new Map();
+        for (const schedule in schedulesData.schedules) {
+
+            schedulesMap.set(schedulesData.schedules[schedule].no, { schedule: schedulesData.schedules[schedule] })
+        }
+        console.log(schedulesMap)
         let appointmentsData = []
 
-        for (const timeBlock in schedulesData.timeBlocks) {
+        for (const timeBlock in schedulesData.timeblocks) {
             // schedulesMap.get(timeBlock.scheduleNo).timeBlocks.push(timeBlock);
             // /10000 for 100nano seconds to milli seconds
-            let startDate = new Date((timeBlock.intialUTCTime - timeValueTickEnum.tickDiffValue) / 10000)
-            let endDate = new Date((timeBlock.intialUTCTime + timeBlock.blockSize - timeValueTickEnum.tickDiffValue) / 10000)
-
-            if (timeBlock.blockSize >= timeValueTickEnum.day) { // check is it all day event 
-
+            let appointment = {
+                id: schedulesData.timeblocks[timeBlock].no,
+                startDate: new Date((schedulesData.timeblocks[timeBlock].intialUTCTime - timeValueTickEnum.tickDiffValue) / 10000),
+                endDate: new Date(((schedulesData.timeblocks[timeBlock].intialUTCTime + schedulesData.timeblocks[timeBlock].blockSize) - timeValueTickEnum.tickDiffValue) / 10000),
+                allDay: false,
+                title: (schedulesMap.get(schedulesData.timeblocks[timeBlock].scheduleNo)).schedule.title,
+                notes: (schedulesMap.get(schedulesData.timeblocks[timeBlock].scheduleNo)).schedule.description,
             }
+            let rRule = this.getRepeatedRRuleFormat(schedulesData.timeblocks[timeBlock].repeatPeriod, schedulesData.timeblocks[timeBlock].intialUTCTime, schedulesData.timeblocks[timeBlock].endUTCTime);
+            if (rRule !== "") {
+                appointment.rRule = rRule
+            }
+            if (schedulesData.timeblocks[timeBlock].blockSize == timeValueTickEnum.day) { // check is it all day event 
+                appointment.allDay = true
+            }
+            appointmentsData.push(appointment)
         }
 
         // for(const scheduleData in schedulesMap)
         // {
         //     for(const timeblock in scheduleData.timeBlocks)
         // }
+        return appointmentsData
+    }
+
+    getRepeatPeriodFromRRuleFormat(repeatPeriod, intialUTCTime, endUTCTime) {
 
     }
 
@@ -99,7 +133,6 @@ export default class ScheduleDataControl {
         if (repeatPeriod === 0) {
             return "";
         }
-        let returnSting = "";
 
         if (repeatPeriod > 0) { //Daily 
             let repeatPeriodValue = repeatPeriod % timeValueTickEnum.day
@@ -186,7 +219,6 @@ export default class ScheduleDataControl {
                     count = `;COUNT=${((intialUTCTime - endUTCTime) / (repeatPeriodValue * timeValueTickEnum.year)).toString()}`
                 }
                 return `RRULE:INTERVAL=${repeatPeriodValue.toString()};FREQ=YEARLY${count};BYMONTH=${month};BYDAY=${prefixOfMonth}${dayOfWeek}`
-
             }
         }
     }

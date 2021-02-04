@@ -35,7 +35,11 @@ namespace DailyTimeSchedulerApp.Controllers
             if (!Int32.TryParse(userNo, out int noValue))
                     return NotFound("User no can not be transfered to int32");
 
-            return Ok(await this._scheduleDataBll.GetScheduleDataAsync(noValue));                                  
+            var result = await this._scheduleDataBll.GetScheduleDataAsync(noValue);
+
+            if (result == null)
+                return NotFound();
+            return Ok(result);                                  
              
         }
 

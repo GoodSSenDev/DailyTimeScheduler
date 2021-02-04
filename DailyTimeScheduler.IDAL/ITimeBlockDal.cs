@@ -58,6 +58,10 @@ namespace DailyTimeScheduler.IDAL
 
         Task<bool> UpdateTimeBlockRepeatPeriodByNoAsync(int timeBlockNo, long repeatPeriod);
 
+        bool UpdateIsAllDayByNo(int timeBlockNo, bool isAllDay);
+
+        Task<bool> UpdateIsAllDayByNoAsync(int timeBlockNo, bool isAllDay);
+
         #endregion
 
         #region Delete
