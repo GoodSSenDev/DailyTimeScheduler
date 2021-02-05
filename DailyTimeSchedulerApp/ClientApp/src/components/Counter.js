@@ -71,6 +71,7 @@ export class Counter extends Component {
         BlockSize: 6000000000,
         RepeatPeriod: 0,
         EndUTCTime: 0,
+        IsAllDay: false,
         ScheduleNo: -1
       }]
     }

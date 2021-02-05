@@ -9,7 +9,7 @@ const timeValueTickEnum = {'tickDiffValue':621355968000000000,'year':31556952000
 const dayOfWeekTwoLetterEnum = {'SU':0,'MO':1,'TU':2,'WE':3,'TH':4,'FR':5,'SA':6}
 const twoLetterDayOfWeekEnum = {0:'SU',1:'MO',2:'TU',3:'WE',4:'TH',5:'FR',6:'SA'}
 
-const prefixOnMonthEnum = {0:`+1`,1:`+2`,2:`+3`,3:`-1`,4:`-1`}
+const prefixOnMonthEnum = {0:`-1`,1:`+1`,2:`+2`,3:`+3`,4:`+4`}
 
 const repeatPeriodEnum = {'DAILY':0,'WEEKLY':1,'MONTHLY':2,'YEARLY':3}
 

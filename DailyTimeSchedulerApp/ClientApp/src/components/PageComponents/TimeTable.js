@@ -4,14 +4,14 @@ import {
   AllDayPanel, AppointmentForm, Appointments,
   AppointmentTooltip,
   DragDropProvider,
-  EditRecurrenceMenu, 
-  MonthView, 
+  EditRecurrenceMenu,
+  MonthView,
   Scheduler,
   Toolbar,
   DateNavigator,
   CurrentTimeIndicator,
   ViewSwitcher,
-  WeekView, 
+  WeekView,
   ConfirmationDialog
 } from '@devexpress/dx-react-scheduler-material-ui';
 import Button from '@material-ui/core/Button';
@@ -101,7 +101,7 @@ class TimeTable extends React.PureComponent {
       startDayHour: 0,
       endDayHour: 24,
       isNewAppointment: false,
-      scheduleDataController : new ScheduleDataControl()
+      scheduleDataController: new ScheduleDataControl()
     };
 
     this.currentDateChange = (currentDate) => { this.setState({ currentDate }); };
@@ -149,14 +149,14 @@ class TimeTable extends React.PureComponent {
   componentDidUpdate() {
     this.appointmentForm.update();
   }
-  
+
   getLocalDataString() {
     let dateStrings = new Date().toLocaleDateString().split("/");
     return `${dateStrings[2]}-${dateStrings[0]}-${dateStrings[1]}`;
   }
 
 
-//#region Appointment
+  //#region Appointment
 
   onEditingAppointmentChange(editingAppointment) {
     this.setState({ editingAppointment });
@@ -200,13 +200,18 @@ class TimeTable extends React.PureComponent {
   }
 
   commitChanges({ added, changed, deleted }) {
-    this.setState((state) => {
+    this.setState(async (state) => {
       let { data } = state;
       if (added) {
         console.log("this is adding")
         console.log(added)
-        const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-        data = [...data, { id: startingAddedId, ...added }];
+        let result = await this.state.scheduleDataController.createNewScheduleAsync(added)
+        if (result !== null) {
+          const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
+          data = [...data, { id: startingAddedId, ...added }];
+
+          this.state.scheduleDataController.updateDataOnLocal(data)
+        }
       }
       if (changed) {
         console.log("this is Changing")
@@ -225,19 +230,17 @@ class TimeTable extends React.PureComponent {
     });
   }
 
-//#endregion
+  //#endregion
 
   async loadAppointmentData() {
 
-      
-
-      let scheduleData = await this.state.scheduleDataController.loadDataFromServerAsync()
-      if(scheduleData == null){
-        return;
-      }
+    let scheduleData = await this.state.scheduleDataController.loadDataFromServerAsync()
+    if (scheduleData == null) {
+      return;
+    }
 
 
-      this.setState({data:scheduleData})
+    this.setState({ data: scheduleData })
   }
 
 
@@ -255,7 +258,7 @@ class TimeTable extends React.PureComponent {
     return (
       <Paper>
 
-        <Button onClick = {async () => this.loadAppointmentData()}>loadData</Button>
+        <Button onClick={async () => this.loadAppointmentData()}>loadData</Button>
         <Scheduler
           data={data}
           height={'auto'}
@@ -292,9 +295,9 @@ class TimeTable extends React.PureComponent {
             onVisibilityChange={this.toggleEditingFormVisibility}
           />
 
-          
+
           <DragDropProvider />
-          <CurrentTimeIndicator/>
+          <CurrentTimeIndicator />
 
         </Scheduler>
 

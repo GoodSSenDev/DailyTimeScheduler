@@ -10,6 +10,10 @@ export default class ScheduleDataControl {
     }
 
 
+    updateDataOnLocal(appointmentList) {
+        window.localStorage.setItem('AppointmentData',JSON.stringify(appointmentList))
+    }
+
     //Function that check Data exist in local storage else load the data in the server.
     async loadData() {
         let appointmentData = window.localStorage.getItem('AppointmentData');
@@ -18,12 +22,12 @@ export default class ScheduleDataControl {
         }
 
         let appointmentDataFromServer = await this.loadDataFromServerAsync()
-        
-        if(appointmentDataFromServer == null){
+
+        if (appointmentDataFromServer == null) {
             return null;
         }
 
-        window.localStorage.setItem('AppointmentData',JSON.stringify(appointmentDataFromServer))
+        window.localStorage.setItem('AppointmentData', JSON.stringify(appointmentDataFromServer))
         return appointmentDataFromServer
     }
 
@@ -58,28 +62,186 @@ export default class ScheduleDataControl {
         }
     }
 
-    //method that get the TimeBlockData(Schedule has TimeBlocks) by fetching from the server
-    async getTimeBlockDataFromServer() {
-        const response = await fetch(`api/`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        });
-
-        //if unauthorized 
-        if (response.status === 200) {
-            return (await response.json())
-        }
-        else {
-            console.log("Error occur on getTimeBlockDataFromServer")
+    //method that create new Schedule from appointmentFrom server 
+    async createNewScheduleAsync(appointment) {
+        let scheduleDto = this.convertAppointmentsToScheduleData(appointment)
+        console.log("this is scheduleDto");
+        console.log(scheduleDto)
+        const response = await fetch(`api/TimeData/CreateSchedule`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(scheduleDto)
+          });
+      
+          console.log(response)
+          //if unauthorized 
+          if (response.status === 200) {
+            console.log(response.json.toString());
+            return await response.json
+          }
+          else {
+            console.log("Error occur on TimeData Creating new Schedule")
             return null
-        }
+          }
     }
 
     //method that gets(scheduleData, timeblocks)data and returns Appointments 
     convertAppointmentsToScheduleData(appointment) {
+        let title = ""
+        let description = ""
+        let repeatPeriod = 0
+        let endUTCTime = 0
+        let startDateInTicks = ((appointment.startDate.getTime() * 10000) + 621355968000000000)
+        if (appointment.title) {
+            title = appointment.title
+        }
+        if (appointment.notes) {
+            description = appointment.notes
+        }
+
+        if ("rRule" in appointment) {
+            var rRuleNumberForm = this.getRepeatPeriodFromRRuleFormat(appointment.rRule, startDateInTicks)
+        }
+
+        if(rRuleNumberForm !== null){
+            repeatPeriod= rRuleNumberForm.repeatPeriod
+            endUTCTime = rRuleNumberForm.endUTCTime
+        }
+
+        let scheduleDto = {
+            Schedule: {
+                Title: title,
+                Description: description,
+                IsScheduleEnd: false,
+                UserNo: 0,
+                Type: 0
+            },
+            TimeBlocks: [{
+                IntialUTCTime: startDateInTicks,
+                BlockSize: (appointment.endDate.getTime() - appointment.startDate.getTime()) * 10000,
+                RepeatPeriod: repeatPeriod,
+                EndUTCTime: endUTCTime,
+                IsAllDay: appointment.allDay,
+                ScheduleNo: -1
+            }]
+        }
+
+        return scheduleDto
+    }
 
 
+    getRepeatPeriodFromRRuleFormat(rRuleFormat, startDateInTicks) {
 
+        let rRuleArray = rRuleFormat.split(/[;=:]/)
+
+        let interval = parseInt(rRuleArray[2])
+        if (rRuleArray[4] === 'DAILY') {
+            let count = 0;
+            let repeatPeriod = interval * timeValueTickEnum.day
+            if (rRuleArray[5] === 'COUNT') {
+                count = parseInt(rRuleArray[6])
+                return { repeatPeriod: (interval * timeValueTickEnum.day), endUTCTime: (startDateInTicks + (repeatPeriod * count)) }
+            }
+            else {
+                return { repeatPeriod: (interval * timeValueTickEnum.day), endUTCTime: count }// 0 if it never end (or count)
+            }
+
+        }
+        else if (rRuleArray[4] === 'WEEKLY') {
+            let count = 0;
+            let repeatPeriod = 1;
+            let countCoefficient = 0; //if count exist then it is 2
+            if (rRuleArray[5] === 'COUNT') {
+                count = parseInt(rRuleArray[6])
+                countCoefficient = 2;
+            }
+            if (rRuleArray[5 + countCoefficient] === 'BYDAY') {
+                let rDayOfWeeks = rRuleArray[6 + countCoefficient].split(',')
+                let i = 0;
+                let rDayOfWeekInBit = 0;
+                for (i = 0; i < rDayOfWeeks.length; i++) {
+                    rDayOfWeekInBit = rDayOfWeekInBit + (1 << dayOfWeekTwoLetterEnum[rDayOfWeeks[i]])
+                }
+                repeatPeriod = repeatPeriod + (rDayOfWeekInBit * 10)
+            }
+            return {
+                repeatPeriod: -1 * (repeatPeriod + (10000 * interval)),
+                endUTCTime: ((count === 0) ? count : (startDateInTicks + (count * interval * timeValueTickEnum.week)))
+            }
+
+        }
+        else if (rRuleArray[4] === 'MONTHLY') {
+            let count = 0;
+            let repeatPeriod = 2;
+            let countCoefficient = 0; //if count exist then it is 2
+            if (rRuleArray[5] === 'COUNT') {
+                count = parseInt(rRuleArray[6])
+                countCoefficient = 2;
+            }
+            if (rRuleArray[5 + countCoefficient] === 'BYMONTHDAY') {
+                repeatPeriod = repeatPeriod + (100 * parseInt(rRuleArray[6 + countCoefficient]))
+                repeatPeriod = repeatPeriod + (10000 * interval)
+
+                return {
+                    repeatPeriod: -1 * (repeatPeriod),
+                    endUTCTime: ((count === 0) ? count : (startDateInTicks + (count * interval * timeValueTickEnum.month)))
+                }
+            }
+            if (rRuleArray[5 + countCoefficient] === 'BYDAY') {
+                let prefixOfMonth = parseInt((rRuleArray[6 + countCoefficient]).substring(0, 2));
+
+                if (prefixOfMonth < 0) {
+                    prefixOfMonth=0
+                }
+                let dayOfWeek = dayOfWeekTwoLetterEnum[rRuleArray[6 + countCoefficient].substring(2)]
+                repeatPeriod = repeatPeriod + (1 * 10) //indicate subtype 2 
+                repeatPeriod = repeatPeriod + (dayOfWeek * 100)
+                repeatPeriod = repeatPeriod + (prefixOfMonth * 1000)
+                repeatPeriod = repeatPeriod + (10000 * interval)
+                return {
+                    repeatPeriod: -1 * (repeatPeriod),
+                    endUTCTime: ((count === 0) ? count : (startDateInTicks + (count * interval * timeValueTickEnum.month)))
+                }
+            }
+        }
+        else if (rRuleArray[4] === 'YEARLY') {
+            let count = 0;
+            let repeatPeriod = 3;
+            let countCoefficient = 0; //if count exist then it is 2
+            if (rRuleArray[5] === 'COUNT') {
+                count = parseInt(rRuleArray[6])
+                countCoefficient = 2;
+            }
+            if (rRuleArray[5 + countCoefficient] === 'BYMONTHDAY') {
+                repeatPeriod = repeatPeriod + (10000 * parseInt(rRuleArray[6 + countCoefficient]))//Which Day of Month
+                repeatPeriod = repeatPeriod + (100 * parseInt(rRuleArray[8 + countCoefficient]))//which Month
+                repeatPeriod = repeatPeriod + (1000000 * interval)
+
+                return {
+                    repeatPeriod: -1 * (repeatPeriod),
+                    endUTCTime: ((count === 0) ? count : (startDateInTicks + (count * interval * timeValueTickEnum.year)))
+                }
+            }
+            if (rRuleArray[5 + countCoefficient] === 'BYMONTH') {
+                let prefixOfMonth = parseInt(rRuleArray[8 + countCoefficient].substring(0, 2))
+                if (prefixOfMonth < 0) {
+                    prefixOfMonth = 0
+                }
+                let dayOfWeek = dayOfWeekTwoLetterEnum[rRuleArray[8 + countCoefficient].substring(2)]
+                repeatPeriod = repeatPeriod + (10000 * parseInt(rRuleArray[6 + countCoefficient]))//Which Month
+                repeatPeriod = repeatPeriod + (1 * 10) //indicate subtype 2 
+                repeatPeriod = repeatPeriod + (dayOfWeek * 100)
+                repeatPeriod = repeatPeriod + (prefixOfMonth * 1000)
+                repeatPeriod = repeatPeriod + (1000000 * interval)
+
+                return {
+                    repeatPeriod: -1 * (repeatPeriod),
+                    endUTCTime: ((count === 0) ? count : (startDateInTicks + (count * interval * timeValueTickEnum.year)))
+                }
+            }
+        }
+
+        return null;
 
     }
 
@@ -104,7 +266,7 @@ export default class ScheduleDataControl {
                 id: schedulesData.timeblocks[timeBlock].no,
                 startDate: new Date((schedulesData.timeblocks[timeBlock].intialUTCTime - timeValueTickEnum.tickDiffValue) / 10000),
                 endDate: new Date(((schedulesData.timeblocks[timeBlock].intialUTCTime + schedulesData.timeblocks[timeBlock].blockSize) - timeValueTickEnum.tickDiffValue) / 10000),
-                allDay: false,
+                allDay: schedulesData.timeblocks[timeBlock].isAllDay,
                 title: (schedulesMap.get(schedulesData.timeblocks[timeBlock].scheduleNo)).schedule.title,
                 notes: (schedulesMap.get(schedulesData.timeblocks[timeBlock].scheduleNo)).schedule.description,
             }
@@ -125,9 +287,6 @@ export default class ScheduleDataControl {
         return appointmentsData
     }
 
-    getRepeatPeriodFromRRuleFormat(repeatPeriod, intialUTCTime, endUTCTime) {
-
-    }
 
     getRepeatedRRuleFormat(repeatPeriod, intialUTCTime, endUTCTime) {
         if (repeatPeriod === 0) {
@@ -135,13 +294,13 @@ export default class ScheduleDataControl {
         }
 
         if (repeatPeriod > 0) { //Daily 
-            let repeatPeriodValue = repeatPeriod % timeValueTickEnum.day
+            let repeatPeriodValue = repeatPeriod / timeValueTickEnum.day
             // var count  = intialUTCTime-endUTCTime
             if (endUTCTime === 0) {// never stop
                 return `RRULE:INTERVAL=${repeatPeriodValue.toString()};FREQ=DAILY`;
             }
 
-            let numberOfRepeat = (intialUTCTime - endUTCTime) / (repeatPeriodValue * timeValueTickEnum.day)
+            let numberOfRepeat = (endUTCTime - intialUTCTime) / (repeatPeriodValue * timeValueTickEnum.day)
 
             return `RRULE:INTERVAL=${repeatPeriodValue.toString()};FREQ=DAILY;COUNT=${numberOfRepeat.toString()}`;
         }
@@ -161,7 +320,7 @@ export default class ScheduleDataControl {
                 }
             }
             let repeatPeriodValue = Math.floor((repeatPeriod / 10000))
-            let numberOfRepeat = (intialUTCTime - endUTCTime) / (repeatPeriodValue * timeValueTickEnum.week)
+            let numberOfRepeat = (endUTCTime - intialUTCTime) / (repeatPeriodValue * timeValueTickEnum.week)
 
             if (rRule !== "") {
                 rRule = rRule.slice(0, -1) //remove ',' at the end
@@ -180,7 +339,7 @@ export default class ScheduleDataControl {
                 let repeatPeriodValue = Math.floor((repeatPeriod / 10000))
                 let count = "";
                 if (endUTCTime !== 0) {
-                    count = `;COUNT=${((intialUTCTime - endUTCTime) / (repeatPeriodValue * timeValueTickEnum.month)).toString()}`
+                    count = `;COUNT=${((endUTCTime - intialUTCTime) / (repeatPeriodValue * timeValueTickEnum.month)).toString()}`
                 }
                 return `RRULE:INTERVAL=${repeatPeriodValue.toString()};FREQ=MONTHLY${count};BYMONTHDAY=${ofEveryMonth}`
 
@@ -192,7 +351,7 @@ export default class ScheduleDataControl {
 
                 let count = "";
                 if (endUTCTime !== 0) {
-                    count = `;COUNT=${((intialUTCTime - endUTCTime) / (repeatPeriodValue * timeValueTickEnum.month)).toString()}`
+                    count = `;COUNT=${((endUTCTime - intialUTCTime) / (repeatPeriodValue * timeValueTickEnum.month)).toString()}`
                 }
                 return `RRULE:INTERVAL=${repeatPeriodValue.toString()};FREQ=MONTHLY${count};BYDAY=${prefixOfMonth}${dayOfWeek}`
             }
@@ -205,7 +364,7 @@ export default class ScheduleDataControl {
                 let repeatPeriodValue = Math.floor(repeatPeriod / 1000000)
                 let count = "";
                 if (endUTCTime !== 0) {
-                    count = `;COUNT=${((intialUTCTime - endUTCTime) / (repeatPeriodValue * timeValueTickEnum.year)).toString()}`
+                    count = `;COUNT=${((endUTCTime - intialUTCTime) / (repeatPeriodValue * timeValueTickEnum.year)).toString()}`
                 }
                 return `RRULE:INTERVAL=${repeatPeriodValue.toString()};FREQ=YEARLY${count};BYMONTHDAY=${dayOfMonth};BYMONTH=${month}`
             } else if (subType === 1) {//eg Yearly First Tuesday of March"
@@ -216,7 +375,7 @@ export default class ScheduleDataControl {
                 let repeatPeriodValue = Math.floor(repeatPeriod / 1000000)
                 let count = "";
                 if (endUTCTime !== 0) {
-                    count = `;COUNT=${((intialUTCTime - endUTCTime) / (repeatPeriodValue * timeValueTickEnum.year)).toString()}`
+                    count = `;COUNT=${((endUTCTime - intialUTCTime) / (repeatPeriodValue * timeValueTickEnum.year)).toString()}`
                 }
                 return `RRULE:INTERVAL=${repeatPeriodValue.toString()};FREQ=YEARLY${count};BYMONTH=${month};BYDAY=${prefixOfMonth}${dayOfWeek}`
             }
