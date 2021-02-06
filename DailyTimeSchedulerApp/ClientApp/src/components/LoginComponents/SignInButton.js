@@ -54,7 +54,7 @@ export default class SignInButton extends PureComponent {
                 </ThemeProvider>
                 <SigninDialog isOpen={this.state.isDialogOpen} 
                     closeDialogCallBack={(bool) => this.setSignInDialog(bool)} 
-                    signInSuccess={this.props.signInSuccess}/>
+                    />
             </Fragment>
         )
 

@@ -64,13 +64,6 @@ export default function NavMenuTab() {
     }
   })
 
-  const signInSuccess = () => {
-
-    console.log("Login Success")
-  }
-
-
-
   return (
 
     <Grid container >
@@ -122,7 +115,7 @@ export default function NavMenuTab() {
           {isSignedIn ? (<Typography variant="h6" > Hello {nickName}</Typography>) :
             (<Fragment>
               <RegisterButton />
-              <SignInButton signInSuccess={signInSuccess} />
+              <SignInButton/>
             </Fragment>)}
         </Paper>
       </Grid>

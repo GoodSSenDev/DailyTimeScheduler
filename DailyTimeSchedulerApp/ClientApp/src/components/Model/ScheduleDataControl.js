@@ -24,7 +24,7 @@ export default class ScheduleDataControl {
         let appointmentDataFromServer = await this.loadDataFromServerAsync()
 
         if (appointmentDataFromServer == null) {
-            return null;
+            return [];
         }
 
         window.localStorage.setItem('AppointmentData', JSON.stringify(appointmentDataFromServer))
@@ -87,6 +87,7 @@ export default class ScheduleDataControl {
 
     //method that gets(scheduleData, timeblocks)data and returns Appointments 
     convertAppointmentsToScheduleData(appointment) {
+        console.log(appointment)
         let title = ""
         let description = ""
         let repeatPeriod = 0
@@ -103,7 +104,9 @@ export default class ScheduleDataControl {
             var rRuleNumberForm = this.getRepeatPeriodFromRRuleFormat(appointment.rRule, startDateInTicks)
         }
 
-        if(rRuleNumberForm !== null){
+        console.log(rRuleNumberForm)
+
+        if(rRuleNumberForm !== undefined){
             repeatPeriod= rRuleNumberForm.repeatPeriod
             endUTCTime = rRuleNumberForm.endUTCTime
         }
@@ -132,6 +135,10 @@ export default class ScheduleDataControl {
 
     getRepeatPeriodFromRRuleFormat(rRuleFormat, startDateInTicks) {
 
+        if(rRuleFormat == null){
+            return null
+        }
+        
         let rRuleArray = rRuleFormat.split(/[;=:]/)
 
         let interval = parseInt(rRuleArray[2])

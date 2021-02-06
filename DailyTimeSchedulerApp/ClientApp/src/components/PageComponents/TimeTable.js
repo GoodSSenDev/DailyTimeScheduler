@@ -101,7 +101,8 @@ class TimeTable extends React.PureComponent {
       startDayHour: 0,
       endDayHour: 24,
       isNewAppointment: false,
-      scheduleDataController: new ScheduleDataControl()
+      scheduleDataController: new ScheduleDataControl(),
+      isDataLoaded:false
     };
 
     this.currentDateChange = (currentDate) => { this.setState({ currentDate }); };
@@ -133,7 +134,7 @@ class TimeTable extends React.PureComponent {
           });
         }
       };
-
+      
       return {
         visible: editingFormVisible,
         appointmentData: currentAppointment,
@@ -145,6 +146,15 @@ class TimeTable extends React.PureComponent {
     });
   }
 
+  
+  async componentDidMount() {
+
+    if(!this.state.isDataLoaded){
+      await this.loadAppointmentData()
+      this.setState({isDataLoaded: true})
+    }
+
+  } 
 
   componentDidUpdate() {
     this.appointmentForm.update();
@@ -155,9 +165,7 @@ class TimeTable extends React.PureComponent {
     return `${dateStrings[2]}-${dateStrings[0]}-${dateStrings[1]}`;
   }
 
-
   //#region Appointment
-
   onEditingAppointmentChange(editingAppointment) {
     this.setState({ editingAppointment });
   }
@@ -199,6 +207,7 @@ class TimeTable extends React.PureComponent {
     this.toggleConfirmationVisible();
   }
 
+  //method that reacting to change on timeblocks 
   commitChanges({ added, changed, deleted }) {
     this.setState(async (state) => {
       let { data } = state;
@@ -211,6 +220,7 @@ class TimeTable extends React.PureComponent {
           data = [...data, { id: startingAddedId, ...added }];
 
           this.state.scheduleDataController.updateDataOnLocal(data)
+          this.loadAppointmentData();
         }
       }
       if (changed) {
@@ -229,20 +239,11 @@ class TimeTable extends React.PureComponent {
       return { data, addedAppointment: {} };
     });
   }
-
   //#endregion
 
   async loadAppointmentData() {
-
-    let scheduleData = await this.state.scheduleDataController.loadDataFromServerAsync()
-    if (scheduleData == null) {
-      return;
-    }
-
-
-    this.setState({ data: scheduleData })
+    this.setState({ data: await this.state.scheduleDataController.loadData() })
   }
-
 
   render() {
     const {
