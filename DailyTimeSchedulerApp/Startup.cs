@@ -1,5 +1,6 @@
 using DailyTimeScheduler.BLL;
 using DailyTimeScheduler.DAL;
+using DailyTimeScheduler.DAL.DataContext;
 using DailyTimeScheduler.IDAL;
 using DailyTimeScheduler.Model;
 using DailyTimeSchedulerApp.Middleware;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -66,6 +68,10 @@ namespace DailyTimeSchedulerApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var db = new DailyTimeSchedulerDbContext(Configuration.GetSection("ConnectionString").GetSection("DbCon").Value);
+
+            db.Database.Migrate();// do migration 
+
             if (env.IsDevelopment())
             {
                 IdentityModelEventSource.ShowPII = true;
