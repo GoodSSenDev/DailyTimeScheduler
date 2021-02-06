@@ -54,6 +54,6 @@ namespace DailyTimeScheduler.Model
     /// </summary>
     public enum ScheduleType
     {
-           BOOl,
+           NORMAL,BOOL
     }
 }

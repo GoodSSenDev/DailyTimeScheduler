@@ -7,7 +7,8 @@ import {
     TextField,
     Grid,
     Button,
-    DialogActions
+    DialogActions,
+    CircularProgress
 } from "@material-ui/core";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
@@ -50,7 +51,6 @@ export default class SignInForm extends PureComponent {
         }
         else if (response.status === 200){
             localStorage.setItem('user',await response.json())
-            this.props.signInSuccess()
             this.props.closeDialogCallBack(false)
             window.location.reload();
             return;
@@ -126,10 +126,11 @@ export default class SignInForm extends PureComponent {
                         >
                             SIGN IN
                         </Button>
+                        {this.state.isRegistering && <CircularProgress size={28} style={{position:'absolute', bottom: '12px', right:'47px' }}/>}
                     </ThemeProvider>
                 </DialogActions>
             </Dialog>
-        )
+        )   
 
     }
 

@@ -3,14 +3,16 @@ using DailyTimeScheduler.DAL.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DailyTimeScheduler.DAL.Migrations
 {
     [DbContext(typeof(DailyTimeSchedulerDbContext))]
-    partial class DailyTimeSchedulerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210131060534_AddedEndUTCTimeOnTimeBlock")]
+    partial class AddedEndUTCTimeOnTimeBlock
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,9 +131,6 @@ namespace DailyTimeScheduler.DAL.Migrations
 
                     b.Property<long>("IntialUTCTime")
                         .HasColumnType("bigint");
-
-                    b.Property<bool>("IsAllday")
-                        .HasColumnType("bit");
 
                     b.Property<long>("RepeatPeriod")
                         .HasColumnType("bigint");

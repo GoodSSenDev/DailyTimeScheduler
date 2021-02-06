@@ -1,15 +1,18 @@
 import { connectProps } from '@devexpress/dx-react-core';
-import { EditingState, ViewState } from '@devexpress/dx-react-scheduler';
+import { EditingState, ViewState, IntegratedEditing } from '@devexpress/dx-react-scheduler';
 import {
   AllDayPanel, AppointmentForm, Appointments,
   AppointmentTooltip,
-
   DragDropProvider,
-  EditRecurrenceMenu, MonthView, Scheduler,
+  EditRecurrenceMenu,
+  MonthView,
+  Scheduler,
   Toolbar,
-
-
-  ViewSwitcher, WeekView
+  DateNavigator,
+  CurrentTimeIndicator,
+  ViewSwitcher,
+  WeekView,
+  ConfirmationDialog
 } from '@devexpress/dx-react-scheduler-material-ui';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -22,9 +25,8 @@ import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import * as React from 'react';
-import AppointmentFormTask from './AppointmentFormTask';
-
-
+import AppointmentFormTask from '../AppointmentFormTask';
+import ScheduleDataControl from '../Model/ScheduleDataControl'
 
 const containerStyles = theme => ({
   container: {
@@ -89,18 +91,21 @@ class TimeTable extends React.PureComponent {
     super(props);
     this.state = {
       data: [],
-      currentDate: '2018-06-27',
+      currentDate: this.getLocalDataString(),
       confirmationVisible: false,
       editingFormVisible: false,
       deletedAppointmentId: undefined,
       editingAppointment: undefined,
       previousAppointment: undefined,
       addedAppointment: {},
-      startDayHour: 9,
-      endDayHour: 19,
+      startDayHour: 0,
+      endDayHour: 24,
       isNewAppointment: false,
+      scheduleDataController: new ScheduleDataControl(),
+      isDataLoaded:false
     };
 
+    this.currentDateChange = (currentDate) => { this.setState({ currentDate }); };
     this.toggleConfirmationVisible = this.toggleConfirmationVisible.bind(this);
     this.commitDeletedAppointment = this.commitDeletedAppointment.bind(this);
     this.toggleEditingFormVisibility = this.toggleEditingFormVisibility.bind(this);
@@ -129,7 +134,7 @@ class TimeTable extends React.PureComponent {
           });
         }
       };
-
+      
       return {
         visible: editingFormVisible,
         appointmentData: currentAppointment,
@@ -141,10 +146,26 @@ class TimeTable extends React.PureComponent {
     });
   }
 
+  
+  async componentDidMount() {
+
+    if(!this.state.isDataLoaded){
+      await this.loadAppointmentData()
+      this.setState({isDataLoaded: true})
+    }
+
+  } 
+
   componentDidUpdate() {
     this.appointmentForm.update();
   }
 
+  getLocalDataString() {
+    let dateStrings = new Date().toLocaleDateString().split("/");
+    return `${dateStrings[2]}-${dateStrings[0]}-${dateStrings[1]}`;
+  }
+
+  //#region Appointment
   onEditingAppointmentChange(editingAppointment) {
     this.setState({ editingAppointment });
   }
@@ -186,23 +207,42 @@ class TimeTable extends React.PureComponent {
     this.toggleConfirmationVisible();
   }
 
+  //method that reacting to change on timeblocks 
   commitChanges({ added, changed, deleted }) {
-    this.setState((state) => {
+    this.setState(async (state) => {
       let { data } = state;
       if (added) {
-        const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-        data = [...data, { id: startingAddedId, ...added }];
+        console.log("this is adding")
+        console.log(added)
+        let result = await this.state.scheduleDataController.createNewScheduleAsync(added)
+        if (result !== null) {
+          const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
+          data = [...data, { id: startingAddedId, ...added }];
+
+          this.state.scheduleDataController.updateDataOnLocal(data)
+          this.loadAppointmentData();
+        }
       }
       if (changed) {
+        console.log("this is Changing")
+        console.log(changed)
         data = data.map(appointment => (
           changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
       }
       if (deleted !== undefined) {
+        console.log("this is Deleting")
+        console.log(deleted)
         this.setDeletedAppointmentId(deleted);
         this.toggleConfirmationVisible();
       }
+      console.log(this.state.data);
       return { data, addedAppointment: {} };
     });
+  }
+  //#endregion
+
+  async loadAppointmentData() {
+    this.setState({ data: await this.state.scheduleDataController.loadData() })
   }
 
   render() {
@@ -218,25 +258,30 @@ class TimeTable extends React.PureComponent {
 
     return (
       <Paper>
+
+        <Button onClick={async () => this.loadAppointmentData()}>loadData</Button>
         <Scheduler
           data={data}
           height={'auto'}
         >
           <ViewState
             currentDate={currentDate}
+            onCurrentDateChange={this.currentDateChange}
           />
           <EditingState
             onCommitChanges={this.commitChanges}
             onEditingAppointmentChange={this.onEditingAppointmentChange}
             onAddedAppointmentChange={this.onAddedAppointmentChange}
           />
+          <IntegratedEditing />
           <WeekView
             startDayHour={startDayHour}
             endDayHour={endDayHour}
           />
           <MonthView />
-          <AllDayPanel />
           <EditRecurrenceMenu />
+          <ConfirmationDialog />
+          <AllDayPanel />
           <Appointments />
           <AppointmentTooltip
             showOpenButton
@@ -244,13 +289,17 @@ class TimeTable extends React.PureComponent {
             showDeleteButton
           />
           <Toolbar />
+          <DateNavigator />
           <ViewSwitcher />
           <AppointmentForm
-            overlayComponent={this.appointmentForm}
             visible={editingFormVisible}
             onVisibilityChange={this.toggleEditingFormVisibility}
           />
+
+
           <DragDropProvider />
+          <CurrentTimeIndicator />
+
         </Scheduler>
 
         <Dialog

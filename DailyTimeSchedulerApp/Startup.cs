@@ -1,6 +1,7 @@
 using DailyTimeScheduler.BLL;
 using DailyTimeScheduler.DAL;
 using DailyTimeScheduler.IDAL;
+using DailyTimeScheduler.Model;
 using DailyTimeSchedulerApp.Middleware;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -32,10 +33,14 @@ namespace DailyTimeSchedulerApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<ITimeBlockDal, TimeBlockDal>();
+
+            var dbKey = Configuration.GetSection("ConnectionString").GetSection("DbCon").Value;
+
+            services.AddTransient<TimeBlock>();
             services.AddTransient<AppUserBll>(provider => new AppUserBll(
-                        new AppUserDal(Configuration.GetSection("ConnectionString").GetSection("DbCon").Value)
-                    ));
+                        new AppUserDal(dbKey)));
+            services.AddTransient<ScheduleDataBll>(provider => new ScheduleDataBll(
+                        new TimeBlockDal(dbKey), new ScheduleDal(dbKey)));
 
             services.AddControllersWithViews();
 

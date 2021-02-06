@@ -71,7 +71,7 @@ namespace DailyTimeSchedulerApp.Controllers
         }
 
         [HttpGet("checkIDDuplication={id}")]
-        public async Task<IActionResult> CheckID([FromRoute]string id)
+        public async Task<IActionResult> CheckIDAsync([FromRoute]string id)
         {
             Console.WriteLine(id);
            
@@ -82,7 +82,7 @@ namespace DailyTimeSchedulerApp.Controllers
         }
 
         [HttpGet("checkNickNameDuplication={nickname}")]
-        public async Task<IActionResult> CheckNickName([FromRoute] string nickname)
+        public async Task<IActionResult> CheckNickNameAsync([FromRoute] string nickname)
         {
             Console.WriteLine(nickname);
 
@@ -94,7 +94,7 @@ namespace DailyTimeSchedulerApp.Controllers
 
 
         [HttpGet("checkSignedIn")]
-        public async Task<IActionResult> CheckSignIn()
+        public async Task<IActionResult> CheckSignInAsync()
         {
             if (HttpContext.User != null)
                 foreach (var claim in HttpContext.User.Claims)

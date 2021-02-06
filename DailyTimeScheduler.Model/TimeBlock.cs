@@ -20,6 +20,13 @@ namespace DailyTimeScheduler.Model
         public long IntialUTCTime { get; set; }
 
         /// <summary>
+        /// End DateTime of repeating if 0 time block not repeating.
+        /// DateTime.Ticks value for 100 nano second from 12:00:00 midnight, January 1, 0001 
+        /// </summary>
+        [Required]
+        public long EndUTCTime { get; set; }
+
+        /// <summary>
         /// Size of this time block; Range of this time block 
         /// DateTime.Ticks value For 100 nano second from 12:00:00 midnight, January 1, 0001 
         /// </summary>
@@ -32,7 +39,13 @@ namespace DailyTimeScheduler.Model
         /// </summary>
         [Required]
         public long RepeatPeriod { get; set; }
-        
+
+        /// <summary>
+        /// Is timeblock is on allday colum
+        /// </summary>
+        [Required]
+        public bool IsAllDay { get; set; }
+
         /// <summary>
         /// Schedule Number foregin 
         /// </summary>

@@ -19,7 +19,7 @@ namespace DailyTimeScheduler.DAL.DataContext
 
         private readonly string _connectionString;
 
-        public DailyTimeSchedulerDbContext(string connectionString = @"Server = localhost; Database=DailyTimeSchedulerDb;User Id = sa; Password=nl6329nl;" )
+        public DailyTimeSchedulerDbContext(string connectionString = @"Server = localhost; Database=DailyTimeSchedulerDb;User Id = sa; Password=q1e3t5w2r4;" )
         {
             _connectionString = connectionString;
         }
