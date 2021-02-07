@@ -36,8 +36,9 @@ steps:
     command: 'publish'
     publishWebProjects: false
     projects: 'DailyTimeSchedulerApp/DailyTimeSchedulerApp.csproj'
-    arguments: '--configuration $(buildConfiguration) --output $(Build.BinariesDirectory)/$(Build.BuildId)'
+    arguments: '--configuration $(buildConfiguration) --output --self-contained true $(Build.BinariesDirectory)/$(Build.BuildId)'
     modifyOutputPath: false
+    
 
 - task: PublishBuildArtifacts@1
   inputs:
