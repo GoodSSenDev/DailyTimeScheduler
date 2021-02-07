@@ -16,7 +16,9 @@ steps:
 - task: UseDotNet@2
   displayName: 'Install .NET Core SDK'
   inputs:
+    packageType: sdk
     version: '3.1.x'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
     performMultiLevelLookup: true
     includePreviewVersions: true
 - task: DotNetCoreCLI@2
