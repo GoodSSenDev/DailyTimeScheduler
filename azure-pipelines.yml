@@ -13,12 +13,15 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: UseDotNet@2 
-  displayName: ".NET Core 3.1.x"
+- task: DotNetCoreCLI@2
   inputs:
-    version: '3.1.x'
-    packageType: sdk
-- script: dotnet build --configuration $(buildConfiguration)
+    command: 'restore'
+    feedsToUse: 'select'
+  displayName: 'dot net restore'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    arguments: '--configuration $(buildConfiguration)'
   displayName: 'dotnet build $(buildConfiguration)'
 - task: DotNetCoreCLI@2
   inputs:
