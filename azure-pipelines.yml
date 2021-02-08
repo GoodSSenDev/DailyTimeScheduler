@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 variables:
   buildConfiguration: 'Release'
@@ -36,7 +36,7 @@ steps:
     command: 'publish'
     publishWebProjects: false
     projects: 'DailyTimeSchedulerApp/DailyTimeSchedulerApp.csproj'
-    arguments: '--configuration $(buildConfiguration) --self-contained true -r linux-x64 --output $(Build.BinariesDirectory)/$(Build.BuildId)'
+    arguments: '--configuration $(buildConfiguration) --output $(Build.BinariesDirectory)/$(Build.BuildId)'
     modifyOutputPath: false
     
 
