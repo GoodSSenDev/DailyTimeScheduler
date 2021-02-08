@@ -21,6 +21,7 @@ namespace DailyTimeScheduler.DAL.DataContext
 
         public DailyTimeSchedulerDbContext(string connectionString = @"Server = localhost; Database=DailyTimeSchedulerDb;User Id = sa; Password=q1e3t5w2r4;" )
         {
+
             _connectionString = connectionString;
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
