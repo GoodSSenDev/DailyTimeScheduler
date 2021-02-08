@@ -34,7 +34,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
-    publishWebProjects: false
+    publishWebProjects: true
     projects: 'DailyTimeSchedulerApp/DailyTimeSchedulerApp.csproj'
     arguments: '--configuration $(buildConfiguration) --output $(Build.BinariesDirectory)/$(Build.BuildId)'
     modifyOutputPath: false
