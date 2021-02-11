@@ -11,7 +11,7 @@ export default class SignInButton extends PureComponent {
     constructor(props) {
         super(props)
 
-        this.state = { isSigInBtnDown: false, isDialogOpen: false}
+        this.state = { isSigInBtnDown: false, isDialogOpen: false }
     }
 
     //this method for the button change color when press happen
@@ -22,9 +22,9 @@ export default class SignInButton extends PureComponent {
     }
 
     //this method for opening the dialog by chaning the state 
-    setSignInDialog(bool){
+    setSignInDialog(bool) {
         if (this.state.isDialogOpen !== bool) {
-            this.setState({isDialogOpen: bool})
+            this.setState({ isDialogOpen: bool })
         }
     }
 
@@ -42,19 +42,21 @@ export default class SignInButton extends PureComponent {
             <Fragment>
                 <ThemeProvider theme={btnTheme}>
                     <Button
+                        style={this.props.style}
                         onMouseDown={() => this.setSignInBtn(true)}
                         onMouseUp={() => this.setSignInBtn(false)}
                         onMouseLeave={() => this.setSignInBtn(false)}
                         onClick={() => this.setSignInDialog(true)}
                         color={this.state.isSigInBtnDown ? "secondary" : "default"}
                         variant="contained"
+                        style={this.props.style}
                     >
                         SIGN IN
                     </Button>
                 </ThemeProvider>
-                <SigninDialog isOpen={this.state.isDialogOpen} 
-                    closeDialogCallBack={(bool) => this.setSignInDialog(bool)} 
-                    />
+                <SigninDialog isOpen={this.state.isDialogOpen}
+                    closeDialogCallBack={(bool) => this.setSignInDialog(bool)}
+                />
             </Fragment>
         )
 

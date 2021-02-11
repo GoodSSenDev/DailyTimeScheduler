@@ -42,6 +42,7 @@ export default class RegisterButton extends PureComponent {
             <Fragment>
                 <ThemeProvider theme={btnTheme}>
                     <Button
+                        style={this.props.style}
                         onMouseDown={() => this.setRegisterBtn(true)}
                         onMouseUp={() => this.setRegisterBtn(false)}
                         onMouseLeave={() => this.setRegisterBtn(false)}
