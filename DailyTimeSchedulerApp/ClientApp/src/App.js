@@ -4,7 +4,7 @@ import { Layout } from './components/Layout';
 import { Home } from './components/PageComponents/Home';
 import { FetchData } from './components/FetchData';
 import { Counter } from './components/Counter';
-import TimeTable from './components/PageComponents/TimeTable';
+import TimeTablePage from './components/PageComponents/TimeTablePage';
 import './custom.css'
 
 export default class App extends Component {
@@ -36,7 +36,7 @@ export default class App extends Component {
   render() {
     return (
       <Layout>
-        <Route exact path='/' component={TimeTable} />
+        <Route exact path='/' component={TimeTablePage} />
         <Route path='/counter' component={Counter} />
         <Route path='/tempHome' component={Home} />
       </Layout>

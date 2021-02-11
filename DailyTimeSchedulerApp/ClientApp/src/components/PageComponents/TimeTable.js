@@ -102,7 +102,7 @@ class TimeTable extends React.PureComponent {
       endDayHour: 24,
       isNewAppointment: false,
       scheduleDataController: new ScheduleDataControl(),
-      isDataLoaded:false
+      isDataLoaded: false
     };
 
     this.currentDateChange = (currentDate) => { this.setState({ currentDate }); };
@@ -134,7 +134,7 @@ class TimeTable extends React.PureComponent {
           });
         }
       };
-      
+
       return {
         visible: editingFormVisible,
         appointmentData: currentAppointment,
@@ -146,15 +146,15 @@ class TimeTable extends React.PureComponent {
     });
   }
 
-  
+
   async componentDidMount() {
 
-    if(!this.state.isDataLoaded){
+    if (!this.state.isDataLoaded) {
       await this.loadAppointmentData()
-      this.setState({isDataLoaded: true})
+      this.setState({ isDataLoaded: true })
     }
 
-  } 
+  }
 
   componentDidUpdate() {
     this.appointmentForm.update();
