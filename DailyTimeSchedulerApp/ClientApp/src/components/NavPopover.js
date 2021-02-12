@@ -1,6 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import {ListItemText,ListItemIcon,MenuItem,Menu,Button} from '@material-ui/core'
+import { ListItemText, ListItemIcon, MenuItem, Menu, Button, Box } from '@material-ui/core'
 
 import DateRangeSharpIcon from '@material-ui/icons/DateRangeSharp';
 import TimelineSharpIcon from '@material-ui/icons/TimelineSharp';
@@ -41,7 +41,7 @@ const StyledMenuItem = withStyles((theme) => ({
   },
 }))(MenuItem);
 
-export default function NavPopover() {
+export default function NavPopover(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -54,42 +54,43 @@ export default function NavPopover() {
 
   return (
     <div>
-      <Button
-        aria-controls="customized-menu"
-        aria-haspopup="true"
-        variant="contained"
-        color="primary"
-        onClick={handleClick}
-        style={{padding:"10px" ,position:"fixed"}}
-      >
-        {Boolean(anchorEl) ? <MenuOpenIcon fontSize="medium" />:<MenuIcon fontSize="medium" />}
-      </Button>
-      <StyledMenu
-        id="customized-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <StyledMenuItem to='/' component={Link}>
-          <ListItemIcon>
-            <HomeIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Home" />
-        </StyledMenuItem>
-        <StyledMenuItem to='/counter' component={Link}>
-          <ListItemIcon>
-            <DateRangeSharpIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Calendar" />
-        </StyledMenuItem>
-        <StyledMenuItem to='/tempHome' component={Link}>
-          <ListItemIcon>
-            <TimelineSharpIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Analysis" />
-        </StyledMenuItem>
-      </StyledMenu>
+      <Box display={props.isDisplay?"inline":"none"} style={{ padding: "10px", position: "fixed", zIndex: 1400 }}>
+        <Button
+          aria-controls="customized-menu"
+          aria-haspopup="true"
+          variant="contained"
+          color="primary"
+          onClick={handleClick}
+        >
+          {Boolean(anchorEl) ? <MenuOpenIcon fontSize="large" /> : <MenuIcon fontSize="large" />}
+        </Button >
+        <StyledMenu
+          id="customized-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <StyledMenuItem to='/' component={Link}>
+            <ListItemIcon>
+              <HomeIcon fontSize="large" />
+            </ListItemIcon>
+            <ListItemText primary="Home" />
+          </StyledMenuItem>
+          <StyledMenuItem to='/counter' component={Link}>
+            <ListItemIcon>
+              <DateRangeSharpIcon fontSize="large" />
+            </ListItemIcon>
+            <ListItemText primary="Calendar" />
+          </StyledMenuItem>
+          <StyledMenuItem to='/tempHome' component={Link}>
+            <ListItemIcon>
+              <TimelineSharpIcon fontSize="large" />
+            </ListItemIcon>
+            <ListItemText primary="Analysis" />
+          </StyledMenuItem>
+        </StyledMenu>
+      </Box>
     </div>
   );
 }

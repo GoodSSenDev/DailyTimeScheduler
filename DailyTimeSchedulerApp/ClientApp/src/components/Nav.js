@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect } from 'react';
 import classNames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Paper, Tabs, Tab, Typography } from '@material-ui/core';
+import { Paper, Tabs, Tab, Typography } from '@material-ui/core';
 import RegisterButton from './LoginComponents/RegisterButton'
 import SignInButton from './LoginComponents/SignInButton'
 import { Link } from 'react-router-dom';
@@ -61,7 +61,6 @@ const useStyles = makeStyles({
 export default function NavMenuTab() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const [nav, setNav] = React.useState("");
   const [isSignedIn, setIsSignedIn] = React.useState(false);
   const [nickName, setNickName] = React.useState("");
   const [isNavClosed, setIsNavClosed] = React.useState(false);
@@ -76,15 +75,18 @@ export default function NavMenuTab() {
     setValue(newValue);
   };
 
-  const scrollDebounceDelay = 70;
+  const scrollDebounceDelay = 50;
   const activeNavDebounce = _.debounce(handelScroll, scrollDebounceDelay);
 
-  window.addEventListener("scroll", activeNavDebounce)
+
 
   //remove event when this component unmount
   useEffect(() => {
-    window.removeEventListener("scroll", activeNavDebounce)
-  }, [nav]);
+    window.addEventListener("scroll", activeNavDebounce);
+    return () => {
+      window.removeEventListener("scroll", activeNavDebounce)
+    }
+  }, []);
 
   useEffect(() => {
     let userNickName = localStorage.getItem('user');
@@ -99,7 +101,7 @@ export default function NavMenuTab() {
 
   return (
     <Fragment>
-      <NavPoperover disabled={!isNavClosed}></NavPoperover>
+      <NavPoperover isDisplay={isNavClosed}></NavPoperover>
       <div className={classes.flexContainer}>
         <Paper className={classes.flexItem} elevation={3}>
           <Tabs

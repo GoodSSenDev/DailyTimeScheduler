@@ -9,7 +9,6 @@ import {
   Scheduler,
   Toolbar,
   DateNavigator,
-  CurrentTimeIndicator,
   ViewSwitcher,
   WeekView,
   ConfirmationDialog
@@ -27,6 +26,7 @@ import AddIcon from '@material-ui/icons/Add';
 import * as React from 'react';
 import AppointmentFormTask from '../AppointmentFormTask';
 import ScheduleDataControl from '../Model/ScheduleDataControl'
+import CustomCurrentTimeIndicator from '../CustomCurrentTimeIndicator'
 
 const containerStyles = theme => ({
   container: {
@@ -104,7 +104,6 @@ class TimeTable extends React.PureComponent {
       scheduleDataController: new ScheduleDataControl(),
       isDataLoaded: false
     };
-
     this.currentDateChange = (currentDate) => { this.setState({ currentDate }); };
     this.toggleConfirmationVisible = this.toggleConfirmationVisible.bind(this);
     this.commitDeletedAppointment = this.commitDeletedAppointment.bind(this);
@@ -245,6 +244,7 @@ class TimeTable extends React.PureComponent {
     this.setState({ data: await this.state.scheduleDataController.loadData() })
   }
 
+
   render() {
     const {
       currentDate,
@@ -258,11 +258,9 @@ class TimeTable extends React.PureComponent {
 
     return (
       <Paper>
-
-        <Button onClick={async () => this.loadAppointmentData()}>loadData</Button>
         <Scheduler
           data={data}
-          height={'auto'}
+          height={876}
         >
           <ViewState
             currentDate={currentDate}
@@ -289,7 +287,7 @@ class TimeTable extends React.PureComponent {
             showDeleteButton
           />
           <Toolbar />
-          <DateNavigator />
+          <DateNavigator  />
           <ViewSwitcher />
           <AppointmentForm
             visible={editingFormVisible}
@@ -298,7 +296,7 @@ class TimeTable extends React.PureComponent {
 
 
           <DragDropProvider />
-          <CurrentTimeIndicator />
+          <CustomCurrentTimeIndicator/>
 
         </Scheduler>
 
@@ -343,4 +341,4 @@ class TimeTable extends React.PureComponent {
   }
 }
 
-export default withStyles(styles, { name: 'EditingDemo' })(TimeTable);
+export default withStyles(styles, {  })(TimeTable);

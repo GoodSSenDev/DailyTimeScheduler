@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { Home } from './components/PageComponents/Home';
-import { FetchData } from './components/FetchData';
 import { Counter } from './components/Counter';
 import TimeTablePage from './components/PageComponents/TimeTablePage';
 import './custom.css'
