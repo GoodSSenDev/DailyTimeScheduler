@@ -65,6 +65,9 @@ export default class ScheduleDataControl {
     //method that create new Schedule from appointmentFrom server 
     async createNewScheduleAsync(appointment) {
         let scheduleDto = this.convertAppointmentsToScheduleData(appointment)
+        if(scheduleDto == null){
+            return null;
+        }
         console.log("this is scheduleDto");
         console.log(scheduleDto)
         const response = await fetch(`api/TimeData/CreateSchedule`, {
@@ -81,13 +84,15 @@ export default class ScheduleDataControl {
           }
           else {
             console.log("Error occur on TimeData Creating new Schedule")
-            return null
+            return null;
           }
     }
 
     //method that gets(scheduleData, timeblocks)data and returns Appointments 
     convertAppointmentsToScheduleData(appointment) {
-        console.log(appointment)
+        if(!appointment){
+            return null;
+        }
         let title = ""
         let description = ""
         let repeatPeriod = 0

@@ -13,11 +13,10 @@ import TimelineSharpIcon from '@material-ui/icons/TimelineSharp';
 import NavPoperover from './NavPopover';
 import _ from "lodash";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   flexContainer: {
     display: "flex",
     flexDirection: '',
-    justifyContent: "space-between",
     flextWrap: "wrap"
   },
 
@@ -27,36 +26,55 @@ const useStyles = makeStyles({
     flexShrink: 1,
     "&:nth-child(1)": {
       minWidth: 200,
+      width: "100%",
     },
-    "&:nth-child(2)": {
+    "&:nth-child(3)": {
       flexShrink: 0,
       flexBasis: "100px",
       padding: "3px",
     }
   },
+  tabSpace: {
+    backgroundColor: theme.palette.primary.light,
+    borderRadius: "0",
+  },
   tabItem: {
-    minWidth: 10,
+    backgroundColor: theme.palette.primary.light,
     fontWeight: 'bold'
   },
   tab1Bc: {
-    backgroundColor: "#B7E1F3",
+    "&:hover": {
+      backgroundColor: "#B7E1F3"
+    },
   },
   tab2Bc: {
-    backgroundColor: "#189AA8",
+    "&:hover": {
+      backgroundColor: "#189AA8"
+    },
   },
   tab3Bc: {
-    backgroundColor: "#AAD356",
+    "&:hover": {
+      backgroundColor: "#AAD356"
+    },
   },
   tab4Bc: {
-    backgroundColor: "#F9C908",
+    "&:hover": {
+      backgroundColor: "#F9C908"
+    },
   },
   tab5Bc: {
-    backgroundColor: "#F35844",
+    "&:hover": {
+      backgroundColor: "#F35844"
+    },
   },
   tab6Bc: {
-    backgroundColor: "#2c387e",
-  }
-});
+    "&:hover": {
+      backgroundColor: "#2c387e"
+    },
+  },
+  tabNotSelected: { 
+    backgroundColor: theme.palette.primary.light, }
+}));
 
 export default function NavMenuTab() {
   const classes = useStyles();
@@ -103,52 +121,58 @@ export default function NavMenuTab() {
     <Fragment>
       <NavPoperover isDisplay={isNavClosed}></NavPoperover>
       <div className={classes.flexContainer}>
-        <Paper className={classes.flexItem} elevation={3}>
+        <Paper className={classNames(classes.flexItem, classes.tabSpace)} elevation={3}>
           <Tabs
             value={value}
             onChange={handleChange}
-            indicatorColor="primary"
             textColor="primary"
-            aria-label="icon label tabs example"
-            className={classes.flexContainer}
           >
             <Tab
               value={0}
-              className={classNames(classes.tab6Bc, classes.tabLabel)}
+              color="secondary.main"
+              style={(value === 0) ? { backgroundColor: "#2c387e" } :{}}
+              className={classNames(classes.tab6Bc, classes.tabItem)}
               to='/' component={Link}
               label="Home"
               icon={<HomeIcon fontSize="large" />} />
             <Tab
               value={1}
-              className={classNames(classes.tab1Bc, classes.tabLabel)}
+              style={(value === 1) ? { backgroundColor: "#B7E1F3" } :{}}
+              className={classNames(classes.tab1Bc, classes.tabItem)}
               to='/counter' component={Link}
               label="Calendar"
               icon={<DateRangeSharpIcon fontSize="large" />} />
             <Tab
               value={2}
-              className={classNames(classes.tab2Bc, classes.tabLabel)}
+              style={(value === 2) ? { backgroundColor: "#189AA8" } :{}}
+              className={classNames(classes.tab2Bc, classes.tabItem)}
               to='/tempHome' component={Link}
               label="Analysis"
               icon={<TimelineSharpIcon fontSize="large" />} />
             <Tab
               value={3}
-              className={classNames(classes.tab3Bc, classes.tabLabel)}
+              style={(value === 3) ? { backgroundColor: "#AAD356" } :{}}
+              className={classNames(classes.tab3Bc, classes.tabItem)}
               label="Item Three" />
             <Tab
               value={4}
-              className={classNames(classes.tab4Bc, classes.tabLabel)}
+              style={(value === 4) ? { backgroundColor: "#F9C908" } :{}}
+              className={classNames(classes.tab4Bc, classes.tabItem)}
               label="Item Three" />
             <Tab
               value={5}
-              className={classNames(classes.tab5Bc, classes.tabLabel)}
+              style={(value === 5) ? { backgroundColor: "#F35844" } :{}}
+              className={classNames(classes.tab5Bc, classes.tabItem)}
               label="Item Three" />
           </Tabs>
+
         </Paper>
-        <Paper className={classes.flexItem} elevation={3}>
+
+        <Paper className={classNames(classes.flexItem, classes.tabSpace)} elevation={3}>
           {isSignedIn ? (<Typography variant="h6" > Hello {nickName}</Typography>) :
             (<Fragment>
-              <RegisterButton style={{ width: "100%" }} />
-              <SignInButton style={{ width: "100%" }} />
+              <RegisterButton style={{ width: "100%", marginTop: "2px", borderRadius: "0" }} />
+              <SignInButton style={{ width: "100%", marginTop: "3px", borderRadius: "0" }} />
             </Fragment>)}
         </Paper>
       </div>
