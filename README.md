@@ -5,6 +5,9 @@ and analyses the pattern and the rate of completion.
 
 The aim of this application is to allows users to optimises their time and tasks.
 
+-- not ready for production
+https://dailytimescheduler.azurewebsites.net/
+
 # Build Pipeline
 [![Build Status](https://dev.azure.com/goodssenDev/DailyTimeScheduler/_apis/build/status/DailyTimeScheduler?branchName=master)](https://dev.azure.com/goodssenDev/DailyTimeScheduler/_build/latest?definitionId=4&branchName=master)
 
