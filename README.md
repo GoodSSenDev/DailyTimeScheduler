@@ -10,11 +10,13 @@ The aim of this application is to allows users to optimises their time and tasks
 
 # Release Pipeline
 
-    - Dev/Test
-    https://vsrm.dev.azure.com/goodssenDev/_apis/public/Release/badge/4fcf20f5-d6d6-4854-9dc2-9b59d24f5135/1/1
+- Dev/Test
 
-    - Production
-    https://vsrm.dev.azure.com/goodssenDev/_apis/public/Release/badge/4fcf20f5-d6d6-4854-9dc2-9b59d24f5135/1/2
+![alt text](https://vsrm.dev.azure.com/goodssenDev/_apis/public/Release/badge/4fcf20f5-d6d6-4854-9dc2-9b59d24f5135/1/1)
+
+- Production
+
+![alt text](https://vsrm.dev.azure.com/goodssenDev/_apis/public/Release/badge/4fcf20f5-d6d6-4854-9dc2-9b59d24f5135/1/2)
 
 
 # License 
