@@ -106,8 +106,29 @@ namespace DailyTimeScheduler.BLL
 
             return true;
         }
-    }
 
-    //Make (already decided) data passing object on Common model
+        /// <summary>
+        /// Method that can delete schedule
+        /// </summary>
+        /// <param name="scheduleDto"></param>
+        /// <returns>retrun true if success or no error else return false </returns>
+        public async Task<bool> DeleteScheduleAsync(ScheduleDto scheduleDto)
+        {
+
+            for (int i = 0; i < scheduleDto.Timeblocks.Count; i++)
+            {
+                if (!await this._timeBlockDal.DeleteTimeBlockByNoAsync(scheduleDto.Timeblocks[i].No))
+                    return false;
+            }
+
+            var scheduleNo = await this._scheduleDal.DeleteScheduleByNoAsync(scheduleDto.Schedule.No);
+            if (scheduleNo == false)
+                return false;
+
+            return true;
+        }
+
+
+    }
 
 }

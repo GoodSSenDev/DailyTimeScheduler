@@ -61,5 +61,20 @@ namespace DailyTimeSchedulerApp.Controllers
             return Conflict();
         }
 
+
+        [HttpPost("CreateSchedule")]
+        public async Task<IActionResult> DeleteScheduleAsync([FromBody] ScheduleDto scheduleDto)
+        {
+            var userNo = HttpContext.User.FindFirstValue("no");
+            if (userNo == null)
+                return Unauthorized();
+            if (await this._scheduleDataBll.DeleteScheduleAsync(scheduleDto))
+                return Ok();
+
+
+            return Conflict();
+        }
+
+
     }
 }
