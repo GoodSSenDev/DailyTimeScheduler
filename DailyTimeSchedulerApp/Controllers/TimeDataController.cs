@@ -33,7 +33,7 @@ namespace DailyTimeSchedulerApp.Controllers
                 return Unauthorized();
 
             if (!Int32.TryParse(userNo, out int noValue))
-                    return NotFound("User no can not be transfered to int32");
+                    return Unauthorized("User no can not be transfered to int32");
 
             var result = await this._scheduleDataBll.GetScheduleDataAsync(noValue);
 

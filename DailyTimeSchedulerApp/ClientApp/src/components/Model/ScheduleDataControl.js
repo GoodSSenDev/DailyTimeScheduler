@@ -2,13 +2,11 @@ import { timeValueTickEnum, dayOfWeekTwoLetterEnum, twoLetterDayOfWeekEnum, pref
 
 export default class ScheduleDataControl {
 
-
     constructor() {
         this.state = {
             isDataLoaded: false,
         }
     }
-
 
     updateDataOnLocal(appointmentList) {
         window.localStorage.setItem('AppointmentData',JSON.stringify(appointmentList))
@@ -24,7 +22,7 @@ export default class ScheduleDataControl {
         let appointmentDataFromServer = await this.loadDataFromServerAsync()
 
         if (appointmentDataFromServer == null) {
-            return [];
+            return null;
         }
 
         window.localStorage.setItem('AppointmentData', JSON.stringify(appointmentDataFromServer))
@@ -36,7 +34,7 @@ export default class ScheduleDataControl {
         let result = await this.getScheduleDataFromServerAsync()
 
         if (result == null) {
-            return null;
+            return [];
         }
 
         let appointmentData = this.convertDataToAppointments(result)
@@ -46,15 +44,22 @@ export default class ScheduleDataControl {
 
     //method that get the data by fetching from the server
     async getScheduleDataFromServerAsync() {
+
         const response = await fetch(`api/TimeData/LoadSchedules`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
 
         });
-        console.log(response.status)
-        //if unauthorized 
+        //if success 
+        
         if (response.status === 200) {
             return await response.json()
+        }
+        if (response.status === 409){ // unautorized
+
+        }
+        if (response.status === 404){
+
         }
         else {
             console.log("Error occur on getScheduleDataFromServer")

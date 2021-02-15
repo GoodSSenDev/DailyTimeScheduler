@@ -127,8 +127,7 @@ namespace DailyTimeScheduler.BLL
 
             return true;
         }
-
-
     }
+
 
 }

@@ -102,7 +102,8 @@ class TimeTable extends React.PureComponent {
       endDayHour: 24,
       isNewAppointment: false,
       scheduleDataController: new ScheduleDataControl(),
-      isDataLoaded: false
+      isDataLoaded: false,
+      isSignInAlertDialogueOn: false,
     };
     this.currentDateChange = (currentDate) => { this.setState({ currentDate }); };
     this.toggleConfirmationVisible = this.toggleConfirmationVisible.bind(this);
@@ -149,10 +150,24 @@ class TimeTable extends React.PureComponent {
   async componentDidMount() {
 
     if (!this.state.isDataLoaded) {
-      await this.loadAppointmentData()
-      this.setState({ isDataLoaded: true })
+      await this.loadAppointmentData();
+      this.setState({ isDataLoaded: true });
     }
 
+  }
+
+  async loadAppointmentData() {
+
+    let result = await this.state.scheduleDataController.loadData();
+    if (result === null) {
+      this.setState({ isSignInAlertDialogueOn: true });
+      return;
+    }
+    else this.setState({ data: result });
+  }
+
+  handleAlertDialogClose() {
+    this.context.router.history.push("/Home")  
   }
 
   componentDidUpdate() {
@@ -240,9 +255,6 @@ class TimeTable extends React.PureComponent {
   }
   //#endregion
 
-  async loadAppointmentData() {
-    this.setState({ data: await this.state.scheduleDataController.loadData() })
-  }
 
 
   render() {
@@ -258,9 +270,27 @@ class TimeTable extends React.PureComponent {
 
     return (
       <Paper>
+        <Dialog
+          open={this.state.isSignInAlertDialogOn}
+          onClose={this.handleAlertDialogClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              (づ｡◕‿‿◕｡)づ :Please SignIn to use calendar functionality.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleAlertDialogClose} color="primary" autoFocus>
+              Okie Dokie
+          </Button>
+          </DialogActions>
+        </Dialog>
         <Scheduler
           data={data}
-          height={876}
+          height={'100%'}
         >
           <ViewState
             currentDate={currentDate}
@@ -287,7 +317,7 @@ class TimeTable extends React.PureComponent {
             showDeleteButton
           />
           <Toolbar />
-          <DateNavigator  />
+          <DateNavigator />
           <ViewSwitcher />
           <AppointmentForm
             visible={editingFormVisible}
@@ -296,7 +326,7 @@ class TimeTable extends React.PureComponent {
 
 
           <DragDropProvider />
-          <CustomCurrentTimeIndicator/>
+          <CustomCurrentTimeIndicator />
 
         </Scheduler>
 
@@ -341,4 +371,4 @@ class TimeTable extends React.PureComponent {
   }
 }
 
-export default withStyles(styles, {  })(TimeTable);
+export default withStyles(styles, {})(TimeTable);
