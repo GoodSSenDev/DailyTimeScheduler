@@ -14,9 +14,11 @@ export default class ScheduleDataControl {
 
     //Function that check Data exist in local storage else load the data in the server.
     async loadData() {
-        let appointmentData = window.localStorage.getItem('AppointmentData');
-        if (appointmentData != null) {
-            return JSON.parse(appointmentData);
+        if(window.sessionStorage.getItem('user') !== null){
+            let appointmentData = window.localStorage.getItem('AppointmentData');
+            if (appointmentData != null) {
+                return JSON.parse(appointmentData);
+            }
         }
 
         let appointmentDataFromServer = await this.loadDataFromServerAsync()
@@ -26,19 +28,19 @@ export default class ScheduleDataControl {
         }
 
         window.localStorage.setItem('AppointmentData', JSON.stringify(appointmentDataFromServer))
-        return appointmentDataFromServer
+        return appointmentDataFromServer;
     }
 
     async loadDataFromServerAsync() {
 
         let result = await this.getScheduleDataFromServerAsync()
 
-        if (result == null) {
-            return [];
-        }
+        if (result === null) {
+            return null;
+        } 
 
         let appointmentData = this.convertDataToAppointments(result)
-        console.log(appointmentData)
+        console.log(appointmentData);
         return appointmentData;
     }
 
@@ -55,15 +57,15 @@ export default class ScheduleDataControl {
         if (response.status === 200) {
             return await response.json()
         }
-        if (response.status === 409){ // unautorized
-
+        if (response.status === 409){ // unauthorized
+            return null;
         }
         if (response.status === 404){
-
+            return {};
         }
         else {
             console.log("Error occur on getScheduleDataFromServer")
-            return null
+            return null;
         }
     }
 

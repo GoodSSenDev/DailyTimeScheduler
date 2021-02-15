@@ -50,7 +50,7 @@ export default class SignInForm extends PureComponent {
             return;
         }
         else if (response.status === 200){
-            localStorage.setItem('user',await response.json())
+            window.sessionStorage.setItem('user',await response.json())
             this.props.closeDialogCallBack(false)
             window.location.reload();
             return;

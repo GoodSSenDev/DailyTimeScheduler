@@ -139,14 +139,14 @@ export default function NavMenuTab() {
               value={1}
               style={(value === 1) ? { backgroundColor: "#B7E1F3" } :{}}
               className={classNames(classes.tab1Bc, classes.tabItem)}
-              to='/counter' component={Link}
+              to='/calendar' component={Link}
               label="Calendar"
               icon={<DateRangeSharpIcon fontSize="large" />} />
             <Tab
               value={2}
               style={(value === 2) ? { backgroundColor: "#189AA8" } :{}}
               className={classNames(classes.tab2Bc, classes.tabItem)}
-              to='/tempHome' component={Link}
+              to='/analysis' component={Link}
               label="Analysis"
               icon={<TimelineSharpIcon fontSize="large" />} />
             <Tab

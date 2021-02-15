@@ -103,7 +103,7 @@ class TimeTable extends React.PureComponent {
       isNewAppointment: false,
       scheduleDataController: new ScheduleDataControl(),
       isDataLoaded: false,
-      isSignInAlertDialogueOn: false,
+      isSignInAlertDialogOn: false,
     };
     this.currentDateChange = (currentDate) => { this.setState({ currentDate }); };
     this.toggleConfirmationVisible = this.toggleConfirmationVisible.bind(this);
@@ -160,14 +160,14 @@ class TimeTable extends React.PureComponent {
 
     let result = await this.state.scheduleDataController.loadData();
     if (result === null) {
-      this.setState({ isSignInAlertDialogueOn: true });
-      return;
+      this.setState({ isSignInAlertDialogOn: true });
+      return null;
     }
     else this.setState({ data: result });
   }
 
   handleAlertDialogClose() {
-    this.context.router.history.push("/Home")  
+    window.history.push("/");
   }
 
   componentDidUpdate() {
@@ -276,7 +276,7 @@ class TimeTable extends React.PureComponent {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{"Sign In Required "}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               (づ｡◕‿‿◕｡)づ :Please SignIn to use calendar functionality.
