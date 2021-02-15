@@ -269,7 +269,7 @@ class TimeTable extends React.PureComponent {
     const { classes } = this.props;
 
     return (
-      <Paper>
+      <Paper style = {{height:"100vh"}}>
         <Dialog
           open={this.state.isSignInAlertDialogOn}
           onClose={this.handleAlertDialogClose}
@@ -290,7 +290,7 @@ class TimeTable extends React.PureComponent {
         </Dialog>
         <Scheduler
           data={data}
-          height={'100%'}
+          height={"auto"}
         >
           <ViewState
             currentDate={currentDate}
