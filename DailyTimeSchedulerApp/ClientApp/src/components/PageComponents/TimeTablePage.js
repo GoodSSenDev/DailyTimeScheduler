@@ -8,7 +8,6 @@ const styles = theme => ({
         flexDirection: "column"
     },
     flexItem: {
-
         "&:nth-child(2)": {
             overflowY:"auto",
             minWidth:"300px",
@@ -36,7 +35,7 @@ class TimeTablePage extends React.PureComponent {
                 </div>
                 {/* main  */}
                 <div className={classes.flexItem} >
-                    <TimeTable></TimeTable>
+                    <TimeTable history={this.props.history}></TimeTable>
                 </div>
                 {/* aside  */}
                 <div className={classes.flexItem}>

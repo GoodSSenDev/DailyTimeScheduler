@@ -28,6 +28,7 @@ import AppointmentFormTask from '../AppointmentFormTask';
 import ScheduleDataControl from '../Model/ScheduleDataControl'
 import CustomCurrentTimeIndicator from '../CustomCurrentTimeIndicator'
 
+
 const containerStyles = theme => ({
   container: {
     width: theme.spacing(68),
@@ -167,7 +168,7 @@ class TimeTable extends React.PureComponent {
   }
 
   handleAlertDialogClose() {
-    window.history.push("/");
+    this.props.history.push('/');
   }
 
   componentDidUpdate() {
@@ -270,9 +271,10 @@ class TimeTable extends React.PureComponent {
 
     return (
       <Paper style = {{height:"100vh"}}>
+        
         <Dialog
           open={this.state.isSignInAlertDialogOn}
-          onClose={this.handleAlertDialogClose}
+          onClose={() => this.handleAlertDialogClose()}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -283,7 +285,7 @@ class TimeTable extends React.PureComponent {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleAlertDialogClose} color="primary" autoFocus>
+            <Button onClick={() => this.handleAlertDialogClose()} color="primary" autoFocus>
               Okie Dokie
           </Button>
           </DialogActions>

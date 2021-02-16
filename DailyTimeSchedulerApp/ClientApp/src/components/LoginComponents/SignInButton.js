@@ -7,7 +7,6 @@ import SigninDialog from './SignInDialog'
 
 export default class SignInButton extends PureComponent {
 
-
     constructor(props) {
         super(props)
 
