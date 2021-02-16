@@ -39,6 +39,7 @@ const useStyles = makeStyles(theme => ({
     borderRadius: "0",
   },
   tabItem: {
+    color:"#9e9e9e",
     backgroundColor: theme.palette.primary.light,
     fontWeight: 'bold'
   },
