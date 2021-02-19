@@ -8,39 +8,42 @@ export default class ScheduleDataControl {
         }
     }
 
+    //this function requried user to login first 
     updateDataOnLocal(appointmentList) {
-        window.localStorage.setItem('AppointmentData',JSON.stringify(appointmentList))
+        let userNickName = window.sessionStorage.getItem('user');
+        window.localStorage.setItem(userNickName+'_AppointmentData',JSON.stringify(appointmentList))
     }
 
     //Function that check Data exist in local storage else load the data in the server.
     async loadData() {
-        if(window.sessionStorage.getItem('user') !== null){
-            let appointmentData = window.localStorage.getItem('AppointmentData');
+        let userNickName = window.sessionStorage.getItem('user');
+        if(userNickName !== null){
+            let appointmentData = window.localStorage.getItem(userNickName+'_AppointmentData');
             if (appointmentData != null) {
                 return JSON.parse(appointmentData);
             }
         }
 
-        let appointmentDataFromServer = await this.loadDataFromServerAsync()
+        let appointmentDataFromServer = await this.loadDataFromServerAsync();
 
         if (appointmentDataFromServer == null) {
             return null;
         }
 
-        window.localStorage.setItem('AppointmentData', JSON.stringify(appointmentDataFromServer))
+        window.localStorage.setItem(userNickName+'_AppointmentData', JSON.stringify(appointmentDataFromServer))
         return appointmentDataFromServer;
     }
 
+    //this function requried user to login first 
     async loadDataFromServerAsync() {
 
-        let result = await this.getScheduleDataFromServerAsync()
+        let result = await this.getScheduleDataFromServerAsync();
 
         if (result === null) {
             return null;
         } 
 
-        let appointmentData = this.convertDataToAppointments(result)
-        console.log(appointmentData);
+        let appointmentData = this.convertDataToAppointments(result);
         return appointmentData;
     }
 
@@ -55,7 +58,7 @@ export default class ScheduleDataControl {
         //if success 
         
         if (response.status === 200) {
-            return await response.json()
+            return await response.json();
         }
         if (response.status === 409){ // unauthorized
             return null;
@@ -71,12 +74,10 @@ export default class ScheduleDataControl {
 
     //method that create new Schedule from appointmentFrom server 
     async createNewScheduleAsync(appointment) {
-        let scheduleDto = this.convertAppointmentsToScheduleData(appointment)
+        let scheduleDto = this.convertAppointmentsToScheduleData(appointment);
         if(scheduleDto == null){
             return null;
         }
-        console.log("this is scheduleDto");
-        console.log(scheduleDto)
         const response = await fetch(`api/TimeData/CreateSchedule`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

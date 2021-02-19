@@ -108,7 +108,7 @@ export default function NavMenuTab() {
   }, []);
 
   useEffect(() => {
-    let userNickName = localStorage.getItem('user');
+    let userNickName = sessionStorage.getItem('user');
     if (userNickName != null) {
       setIsSignedIn(true);
       setNickName(userNickName);

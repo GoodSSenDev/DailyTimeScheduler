@@ -149,22 +149,32 @@ class TimeTable extends React.PureComponent {
 
 
   async componentDidMount() {
+    if(!this.checkLogin()) {
+      return null;
+    }
 
     if (!this.state.isDataLoaded) {
-      await this.loadAppointmentData();
+      await this.loadAppointmentData();//checking login to 
       this.setState({ isDataLoaded: true });
     }
 
   }
 
+  checkLogin() {
+    let userNickName = window.sessionStorage.getItem('user');
+    if(userNickName === null){
+      this.setState({ isSignInAlertDialogOn: true });
+      return false;
+    }
+    return true;
+  }
+
   async loadAppointmentData() {
 
     let result = await this.state.scheduleDataController.loadData();
-    if (result === null) {
-      this.setState({ isSignInAlertDialogOn: true });
-      return null;
+    if (result !== null) {
+      this.setState({ data: result });
     }
-    else this.setState({ data: result });
   }
 
   handleAlertDialogClose() {
@@ -227,8 +237,6 @@ class TimeTable extends React.PureComponent {
     this.setState(async (state) => {
       let { data } = state;
       if (added) {
-        console.log("this is adding")
-        console.log(added)
         let result = await this.state.scheduleDataController.createNewScheduleAsync(added)
         if (result !== null) {
           const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
@@ -245,12 +253,9 @@ class TimeTable extends React.PureComponent {
           changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
       }
       if (deleted !== undefined) {
-        console.log("this is Deleting")
-        console.log(deleted)
         this.setDeletedAppointmentId(deleted);
         this.toggleConfirmationVisible();
       }
-      console.log(this.state.data);
       return { data, addedAppointment: {} };
     });
   }
