@@ -9,7 +9,7 @@ export default class ScheduleDataControl {
     }
 
     //this function requried user to login first 
-    updateDataOnLocal(appointmentList) {
+    updateDataOnLocalStorage(appointmentList) {
         let userNickName = window.sessionStorage.getItem('user');
         window.localStorage.setItem(userNickName+'_AppointmentData',JSON.stringify(appointmentList))
     }

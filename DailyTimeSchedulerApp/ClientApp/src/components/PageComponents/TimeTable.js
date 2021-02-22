@@ -152,12 +152,14 @@ class TimeTable extends React.PureComponent {
     if(!this.checkLogin()) {
       return null;
     }
-
     if (!this.state.isDataLoaded) {
-      await this.loadAppointmentData();//checking login to 
+      await this.loadAppointmentData();
       this.setState({ isDataLoaded: true });
     }
+  }
 
+  componentDidUpdate() {
+    this.appointmentForm.update();
   }
 
   checkLogin() {
@@ -170,27 +172,13 @@ class TimeTable extends React.PureComponent {
   }
 
   async loadAppointmentData() {
-
     let result = await this.state.scheduleDataController.loadData();
     if (result !== null) {
       this.setState({ data: result });
     }
   }
 
-  handleAlertDialogClose() {
-    this.props.history.push('/');
-  }
-
-  componentDidUpdate() {
-    this.appointmentForm.update();
-  }
-
-  getLocalDataString() {
-    let dateStrings = new Date().toLocaleDateString().split("/");
-    return `${dateStrings[2]}-${dateStrings[0]}-${dateStrings[1]}`;
-  }
-
-  //#region Appointment
+  //#region TimeTable functionalities
   onEditingAppointmentChange(editingAppointment) {
     this.setState({ editingAppointment });
   }
@@ -242,13 +230,11 @@ class TimeTable extends React.PureComponent {
           const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
           data = [...data, { id: startingAddedId, ...added }];
 
-          this.state.scheduleDataController.updateDataOnLocal(data)
-          this.loadAppointmentData();
+          this.state.scheduleDataController.updateDataOnLocalStorage(data);
+          // this.loadAppointmentData();// just need 
         }
       }
       if (changed) {
-        console.log("this is Changing")
-        console.log(changed)
         data = data.map(appointment => (
           changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
       }
@@ -261,7 +247,14 @@ class TimeTable extends React.PureComponent {
   }
   //#endregion
 
+  handleAlertDialogClose() {
+    this.props.history.push('/');
+  }
 
+  getLocalDataString() {
+    let dateStrings = new Date().toLocaleDateString().split("/");
+    return `${dateStrings[2]}-${dateStrings[0]}-${dateStrings[1]}`;
+  }
 
   render() {
     const {
