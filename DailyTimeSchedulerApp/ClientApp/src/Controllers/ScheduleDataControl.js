@@ -1,4 +1,4 @@
-import { timeValueTickEnum, dayOfWeekTwoLetterEnum, twoLetterDayOfWeekEnum, prefixOnMonthEnum, repeatPeriodEnum } from './DateEnum'
+import { timeValueTickEnum, dayOfWeekTwoLetterEnum, twoLetterDayOfWeekEnum, prefixOnMonthEnum, repeatPeriodEnum } from '../components/Model/DateEnum'
 
 export default class ScheduleDataControl {
 
@@ -23,32 +23,19 @@ export default class ScheduleDataControl {
                 return JSON.parse(appointmentData);
             }
         }
+        let rawData = await this.getScheduleRawDataFromServerAsync();
+        let appointmentData = this.convertDataToAppointments(rawData);
 
-        let appointmentDataFromServer = await this.loadDataFromServerAsync();
-
-        if (appointmentDataFromServer == null) {
+        if (appointmentData == null) {    
             return null;
         }
 
-        window.localStorage.setItem(userNickName+'_AppointmentData', JSON.stringify(appointmentDataFromServer))
-        return appointmentDataFromServer;
-    }
-
-    //this function requried user to login first 
-    async loadDataFromServerAsync() {
-
-        let result = await this.getScheduleDataFromServerAsync();
-
-        if (result === null) {
-            return null;
-        } 
-
-        let appointmentData = this.convertDataToAppointments(result);
+        window.localStorage.setItem(userNickName+'_AppointmentData', JSON.stringify(appointmentData));
         return appointmentData;
     }
 
     //method that get the data by fetching from the server
-    async getScheduleDataFromServerAsync() {
+    async getScheduleRawDataFromServerAsync() {
 
         const response = await fetch(`api/TimeData/LoadSchedules`, {
             method: 'GET',
@@ -96,6 +83,7 @@ export default class ScheduleDataControl {
           }
     }
 
+//#region AppointmentConverter
     //method that gets(scheduleData, timeblocks)data and returns Appointments 
     convertAppointmentsToScheduleData(appointment) {
         if(!appointment){
@@ -144,7 +132,6 @@ export default class ScheduleDataControl {
 
         return scheduleDto
     }
-
 
     getRepeatPeriodFromRRuleFormat(rRuleFormat, startDateInTicks) {
 
@@ -401,5 +388,6 @@ export default class ScheduleDataControl {
             }
         }
     }
+    //#endregion
 
 }
