@@ -25,7 +25,7 @@ import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import * as React from 'react';
 import AppointmentFormTask from '../AppointmentFormTask';
-import ScheduleDataControl from '../Model/ScheduleDataControl'
+import ScheduleDataControl from '../../Controllers/ScheduleDataControl'
 import CustomCurrentTimeIndicator from '../CustomCurrentTimeIndicator'
 
 
@@ -225,7 +225,10 @@ class TimeTable extends React.PureComponent {
     this.setState(async (state) => {
       let { data } = state;
       if (added) {
-        let result = await this.state.scheduleDataController.createNewScheduleAsync(added)
+        console.log("added:");
+        console.log(added);
+        console.log(added.toString());
+        let result = await this.state.scheduleDataController.createNewScheduleAsync(added);
         if (result !== null) {
           const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
           data = [...data, { id: startingAddedId, ...added }];
@@ -350,6 +353,7 @@ class TimeTable extends React.PureComponent {
               Delete
             </Button>
           </DialogActions>
+
         </Dialog>
 
         <Fab

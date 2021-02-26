@@ -21,7 +21,7 @@ export default class SignInForm extends PureComponent {
         this.state = {
             isCancelBtnDown: false,
             isSignInBtnDown: false,
-            isSignIning: false,
+            isSignedIn: false,
             errorMessage: ""
         };
         this.inputIDRef = createRef();
@@ -42,11 +42,11 @@ export default class SignInForm extends PureComponent {
 
 
     async signInAsync() {
-        this.setState({ isSignIning: true })
+        this.setState({ isSignedIn: true })
         let response = await this.sendSignInDataAsync()
         if(response.status === 401){
             this.setState({errorMessage:"ID or Password is incorrect"})
-            this.setState({ isSignIning: false })
+            this.setState({ isSignedIn: false })
             return;
         }
         else if (response.status === 200){
@@ -61,7 +61,7 @@ export default class SignInForm extends PureComponent {
         }
         else {
             this.setState({errorMessage:"Unknown Error 1 occured"})
-            this.setState({ isSignIning: false })
+            this.setState({ isSignedIn: false })
             return;
         }
     }
@@ -120,7 +120,7 @@ export default class SignInForm extends PureComponent {
                             CANCEL
                         </Button>
                         <Button
-                            disabled={this.state.isSignIning}
+                            disabled={this.state.isSignedIn}
                             onMouseDown={() => this.setSignInBtn(true)}
                             onMouseUp={() => this.setSignInBtn(false)}
                             onMouseLeave={() => this.setSignInBtn(false)}

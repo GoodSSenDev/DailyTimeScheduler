@@ -62,7 +62,7 @@ namespace DailyTimeSchedulerApp.Controllers
         }
 
 
-        [HttpPost("CreateSchedule")]
+        [HttpPost("DeleteSchedule")]
         public async Task<IActionResult> DeleteScheduleAsync([FromBody] ScheduleDto scheduleDto)
         {
             var userNo = HttpContext.User.FindFirstValue("no");

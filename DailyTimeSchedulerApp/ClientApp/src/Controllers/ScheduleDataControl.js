@@ -62,20 +62,24 @@ export default class ScheduleDataControl {
     //method that create new Schedule from appointmentFrom server 
     async createNewScheduleAsync(appointment) {
         let scheduleDto = this.convertAppointmentsToScheduleData(appointment);
+        console.log("Added :");
+        console.log(scheduleDto);
+        console.log(scheduleDto.toString());
         if(scheduleDto == null){
             return null;
         }
+        
         const response = await fetch(`api/TimeData/CreateSchedule`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(scheduleDto)
+            body: JSON.stringify(scheduleDto),
           });
       
           console.log(response)
           //if unauthorized 
           if (response.status === 200) {
             console.log(response.json.toString());
-            return await response.json
+            return await response.json;
           }
           else {
             console.log("Error occur on TimeData Creating new Schedule")
@@ -112,7 +116,7 @@ export default class ScheduleDataControl {
             endUTCTime = rRuleNumberForm.endUTCTime
         }
 
-        let scheduleDto = {
+        let scheduleDto = { 
             Schedule: {
                 Title: title,
                 Description: description,
