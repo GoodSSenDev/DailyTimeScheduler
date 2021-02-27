@@ -8,10 +8,13 @@ export default class ScheduleDataControl {
         }
     }
 
-    //this function requried user to login first 
+    //this function required a user to login first else gives error  
     updateDataOnLocalStorage(appointmentList) {
         let userNickName = window.sessionStorage.getItem('user');
-        window.localStorage.setItem(userNickName+'_AppointmentData',JSON.stringify(appointmentList))
+        if(userNickName === null){
+            return false;
+        }
+        window.localStorage.setItem(userNickName+'_AppointmentData',JSON.stringify(appointmentList));
     }
 
     //Function that check Data exist in local storage else load the data in the server.
@@ -57,6 +60,13 @@ export default class ScheduleDataControl {
             console.log("Error occur on getScheduleDataFromServer")
             return null;
         }
+    }
+
+    async deleteScheduleAsync(scheduleNo){
+        
+        // let userNickName = window.sessionStorage.getItem('user');
+        // window.localStorage.get(userNickName+'_AppointmentData',JSON.stringify(appointmentList));
+
     }
 
     //method that create new Schedule from appointmentFrom server 
@@ -256,7 +266,7 @@ export default class ScheduleDataControl {
 
     }
 
-    //method that getsdata and returns Appointments 
+    //A method that gets data and returns Appointments 
     convertDataToAppointments(schedulesData) {
         if (schedulesData.schedules.length <= 0) {
             return [];

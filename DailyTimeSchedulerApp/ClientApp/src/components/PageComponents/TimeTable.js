@@ -221,20 +221,14 @@ class TimeTable extends React.PureComponent {
   }
 
   //method that reacting to change on timeblocks 
-  commitChanges({ added, changed, deleted }) {
-    this.setState(async (state) => {
-      let { data } = state;
+  async commitChanges({ added, changed, deleted }) {
+      let { data } = this.state;
       if (added) {
-        console.log("added:");
-        console.log(added);
-        console.log(added.toString());
         let result = await this.state.scheduleDataController.createNewScheduleAsync(added);
         if (result !== null) {
           const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
           data = [...data, { id: startingAddedId, ...added }];
-
           this.state.scheduleDataController.updateDataOnLocalStorage(data);
-          // this.loadAppointmentData();// just need 
         }
       }
       if (changed) {
@@ -245,8 +239,7 @@ class TimeTable extends React.PureComponent {
         this.setDeletedAppointmentId(deleted);
         this.toggleConfirmationVisible();
       }
-      return { data, addedAppointment: {} };
-    });
+      this.setState({ data, addedAppointment: {} });
   }
   //#endregion
 
