@@ -61,14 +61,21 @@ namespace DailyTimeSchedulerApp.Controllers
             return Conflict();
         }
 
-
-        [HttpPost("DeleteSchedule")]
-        public async Task<IActionResult> DeleteScheduleAsync([FromBody] ScheduleDto scheduleDto)
+        /// <summary>
+        /// A HTTP POST that delete the schedule including no.
+        /// </summary>
+        /// <param name="targetScheduleNo">targetScheduleNo</param>
+        /// <returns></returns>
+        [HttpPost("DeleteSchedule={targetScheduleNo}")]
+        public async Task<IActionResult> DeleteScheduleAsync([FromRoute] int targetScheduleNo)
         {
             var userNo = HttpContext.User.FindFirstValue("no");
             if (userNo == null)
                 return Unauthorized();
-            if (await this._scheduleDataBll.DeleteScheduleAsync(scheduleDto))
+            if (!Int32.TryParse(userNo, out int userNoValue))
+                return NotFound("User no can not be transfered to int32");
+
+            if (await this._scheduleDataBll.DeleteScheduleAsync(userNoValue, targetScheduleNo))
                 return Ok();
 
 

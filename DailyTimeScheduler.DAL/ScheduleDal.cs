@@ -162,6 +162,34 @@ namespace DailyTimeScheduler.DAL
                 return scheduleList;
             }
         }
+
+        /// <summary>
+        /// Get Schedule's userNo by schedule no
+        /// </summary>
+        /// <param name="no"></param>
+        /// <returns>return 0 if not exist</returns>
+        public int GetUserNoOfScheduleByNo(int no)
+        {
+            using (var db = new DailyTimeSchedulerDbContext(_connectionString))
+            {
+                var userNo = db.Schedules.Where(schedule => schedule.No == no).Select(schedule => schedule.UserNo).FirstOrDefault<int>();
+                return userNo;
+            }
+        }
+
+        /// <summary>
+        /// Get Schedule's userNo by schedule no but async 
+        /// </summary>
+        /// <param name="no"></param>
+        /// <returns>return 0 if not exist </returns>
+        public async Task<int> GetUserNoOfScheduleByNoAsync(int no)
+        {
+            using (var db = new DailyTimeSchedulerDbContext(_connectionString))
+            {
+                var userNo = await db.Schedules.Where(schedule => schedule.No == no).Select(schedule => schedule.UserNo).FirstOrDefaultAsync<int>();
+                return userNo;
+            }
+        }
         #endregion
 
         #region Update

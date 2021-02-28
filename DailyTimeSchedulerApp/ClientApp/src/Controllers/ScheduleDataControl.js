@@ -63,9 +63,28 @@ export default class ScheduleDataControl {
     }
 
     async deleteScheduleAsync(scheduleNo){
-        
-        // let userNickName = window.sessionStorage.getItem('user');
-        // window.localStorage.get(userNickName+'_AppointmentData',JSON.stringify(appointmentList));
+        let userNickName = window.sessionStorage.getItem('user');
+        let appointmentData = window.localStorage.get(userNickName+'_AppointmentData');
+        let appointmentJsonList = JSON.parse(appointmentData);
+        let targetAppointment = appointmentJsonList.find(appointment => appointment.scheduleNo === scheduleNo);
+        if(index === -1){
+            return false;
+        }
+
+        let scheduleDto = { 
+            Schedule: {
+                no:scheduleNo,
+            },
+            TimeBlocks: [{ 
+                no:
+
+            }]
+        }
+        // const response = await fetch(`api/TimeData/DeleteSchedule`, {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(scheduleDto),
+        //   });
 
     }
 
@@ -74,7 +93,6 @@ export default class ScheduleDataControl {
         let scheduleDto = this.convertAppointmentsToScheduleData(appointment);
         console.log("Added :");
         console.log(scheduleDto);
-        console.log(scheduleDto.toString());
         if(scheduleDto == null){
             return null;
         }
@@ -274,17 +292,15 @@ export default class ScheduleDataControl {
 
         let schedulesMap = new Map();
         for (const schedule in schedulesData.schedules) {
-
             schedulesMap.set(schedulesData.schedules[schedule].no, { schedule: schedulesData.schedules[schedule] })
         }
-        console.log(schedulesMap)
-        let appointmentsData = []
-
+        let appointmentsData = [];
         for (const timeBlock in schedulesData.timeblocks) {
             // schedulesMap.get(timeBlock.scheduleNo).timeBlocks.push(timeBlock);
             // /10000 for 100nano seconds to milli seconds
             let appointment = {
                 id: schedulesData.timeblocks[timeBlock].no,
+                scheduleNo: schedulesData.timeblocks[timeBlock].scheduleNo,
                 startDate: new Date((schedulesData.timeblocks[timeBlock].intialUTCTime - timeValueTickEnum.tickDiffValue) / 10000),
                 endDate: new Date(((schedulesData.timeblocks[timeBlock].intialUTCTime + schedulesData.timeblocks[timeBlock].blockSize) - timeValueTickEnum.tickDiffValue) / 10000),
                 allDay: schedulesData.timeblocks[timeBlock].isAllDay,
