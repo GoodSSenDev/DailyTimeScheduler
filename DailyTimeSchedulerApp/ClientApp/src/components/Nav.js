@@ -17,7 +17,6 @@ const useStyles = makeStyles(theme => ({
   flexContainer: {
     display: "flex",
     flexDirection: '',
-    flextWrap: "wrap"
   },
 
   flexItem: {
@@ -52,7 +51,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.primary.light, }
 }));
 
-export default function NavMenuTab() {
+export default function NavMenuTab(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const [isSignedIn, setIsSignedIn] = React.useState(false);
@@ -95,7 +94,7 @@ export default function NavMenuTab() {
 
   return (
     <Fragment>
-      <NavPoperover isDisplay={isNavClosed}></NavPoperover>
+      <NavPoperover style={{height: props.height}} isDisplay={isNavClosed}></NavPoperover>
       <div className={classes.flexContainer}>
         <Paper className={classNames(classes.flexItem, classes.tabSpace)} elevation={3}>
           <Tabs

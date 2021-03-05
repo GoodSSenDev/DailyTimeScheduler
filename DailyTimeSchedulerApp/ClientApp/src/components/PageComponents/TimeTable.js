@@ -271,7 +271,7 @@ class TimeTable extends React.PureComponent {
     const { classes } = this.props;
 
     return (
-      <Paper style={{ height: "100vh" }}>
+      <Paper style={{ height: 'calc(100vh - 90px)'}}>
 
         <Dialog
           open={this.state.isSignInAlertDialogOn}

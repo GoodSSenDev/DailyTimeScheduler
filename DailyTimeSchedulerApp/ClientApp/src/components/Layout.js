@@ -4,10 +4,10 @@ import Nav from './Nav';
 export class Layout extends Component {
   static displayName = Layout.name;
 
-  render () {
+  render() {
     return (
       <div>
-        <Nav/>
+        <Nav height={90}/>
         <div>
           {this.props.children}
         </div>
