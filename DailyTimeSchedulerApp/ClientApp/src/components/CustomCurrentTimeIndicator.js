@@ -41,7 +41,10 @@ export default () => {
         );
     };
     React.useEffect(() => {
-        indicatorRef.current.scrollIntoView({ block: "center" });
+        if(indicatorRef.current != null){
+            indicatorRef.current.scrollIntoView({ block: "center" });
+
+        }
     });
 
     return (

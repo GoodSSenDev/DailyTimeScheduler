@@ -54,11 +54,12 @@ namespace DailyTimeSchedulerApp.Controllers
                 return NotFound("User no can not be transfered to int32");
 
             scheduleDto.Schedule.UserNo = noValue;
-            if (await this._scheduleDataBll.CreateNewScheduleAsyncParallel(scheduleDto))
-                return Ok();
+            int scheduleNo = await this._scheduleDataBll.CreateNewScheduleReturnNoAsyncParallel(scheduleDto);
             
+            if (scheduleNo == -1)
+                return Conflict();
 
-            return Conflict();
+            return Ok(scheduleNo);
         }
 
         /// <summary>
@@ -66,7 +67,7 @@ namespace DailyTimeSchedulerApp.Controllers
         /// </summary>
         /// <param name="targetScheduleNo">targetScheduleNo</param>
         /// <returns></returns>
-        [HttpPost("DeleteSchedule={targetScheduleNo}")]
+        [HttpGet("DeleteSchedule={targetScheduleNo}")]  
         public async Task<IActionResult> DeleteScheduleAsync([FromRoute] int targetScheduleNo)
         {
             var userNo = HttpContext.User.FindFirstValue("no");

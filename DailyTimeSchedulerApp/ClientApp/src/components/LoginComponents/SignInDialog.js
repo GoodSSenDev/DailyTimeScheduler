@@ -60,8 +60,7 @@ export default class SignInForm extends PureComponent {
             return;
         }
         else {
-            this.setState({errorMessage:"Unknown Error 1 occured"})
-            this.setState({ isSignedIn: false })
+            this.setState({errorMessage:"Unknown Error 1 occured",isSignedIn: false })
             return;
         }
     }

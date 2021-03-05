@@ -149,7 +149,7 @@ class TimeTable extends React.PureComponent {
 
 
   async componentDidMount() {
-    if(!this.checkLogin()) {
+    if (!this.checkLogin()) {
       return null;
     }
     if (!this.state.isDataLoaded) {
@@ -164,7 +164,7 @@ class TimeTable extends React.PureComponent {
 
   checkLogin() {
     let userNickName = window.sessionStorage.getItem('user');
-    if(userNickName === null){
+    if (userNickName === null) {
       this.setState({ isSignInAlertDialogOn: true });
       return false;
     }
@@ -210,36 +210,43 @@ class TimeTable extends React.PureComponent {
     this.setState({ confirmationVisible: !confirmationVisible });
   }
 
-  commitDeletedAppointment() {
-    this.setState((state) => {
-      const { data, deletedAppointmentId } = state;
-      const nextData = data.filter(appointment => appointment.id !== deletedAppointmentId);
+  async commitDeletedAppointment() {
+    const { data, deletedAppointmentId } = this.state;
 
-      return { data: nextData, deletedAppointmentId: null };
-    });
+    console.log("delete procedure turn on ");
+    let targetAppointment = data.find(appointment => appointment.id === deletedAppointmentId);
+    if (!await this.state.scheduleDataController.deleteScheduleAsync(targetAppointment.scheduleNo)) {
+      return false;
+    }
+    let userNickName = window.sessionStorage.getItem('user');
+
+    this.setState({ data: JSON.parse(window.localStorage.getItem(userNickName + '_AppointmentData')), deletedAppointmentId: null });
     this.toggleConfirmationVisible();
+    return true;
   }
 
   //method that reacting to change on timeblocks 
   async commitChanges({ added, changed, deleted }) {
-      let { data } = this.state;
-      if (added) {
-        let result = await this.state.scheduleDataController.createNewScheduleAsync(added);
-        if (result !== null) {
-          const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-          data = [...data, { id: startingAddedId, ...added }];
-          this.state.scheduleDataController.updateDataOnLocalStorage(data);
-        }
+    let { data } = this.state;
+    if (added) {
+      let result = await this.state.scheduleDataController.createNewScheduleAsync(added);
+      if (result !== null) {
+        const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
+        data = [...data, { id: startingAddedId, scheduleNo: result, ...added }];
+        this.state.scheduleDataController.updateDataOnLocalStorage(data);
       }
-      if (changed) {
-        data = data.map(appointment => (
-          changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
-      }
-      if (deleted !== undefined) {
-        this.setDeletedAppointmentId(deleted);
-        this.toggleConfirmationVisible();
-      }
-      this.setState({ data, addedAppointment: {} });
+    }
+    if (changed) {
+      data = data.map(appointment => (
+        changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
+    }
+    if (deleted) {
+      console.log('deleted: ', deleted);
+      this.setDeletedAppointmentId(deleted);
+      this.toggleConfirmationVisible();
+      console.log('deleted: FINISHED ');
+    }
+    this.setState({ data, addedAppointment: {} });
   }
   //#endregion
 
@@ -264,8 +271,8 @@ class TimeTable extends React.PureComponent {
     const { classes } = this.props;
 
     return (
-      <Paper style = {{height:"100vh"}}>
-        
+      <Paper style={{ height: "100vh" }}>
+
         <Dialog
           open={this.state.isSignInAlertDialogOn}
           onClose={() => this.handleAlertDialogClose()}
@@ -304,7 +311,7 @@ class TimeTable extends React.PureComponent {
           />
           <MonthView />
           <EditRecurrenceMenu />
-          <ConfirmationDialog />
+
           <AllDayPanel />
           <Appointments />
           <AppointmentTooltip
@@ -319,8 +326,7 @@ class TimeTable extends React.PureComponent {
             visible={editingFormVisible}
             onVisibilityChange={this.toggleEditingFormVisibility}
           />
-
-
+          <ConfirmationDialog />
           <DragDropProvider />
           <CustomCurrentTimeIndicator />
 

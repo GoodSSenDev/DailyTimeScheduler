@@ -11,17 +11,17 @@ export default class ScheduleDataControl {
     //this function required a user to login first else gives error  
     updateDataOnLocalStorage(appointmentList) {
         let userNickName = window.sessionStorage.getItem('user');
-        if(userNickName === null){
+        if (userNickName === null) {
             return false;
         }
-        window.localStorage.setItem(userNickName+'_AppointmentData',JSON.stringify(appointmentList));
+        window.localStorage.setItem(userNickName + '_AppointmentData', JSON.stringify(appointmentList));
     }
 
     //Function that check Data exist in local storage else load the data in the server.
     async loadData() {
         let userNickName = window.sessionStorage.getItem('user');
-        if(userNickName !== null){
-            let appointmentData = window.localStorage.getItem(userNickName+'_AppointmentData');
+        if (userNickName !== null) {
+            let appointmentData = window.localStorage.getItem(userNickName + '_AppointmentData');
             if (appointmentData != null) {
                 return JSON.parse(appointmentData);
             }
@@ -29,11 +29,11 @@ export default class ScheduleDataControl {
         let rawData = await this.getScheduleRawDataFromServerAsync();
         let appointmentData = this.convertDataToAppointments(rawData);
 
-        if (appointmentData == null) {    
+        if (appointmentData == null) {
             return null;
         }
 
-        window.localStorage.setItem(userNickName+'_AppointmentData', JSON.stringify(appointmentData));
+        window.localStorage.setItem(userNickName + '_AppointmentData', JSON.stringify(appointmentData));
         return appointmentData;
     }
 
@@ -46,14 +46,14 @@ export default class ScheduleDataControl {
 
         });
         //if success 
-        
+
         if (response.status === 200) {
             return await response.json();
         }
-        if (response.status === 409){ // unauthorized
+        if (response.status === 409) { // unauthorized
             return null;
         }
-        if (response.status === 404){
+        if (response.status === 404) {
             return {};
         }
         else {
@@ -62,30 +62,25 @@ export default class ScheduleDataControl {
         }
     }
 
-    async deleteScheduleAsync(scheduleNo){
+    //return true if success else false 
+    async deleteScheduleAsync(scheduleNo) {
         let userNickName = window.sessionStorage.getItem('user');
-        let appointmentData = window.localStorage.get(userNickName+'_AppointmentData');
+        let appointmentData = window.localStorage.getItem(userNickName + '_AppointmentData');
         let appointmentJsonList = JSON.parse(appointmentData);
-        let targetAppointment = appointmentJsonList.find(appointment => appointment.scheduleNo === scheduleNo);
-        if(index === -1){
-            return false;
+
+
+        const response = await fetch(`api/TimeData/DeleteSchedule=${scheduleNo}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        if (response.status === 200) {
+            window.localStorage.setItem(userNickName + '_AppointmentData',
+                JSON.stringify(appointmentJsonList.filter(appointment => appointment.scheduleNo !== scheduleNo)));
+            return true;
         }
 
-        let scheduleDto = { 
-            Schedule: {
-                no:scheduleNo,
-            },
-            TimeBlocks: [{ 
-                no:
 
-            }]
-        }
-        // const response = await fetch(`api/TimeData/DeleteSchedule`, {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(scheduleDto),
-        //   });
-
+        return false;
     }
 
     //method that create new Schedule from appointmentFrom server 
@@ -93,32 +88,32 @@ export default class ScheduleDataControl {
         let scheduleDto = this.convertAppointmentsToScheduleData(appointment);
         console.log("Added :");
         console.log(scheduleDto);
-        if(scheduleDto == null){
+        if (scheduleDto == null) {
             return null;
         }
-        
+
         const response = await fetch(`api/TimeData/CreateSchedule`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(scheduleDto),
-          });
-      
-          console.log(response)
-          //if unauthorized 
-          if (response.status === 200) {
+        });
+
+        console.log(response)
+        //if unauthorized 
+        if (response.status === 200) {
             console.log(response.json.toString());
             return await response.json;
-          }
-          else {
+        }
+        else {
             console.log("Error occur on TimeData Creating new Schedule")
             return null;
-          }
+        }
     }
 
-//#region AppointmentConverter
+    //#region AppointmentConverter
     //method that gets(scheduleData, timeblocks)data and returns Appointments 
     convertAppointmentsToScheduleData(appointment) {
-        if(!appointment){
+        if (!appointment) {
             return null;
         }
         let title = ""
@@ -139,12 +134,12 @@ export default class ScheduleDataControl {
 
         console.log(rRuleNumberForm)
 
-        if(rRuleNumberForm !== undefined){
-            repeatPeriod= rRuleNumberForm.repeatPeriod
+        if (rRuleNumberForm !== undefined) {
+            repeatPeriod = rRuleNumberForm.repeatPeriod
             endUTCTime = rRuleNumberForm.endUTCTime
         }
 
-        let scheduleDto = { 
+        let scheduleDto = {
             Schedule: {
                 Title: title,
                 Description: description,
@@ -167,10 +162,10 @@ export default class ScheduleDataControl {
 
     getRepeatPeriodFromRRuleFormat(rRuleFormat, startDateInTicks) {
 
-        if(rRuleFormat == null){
+        if (rRuleFormat == null) {
             return null
         }
-        
+
         let rRuleArray = rRuleFormat.split(/[;=:]/)
 
         let interval = parseInt(rRuleArray[2])
@@ -230,7 +225,7 @@ export default class ScheduleDataControl {
                 let prefixOfMonth = parseInt((rRuleArray[6 + countCoefficient]).substring(0, 2));
 
                 if (prefixOfMonth < 0) {
-                    prefixOfMonth=0
+                    prefixOfMonth = 0
                 }
                 let dayOfWeek = dayOfWeekTwoLetterEnum[rRuleArray[6 + countCoefficient].substring(2)]
                 repeatPeriod = repeatPeriod + (1 * 10) //indicate subtype 2 
