@@ -86,8 +86,6 @@ export default class ScheduleDataControl {
     //method that create new Schedule from appointmentFrom server 
     async createNewScheduleAsync(appointment) {
         let scheduleDto = this.convertAppointmentsToScheduleData(appointment);
-        console.log("Added :");
-        console.log(scheduleDto);
         if (scheduleDto == null) {
             return null;
         }
@@ -102,7 +100,7 @@ export default class ScheduleDataControl {
         //if unauthorized 
         if (response.status === 200) {
             console.log(response.json.toString());
-            return await response.json;
+            return await response.json();
         }
         else {
             console.log("Error occur on TimeData Creating new Schedule")
