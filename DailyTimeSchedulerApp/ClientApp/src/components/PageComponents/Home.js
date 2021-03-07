@@ -1,16 +1,36 @@
 import React, { Component } from 'react';
-import { Button } from "@material-ui/core";
+import { Paper } from "@material-ui/core";
 
 export class Home extends Component {
-  static displayName = Home.name;
 
-  render () {
+  render() {
     return (
       <div>
-        <h1>Home Page</h1>
-        <Button color="secondary" variant="outlined">
-          This is button
-        </Button>
+        <br />
+        <Paper>
+          <h1>Daily Scheduler Web App</h1>
+          <br />
+          <p>This web app is currently working progress</p>
+        </Paper>
+        <br />
+        <Paper>
+          <h2>Functionalities</h2>
+          <ol>
+            <ul>Calendar - adding a schedule</ul>
+            <ul>Calendar - saving a schedule</ul>
+            <ul>Calendar - deleting a schedule</ul>
+          </ol>
+        </Paper>
+        <br />
+        <Paper>
+          <h2>Future Functionalities</h2>
+          <ol>
+            <ul>Analyse schedules(pattern, rate)</ul>
+            <ul>Improve SignIn, Registering button UI</ul>
+            <ul>Calendar - updating a schedule</ul>
+            <ul>Calendar - having different types of schedule e.g. (bool, progress, milestone ...)</ul>
+          </ol>
+        </Paper>
       </div>
     );
   }

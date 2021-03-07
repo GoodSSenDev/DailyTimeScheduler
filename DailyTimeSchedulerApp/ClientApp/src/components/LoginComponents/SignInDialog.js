@@ -129,7 +129,7 @@ export default class SignInForm extends PureComponent {
                         >
                             SIGN IN
                         </Button>
-                        {this.state.isRegistering && <CircularProgress size={28} style={{position:'absolute', bottom: '12px', right:'47px' }}/>}
+                        {this.state.isSignedIn && <CircularProgress size={28} style={{position:'absolute', bottom: '12px', right:'45px' }}/>}
                     </ThemeProvider>
                 </DialogActions>
             </Dialog>
