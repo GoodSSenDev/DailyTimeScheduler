@@ -33,7 +33,7 @@ namespace DailyTimeSchedulerApp.Controllers
                 return Unauthorized();
 
             if (!Int32.TryParse(userNo, out int noValue))
-                    return NotFound("User no can not be transfered to int32");
+                    return Unauthorized("User no can not be transfered to int32");
 
             var result = await this._scheduleDataBll.GetScheduleDataAsync(noValue);
 
@@ -54,12 +54,35 @@ namespace DailyTimeSchedulerApp.Controllers
                 return NotFound("User no can not be transfered to int32");
 
             scheduleDto.Schedule.UserNo = noValue;
-            if (await this._scheduleDataBll.CreateNewScheduleAsyncParallel(scheduleDto))
-                return Ok();
+            int scheduleNo = await this._scheduleDataBll.CreateNewScheduleReturnNoAsyncParallel(scheduleDto);
             
+            if (scheduleNo == -1)
+                return Conflict();
+
+            return Ok(scheduleNo);
+        }
+
+        /// <summary>
+        /// A HTTP POST that delete the schedule including no.
+        /// </summary>
+        /// <param name="targetScheduleNo">targetScheduleNo</param>
+        /// <returns></returns>
+        [HttpGet("DeleteSchedule={targetScheduleNo}")]  
+        public async Task<IActionResult> DeleteScheduleAsync([FromRoute] int targetScheduleNo)
+        {
+            var userNo = HttpContext.User.FindFirstValue("no");
+            if (userNo == null)
+                return Unauthorized();
+            if (!Int32.TryParse(userNo, out int userNoValue))
+                return NotFound("User no can not be transfered to int32");
+
+            if (await this._scheduleDataBll.DeleteScheduleAsync(userNoValue, targetScheduleNo))
+                return Ok();
+
 
             return Conflict();
         }
+
 
     }
 }

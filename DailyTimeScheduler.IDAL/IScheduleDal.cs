@@ -31,6 +31,10 @@ namespace DailyTimeScheduler.IDAL
         List<Schedule> GetSchedulesByUserNo(int userNo);
 
         Task<List<Schedule>> GetSchedulesByUserNoAsync(int userNo);
+
+        int GetUserNoOfScheduleByNo(int no);
+
+        Task<int> GetUserNoOfScheduleByNoAsync(int no);
         #endregion
 
         #region Update

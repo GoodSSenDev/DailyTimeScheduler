@@ -14,7 +14,11 @@ const rootElement = document.getElementById('root');
 const theme = createMuiTheme({
   palette:{
     type: 'light',
-    primary:blue,
+    primary:{
+      dark:"#1c54b2",
+      main:"#2979ff",
+      light:"#222222",
+    },
   }
 })
 

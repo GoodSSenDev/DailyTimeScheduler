@@ -17,7 +17,6 @@ const useStyles = makeStyles(theme => ({
   flexContainer: {
     display: "flex",
     flexDirection: '',
-    flextWrap: "wrap"
   },
 
   flexItem: {
@@ -39,50 +38,26 @@ const useStyles = makeStyles(theme => ({
     borderRadius: "0",
   },
   tabItem: {
+    color:"#9e9e9e",
     backgroundColor: theme.palette.primary.light,
     fontWeight: 'bold'
   },
-  tab1Bc: {
+  tabHoverColor: {
     "&:hover": {
-      backgroundColor: "#B7E1F3"
-    },
-  },
-  tab2Bc: {
-    "&:hover": {
-      backgroundColor: "#189AA8"
-    },
-  },
-  tab3Bc: {
-    "&:hover": {
-      backgroundColor: "#AAD356"
-    },
-  },
-  tab4Bc: {
-    "&:hover": {
-      backgroundColor: "#F9C908"
-    },
-  },
-  tab5Bc: {
-    "&:hover": {
-      backgroundColor: "#F35844"
-    },
-  },
-  tab6Bc: {
-    "&:hover": {
-      backgroundColor: "#2c387e"
+      backgroundColor: theme.palette.primary.main
     },
   },
   tabNotSelected: { 
     backgroundColor: theme.palette.primary.light, }
 }));
 
-export default function NavMenuTab() {
+export default function NavMenuTab(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const [isSignedIn, setIsSignedIn] = React.useState(false);
   const [nickName, setNickName] = React.useState("");
   const [isNavClosed, setIsNavClosed] = React.useState(false);
-
+  const [navTabColour, setNavTabColor] = React.useState("#1c54b2");
 
   const handelScroll = () => {
     window.scrollY > 80
@@ -107,7 +82,7 @@ export default function NavMenuTab() {
   }, []);
 
   useEffect(() => {
-    let userNickName = localStorage.getItem('user');
+    let userNickName = sessionStorage.getItem('user');
     if (userNickName != null) {
       setIsSignedIn(true);
       setNickName(userNickName);
@@ -119,7 +94,7 @@ export default function NavMenuTab() {
 
   return (
     <Fragment>
-      <NavPoperover isDisplay={isNavClosed}></NavPoperover>
+      <NavPoperover style={{height: props.height}} isDisplay={isNavClosed}></NavPoperover>
       <div className={classes.flexContainer}>
         <Paper className={classNames(classes.flexItem, classes.tabSpace)} elevation={3}>
           <Tabs
@@ -130,39 +105,39 @@ export default function NavMenuTab() {
             <Tab
               value={0}
               color="secondary.main"
-              style={(value === 0) ? { backgroundColor: "#2c387e" } :{}}
-              className={classNames(classes.tab6Bc, classes.tabItem)}
+              style={(value === 0) ? { backgroundColor: navTabColour } :{}}
+              className={classNames(classes.tabHoverColor, classes.tabItem)}
               to='/' component={Link}
               label="Home"
               icon={<HomeIcon fontSize="large" />} />
             <Tab
               value={1}
-              style={(value === 1) ? { backgroundColor: "#B7E1F3" } :{}}
-              className={classNames(classes.tab1Bc, classes.tabItem)}
-              to='/counter' component={Link}
+              style={(value === 1) ? { backgroundColor: navTabColour } :{}}
+              className={classNames(classes.tabHoverColor, classes.tabItem)}
+              to='/calendar' component={Link}
               label="Calendar"
               icon={<DateRangeSharpIcon fontSize="large" />} />
             <Tab
               value={2}
-              style={(value === 2) ? { backgroundColor: "#189AA8" } :{}}
-              className={classNames(classes.tab2Bc, classes.tabItem)}
-              to='/tempHome' component={Link}
+              style={(value === 2) ? { backgroundColor: navTabColour } :{}}
+              className={classNames(classes.tabHoverColor, classes.tabItem)}
+              to='/analysis' component={Link}
               label="Analysis"
               icon={<TimelineSharpIcon fontSize="large" />} />
             <Tab
               value={3}
-              style={(value === 3) ? { backgroundColor: "#AAD356" } :{}}
-              className={classNames(classes.tab3Bc, classes.tabItem)}
+              style={(value === 3) ? { backgroundColor: navTabColour } :{}}
+              className={classNames(classes.tabHoverColor, classes.tabItem)}
               label="Item Three" />
             <Tab
               value={4}
-              style={(value === 4) ? { backgroundColor: "#F9C908" } :{}}
-              className={classNames(classes.tab4Bc, classes.tabItem)}
+              style={(value === 4) ? { backgroundColor: navTabColour } :{}}
+              className={classNames(classes.tabHoverColor, classes.tabItem)}
               label="Item Three" />
             <Tab
               value={5}
-              style={(value === 5) ? { backgroundColor: "#F35844" } :{}}
-              className={classNames(classes.tab5Bc, classes.tabItem)}
+              style={(value === 5) ? { backgroundColor: navTabColour } :{}}
+              className={classNames(classes.tabHoverColor, classes.tabItem)}
               label="Item Three" />
           </Tabs>
 

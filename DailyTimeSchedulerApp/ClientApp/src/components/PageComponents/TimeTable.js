@@ -25,8 +25,9 @@ import { withStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import * as React from 'react';
 import AppointmentFormTask from '../AppointmentFormTask';
-import ScheduleDataControl from '../Model/ScheduleDataControl'
+import ScheduleDataControl from '../../Controllers/ScheduleDataControl'
 import CustomCurrentTimeIndicator from '../CustomCurrentTimeIndicator'
+
 
 const containerStyles = theme => ({
   container: {
@@ -102,7 +103,8 @@ class TimeTable extends React.PureComponent {
       endDayHour: 24,
       isNewAppointment: false,
       scheduleDataController: new ScheduleDataControl(),
-      isDataLoaded: false
+      isDataLoaded: false,
+      isSignInAlertDialogOn: false,
     };
     this.currentDateChange = (currentDate) => { this.setState({ currentDate }); };
     this.toggleConfirmationVisible = this.toggleConfirmationVisible.bind(this);
@@ -147,24 +149,36 @@ class TimeTable extends React.PureComponent {
 
 
   async componentDidMount() {
-
-    if (!this.state.isDataLoaded) {
-      await this.loadAppointmentData()
-      this.setState({ isDataLoaded: true })
+    if (!this.checkLogin()) {
+      return null;
     }
-
+    if (!this.state.isDataLoaded) {
+      await this.loadAppointmentData();
+      this.setState({ isDataLoaded: true });
+    }
   }
 
   componentDidUpdate() {
     this.appointmentForm.update();
   }
 
-  getLocalDataString() {
-    let dateStrings = new Date().toLocaleDateString().split("/");
-    return `${dateStrings[2]}-${dateStrings[0]}-${dateStrings[1]}`;
+  checkLogin() {
+    let userNickName = window.sessionStorage.getItem('user');
+    if (userNickName === null) {
+      this.setState({ isSignInAlertDialogOn: true });
+      return false;
+    }
+    return true;
   }
 
-  //#region Appointment
+  async loadAppointmentData() {
+    let result = await this.state.scheduleDataController.loadData();
+    if (result !== null) {
+      this.setState({ data: result });
+    }
+  }
+
+  //#region TimeTable functionalities
   onEditingAppointmentChange(editingAppointment) {
     this.setState({ editingAppointment });
   }
@@ -196,54 +210,54 @@ class TimeTable extends React.PureComponent {
     this.setState({ confirmationVisible: !confirmationVisible });
   }
 
-  commitDeletedAppointment() {
-    this.setState((state) => {
-      const { data, deletedAppointmentId } = state;
-      const nextData = data.filter(appointment => appointment.id !== deletedAppointmentId);
+  async commitDeletedAppointment() {
+    const { data, deletedAppointmentId } = this.state;
 
-      return { data: nextData, deletedAppointmentId: null };
-    });
+    console.log("delete procedure turn on ");
+    let targetAppointment = data.find(appointment => appointment.id === deletedAppointmentId);
+    if (!await this.state.scheduleDataController.deleteScheduleAsync(targetAppointment.scheduleNo)) {
+      return false;
+    }
+    let userNickName = window.sessionStorage.getItem('user');
+
+    this.setState({ data: JSON.parse(window.localStorage.getItem(userNickName + '_AppointmentData')), deletedAppointmentId: null });
     this.toggleConfirmationVisible();
+    return true;
   }
 
   //method that reacting to change on timeblocks 
-  commitChanges({ added, changed, deleted }) {
-    this.setState(async (state) => {
-      let { data } = state;
-      if (added) {
-        console.log("this is adding")
-        console.log(added)
-        let result = await this.state.scheduleDataController.createNewScheduleAsync(added)
-        if (result !== null) {
-          const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-          data = [...data, { id: startingAddedId, ...added }];
-
-          this.state.scheduleDataController.updateDataOnLocal(data)
-          this.loadAppointmentData();
-        }
+  async commitChanges({ added, changed, deleted }) {
+    let { data } = this.state;
+    if (added) {
+      let result = await this.state.scheduleDataController.createNewScheduleAsync(added);
+      if (result !== null) {
+        const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
+        data = [...data, { id: startingAddedId, scheduleNo: result, ...added }];
+        this.state.scheduleDataController.updateDataOnLocalStorage(data);
       }
-      if (changed) {
-        console.log("this is Changing")
-        console.log(changed)
-        data = data.map(appointment => (
-          changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
-      }
-      if (deleted !== undefined) {
-        console.log("this is Deleting")
-        console.log(deleted)
-        this.setDeletedAppointmentId(deleted);
-        this.toggleConfirmationVisible();
-      }
-      console.log(this.state.data);
-      return { data, addedAppointment: {} };
-    });
+    }
+    if (changed) {
+      data = data.map(appointment => (
+        changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
+    }
+    if (deleted) {
+      console.log('deleted: ', deleted);
+      this.setDeletedAppointmentId(deleted);
+      this.toggleConfirmationVisible();
+      console.log('deleted: FINISHED ');
+    }
+    this.setState({ data, addedAppointment: {} });
   }
   //#endregion
 
-  async loadAppointmentData() {
-    this.setState({ data: await this.state.scheduleDataController.loadData() })
+  handleAlertDialogClose() {
+    this.props.history.push('/');
   }
 
+  getLocalDataString() {
+    let dateStrings = new Date().toLocaleDateString().split("/");
+    return `${dateStrings[2]}-${dateStrings[0]}-${dateStrings[1]}`;
+  }
 
   render() {
     const {
@@ -257,10 +271,29 @@ class TimeTable extends React.PureComponent {
     const { classes } = this.props;
 
     return (
-      <Paper>
+      <Paper style={{ height: 'calc(100vh - 90px)'}}>
+
+        <Dialog
+          open={this.state.isSignInAlertDialogOn}
+          onClose={() => this.handleAlertDialogClose()}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Sign In Required "}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              (づ｡◕‿‿◕｡)づ :Please SignIn to use calendar functionality.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.handleAlertDialogClose()} color="primary" autoFocus>
+              Okie Dokie
+          </Button>
+          </DialogActions>
+        </Dialog>
         <Scheduler
           data={data}
-          height={876}
+          height={"auto"}
         >
           <ViewState
             currentDate={currentDate}
@@ -278,7 +311,7 @@ class TimeTable extends React.PureComponent {
           />
           <MonthView />
           <EditRecurrenceMenu />
-          <ConfirmationDialog />
+
           <AllDayPanel />
           <Appointments />
           <AppointmentTooltip
@@ -287,16 +320,15 @@ class TimeTable extends React.PureComponent {
             showDeleteButton
           />
           <Toolbar />
-          <DateNavigator  />
+          <DateNavigator />
           <ViewSwitcher />
           <AppointmentForm
             visible={editingFormVisible}
             onVisibilityChange={this.toggleEditingFormVisibility}
           />
-
-
+          <ConfirmationDialog />
           <DragDropProvider />
-          <CustomCurrentTimeIndicator/>
+          <CustomCurrentTimeIndicator />
 
         </Scheduler>
 
@@ -320,6 +352,7 @@ class TimeTable extends React.PureComponent {
               Delete
             </Button>
           </DialogActions>
+
         </Dialog>
 
         <Fab
@@ -341,4 +374,4 @@ class TimeTable extends React.PureComponent {
   }
 }
 
-export default withStyles(styles, {  })(TimeTable);
+export default withStyles(styles, {})(TimeTable);

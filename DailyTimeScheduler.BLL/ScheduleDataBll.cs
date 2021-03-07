@@ -106,8 +106,73 @@ namespace DailyTimeScheduler.BLL
 
             return true;
         }
+
+        /// <summary>
+        /// Method that can create new schedule with timeBlock Async Parallel
+        /// </summary>
+        /// <param name="scheduleDto"></param>
+        /// <returns>retrun scheduleNo if success or no error else return -1</returns>
+        public async Task<int> CreateNewScheduleReturnNoAsyncParallel(ScheduleDto scheduleDto)
+        {
+            var scheduleNo = await this._scheduleDal.CreateNewScheduleReturnNoAsync(scheduleDto.Schedule);
+            if (scheduleNo == -1)
+                return scheduleNo;
+
+            await Task.Run(() =>
+            {
+                Parallel.ForEach(scheduleDto.Timeblocks, async (timeBlock) =>
+                {
+                    timeBlock.ScheduleNo = scheduleNo;
+                    await this._timeBlockDal.CreateNewTimeBlockAsync(timeBlock);
+                });
+            });
+
+            return scheduleNo;
+        }
+
+        /// <summary>
+        /// Method that can create new schedule with timeBlock Async 
+        /// </summary>
+        /// <param name="scheduleDto"></param>
+        /// <returns>retrun scheduleNo if success or no error else return -1 </returns>
+        public async Task<int> CreateNewScheduleReturnNoAsync(ScheduleDto scheduleDto)
+        {
+            var scheduleNo = await this._scheduleDal.CreateNewScheduleReturnNoAsync(scheduleDto.Schedule);
+            if (scheduleNo == -1)
+                return scheduleNo;
+
+            for (int i = 0; i < scheduleDto.Timeblocks.Count; i++)
+            {
+                scheduleDto.Timeblocks[i].ScheduleNo = scheduleNo;
+                if (!await this._timeBlockDal.CreateNewTimeBlockAsync(scheduleDto.Timeblocks[i]))
+                    return -1;
+            }
+
+            return scheduleNo;
+        }
+
+        /// <summary>
+        /// Method that can delete schedule with including timeblocks also check userNo for validation check.
+        /// </summary>
+        /// <returns>retrun true if success or no error else return false </returns>
+        public async Task<bool> DeleteScheduleAsync(int userNo,int targetScheduleNo)
+        {
+            var targetSchedule = await _scheduleDal.GetUserNoOfScheduleByNoAsync(targetScheduleNo);
+            if (targetSchedule == 0 || targetSchedule != userNo)
+            {
+                return false;//if data not exist or user is not same;
+            }
+
+            if (!await this._timeBlockDal.DeleteTimeBlockByScheduleNoAsync(targetScheduleNo))
+                return false;
+
+            var scheduleNo = await this._scheduleDal.DeleteScheduleByNoAsync(targetScheduleNo);
+            if (scheduleNo == false)
+                return false;
+
+            return true;
+        }
     }
 
-    //Make (already decided) data passing object on Common model
 
 }

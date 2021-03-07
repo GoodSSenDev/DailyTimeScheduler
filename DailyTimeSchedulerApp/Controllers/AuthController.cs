@@ -72,9 +72,7 @@ namespace DailyTimeSchedulerApp.Controllers
 
         [HttpGet("checkIDDuplication={id}")]
         public async Task<IActionResult> CheckIDAsync([FromRoute]string id)
-        {
-            Console.WriteLine(id);
-           
+        {           
             if (await _userBll.CheckIDDuplicationAsync(id))
                 return Conflict();
       
@@ -84,8 +82,6 @@ namespace DailyTimeSchedulerApp.Controllers
         [HttpGet("checkNickNameDuplication={nickname}")]
         public async Task<IActionResult> CheckNickNameAsync([FromRoute] string nickname)
         {
-            Console.WriteLine(nickname);
-
             if (await _userBll.CheckNickNameDuplicationAsync(nickname))
                 return Conflict();
 

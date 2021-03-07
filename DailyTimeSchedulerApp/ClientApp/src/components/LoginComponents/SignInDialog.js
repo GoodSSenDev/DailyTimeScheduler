@@ -21,7 +21,7 @@ export default class SignInForm extends PureComponent {
         this.state = {
             isCancelBtnDown: false,
             isSignInBtnDown: false,
-            isSignIning: false,
+            isSignedIn: false,
             errorMessage: ""
         };
         this.inputIDRef = createRef();
@@ -42,22 +42,25 @@ export default class SignInForm extends PureComponent {
 
 
     async signInAsync() {
-        this.setState({ isSignIning: true })
+        this.setState({ isSignedIn: true })
         let response = await this.sendSignInDataAsync()
         if(response.status === 401){
             this.setState({errorMessage:"ID or Password is incorrect"})
-            this.setState({ isSignIning: false })
+            this.setState({ isSignedIn: false })
             return;
         }
         else if (response.status === 200){
-            localStorage.setItem('user',await response.json())
+            console.log("this is login");
+            let responseResult = await response.json();
+            console.log(responseResult);
+            console.log(responseResult);    
+            window.sessionStorage.setItem('user',responseResult);
             this.props.closeDialogCallBack(false)
             window.location.reload();
             return;
         }
         else {
-            this.setState({errorMessage:"Unknown Error 1 occured"})
-            this.setState({ isSignIning: false })
+            this.setState({errorMessage:"Unknown Error 1 occured",isSignedIn: false })
             return;
         }
     }
@@ -116,7 +119,7 @@ export default class SignInForm extends PureComponent {
                             CANCEL
                         </Button>
                         <Button
-                            disabled={this.state.isSignIning}
+                            disabled={this.state.isSignedIn}
                             onMouseDown={() => this.setSignInBtn(true)}
                             onMouseUp={() => this.setSignInBtn(false)}
                             onMouseLeave={() => this.setSignInBtn(false)}
@@ -126,7 +129,7 @@ export default class SignInForm extends PureComponent {
                         >
                             SIGN IN
                         </Button>
-                        {this.state.isRegistering && <CircularProgress size={28} style={{position:'absolute', bottom: '12px', right:'47px' }}/>}
+                        {this.state.isSignedIn && <CircularProgress size={28} style={{position:'absolute', bottom: '12px', right:'45px' }}/>}
                     </ThemeProvider>
                 </DialogActions>
             </Dialog>

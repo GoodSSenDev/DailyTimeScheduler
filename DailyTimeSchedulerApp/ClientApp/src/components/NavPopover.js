@@ -77,13 +77,13 @@ export default function NavPopover(props) {
             </ListItemIcon>
             <ListItemText primary="Home" />
           </StyledMenuItem>
-          <StyledMenuItem to='/counter' component={Link}>
+          <StyledMenuItem to='/calendar' component={Link}>
             <ListItemIcon>
               <DateRangeSharpIcon fontSize="large" />
             </ListItemIcon>
             <ListItemText primary="Calendar" />
           </StyledMenuItem>
-          <StyledMenuItem to='/tempHome' component={Link}>
+          <StyledMenuItem to='/analysis' component={Link}>
             <ListItemIcon>
               <TimelineSharpIcon fontSize="large" />
             </ListItemIcon>
