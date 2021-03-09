@@ -9,6 +9,9 @@ export class Layout extends Component {
       <div>
         <Nav height={90}/>
         <div>
+          <br/>
+          <br/>
+          <br/>
           {this.props.children}
         </div>
       </div>
