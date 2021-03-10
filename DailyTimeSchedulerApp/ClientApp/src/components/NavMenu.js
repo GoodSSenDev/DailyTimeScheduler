@@ -54,43 +54,41 @@ export default function NavPopover(props) {
 
   return (
     <div>
-      <Box display={props.isDisplay?"inline":"none"} style={{ padding: "10px", position: "fixed", zIndex: 1400 }}>
-        <Button
-          aria-controls="customized-menu"
-          aria-haspopup="true"
-          variant="contained"
-          color="primary"
-          onClick={handleClick}
-        >
-          {Boolean(anchorEl) ? <MenuOpenIcon fontSize="large" /> : <MenuIcon fontSize="large" />}
-        </Button >
-        <StyledMenu
-          id="customized-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          <StyledMenuItem to='/' component={Link}>
-            <ListItemIcon>
-              <HomeIcon fontSize="large" />
-            </ListItemIcon>
-            <ListItemText primary="Home" />
-          </StyledMenuItem>
-          <StyledMenuItem to='/calendar' component={Link}>
-            <ListItemIcon>
-              <DateRangeSharpIcon fontSize="large" />
-            </ListItemIcon>
-            <ListItemText primary="Calendar" />
-          </StyledMenuItem>
-          <StyledMenuItem to='/analysis' component={Link}>
-            <ListItemIcon>
-              <TimelineSharpIcon fontSize="large" />
-            </ListItemIcon>
-            <ListItemText primary="Analysis" />
-          </StyledMenuItem>
-        </StyledMenu>
-      </Box>
+      <Button
+        aria-controls="customized-menu"
+        aria-haspopup="true"
+        variant="contained"
+        color="primary"
+        onClick={handleClick}
+      >
+        {Boolean(anchorEl) ? <MenuOpenIcon fontSize="large" /> : <MenuIcon fontSize="large" />}
+      </Button >
+      <StyledMenu
+        id="customized-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <StyledMenuItem to='/' component={Link}>
+          <ListItemIcon>
+            <HomeIcon fontSize="large" />
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </StyledMenuItem>
+        <StyledMenuItem to='/calendar' component={Link}>
+          <ListItemIcon>
+            <DateRangeSharpIcon fontSize="large" />
+          </ListItemIcon>
+          <ListItemText primary="Calendar" />
+        </StyledMenuItem>
+        <StyledMenuItem to='/analysis' component={Link}>
+          <ListItemIcon>
+            <TimelineSharpIcon fontSize="large" />
+          </ListItemIcon>
+          <ListItemText primary="Analysis" />
+        </StyledMenuItem>
+      </StyledMenu>
     </div>
   );
 }
