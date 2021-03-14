@@ -38,6 +38,10 @@ namespace DailyTimeScheduler.IDAL
         #endregion
 
         #region Update
+        bool UpdateScheduleByNo(int no, Schedule updatedSchedule);
+
+        Task<bool> UpdateScheduleByNoAsync(int no, Schedule updatedSchedule);
+
         bool UpdateScheduleTitleByNo(int no, string title);
 
         Task<bool> UpdateScheduleTitleByNoAsync(int no, string title);

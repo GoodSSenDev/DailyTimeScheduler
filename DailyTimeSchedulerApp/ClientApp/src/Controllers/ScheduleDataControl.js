@@ -36,6 +36,10 @@ export default class ScheduleDataControl {
         window.localStorage.setItem(userNickName + '_AppointmentData', JSON.stringify(appointmentData));
         return appointmentData;
     }
+    async UpdateEditedSchedule(changedAppointment) {
+        let scheduleDto = this.convertAppointmentsToScheduleData(changedAppointment);
+        // update request 
+    }
 
     //method that get the data by fetching from the server
     async getScheduleRawDataFromServerAsync() {

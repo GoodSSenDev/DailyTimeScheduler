@@ -172,7 +172,30 @@ namespace DailyTimeScheduler.BLL
 
             return true;
         }
+
+        /// <summary>
+        /// Method that can delete schedule with including timeblocks also check userNo for validation check.
+        /// </summary>
+        /// <returns>retrun true if success or no error else return false </returns>
+        public async Task<bool> UpdateScheduleAsync(int userNo, int targetScheduleNo)
+        {
+            var targetSchedule = await _scheduleDal.GetUserNoOfScheduleByNoAsync(targetScheduleNo);
+            if (targetSchedule == 0 || targetSchedule != userNo)
+            {
+                return false;//if data not exist or user is not same;
+            }
+
+            if (!await this._timeBlockDal.DeleteTimeBlockByScheduleNoAsync(targetScheduleNo))
+                return false;
+
+            var scheduleNo = await this._scheduleDal.DeleteScheduleByNoAsync(targetScheduleNo);
+            if (scheduleNo == false)
+                return false;
+
+            return true;
+        }
     }
+}
 
 
 }

@@ -180,10 +180,13 @@ class TimeTable extends React.PureComponent {
 
   //#region TimeTable functionalities
   onEditingAppointmentChange(editingAppointment) {
+    console.log('editingAppointment: ', editingAppointment);
+    
     this.setState({ editingAppointment });
   }
 
   onAddedAppointmentChange(addedAppointment) {
+    console.log('addedAppointment: ', addedAppointment);
     this.setState({ addedAppointment });
     const { editingAppointment } = this.state;
     if (editingAppointment !== undefined) {
@@ -237,8 +240,12 @@ class TimeTable extends React.PureComponent {
       }
     }
     if (changed) {
-      data = data.map(appointment => (
-        changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
+      console.log('changed: ', changed.toString());
+      console.log('changed: ', changed);
+      
+      // data = data.map(appointment => (
+      //   changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
+      
     }
     if (deleted) {
       console.log('deleted: ', deleted);
