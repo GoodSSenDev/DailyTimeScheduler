@@ -40,7 +40,9 @@ namespace DailyTimeScheduler.IDAL
         #endregion
 
         #region Update
+        bool UpdateTimeBlockByScheduleNo(int scheduleNo, TimeBlock updatedTimeBlock);
 
+        Task<bool> UpdateTimeBlockByScheduleNoAsync(int scheduleNo, TimeBlock updatedTimeBlock);
 
         bool UpdateTimeBlockIntialUTCTimeByNo(int timeBlockNo, long intialUTCTime);
 

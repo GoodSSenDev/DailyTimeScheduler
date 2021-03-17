@@ -35,10 +35,36 @@ export default class ScheduleDataControl {
 
         window.localStorage.setItem(userNickName + '_AppointmentData', JSON.stringify(appointmentData));
         return appointmentData;
-    }
+    }   
     async UpdateEditedSchedule(changedAppointment) {
         let scheduleDto = this.convertAppointmentsToScheduleData(changedAppointment);
+        scheduleDto.Schedule.No = changedAppointment.scheduleNo;
+        console.log('scheduleDto: ', scheduleDto);
+
+        const response = await fetch(`api/TimeData/UpdateSchedule`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(scheduleDto),
+        });
+
+        console.log('response.status: ', response.status);
+        if (response.status === 200) {
+            return true;
+        }
+        if (response.status === 409) { // unauthorized
+            console.log("409 occur on a schedule updating");
+            return false;
+        }
+        if (response.status === 404) {
+            console.log("404 occur on a schedule updating");
+            return false;
+        }
+        else {
+            console.log("Error occur on a schedule updating");
+            return false;
+        }
         // update request 
+
     }
 
     //method that get the data by fetching from the server

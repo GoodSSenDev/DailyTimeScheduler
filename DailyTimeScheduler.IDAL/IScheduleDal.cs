@@ -36,7 +36,7 @@ namespace DailyTimeScheduler.IDAL
 
         Task<int> GetUserNoOfScheduleByNoAsync(int no);
         #endregion
-
+            
         #region Update
         bool UpdateScheduleByNo(int no, Schedule updatedSchedule);
 

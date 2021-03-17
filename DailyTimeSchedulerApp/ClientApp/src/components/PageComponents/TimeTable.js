@@ -105,6 +105,7 @@ class TimeTable extends React.PureComponent {
       scheduleDataController: new ScheduleDataControl(),
       isDataLoaded: false,
       isSignInAlertDialogOn: false,
+      editedAppointment: undefined,
     };
     this.currentDateChange = (currentDate) => { this.setState({ currentDate }); };
     this.toggleConfirmationVisible = this.toggleConfirmationVisible.bind(this);
@@ -181,8 +182,19 @@ class TimeTable extends React.PureComponent {
   //#region TimeTable functionalities
   onEditingAppointmentChange(editingAppointment) {
     console.log('editingAppointment: ', editingAppointment);
-    
+    console.log('editedAppointment: ', this.state.editedAppointment);
+
+    if (editingAppointment === undefined) {
+      if (this.state.scheduleDataController.UpdateEditedSchedule(this.state.editedAppointment)) {
+        let data = this.state.data.map(appointment => (appointment.id === this.state.editedAppointment.id) ? this.state.editedAppointment : appointment);
+        this.setState({ data, editingAppointment });
+        return true;
+      }
+
+    }
+
     this.setState({ editingAppointment });
+    return false;
   }
 
   onAddedAppointmentChange(addedAppointment) {
@@ -216,7 +228,6 @@ class TimeTable extends React.PureComponent {
   async commitDeletedAppointment() {
     const { data, deletedAppointmentId } = this.state;
 
-    console.log("delete procedure turn on ");
     let targetAppointment = data.find(appointment => appointment.id === deletedAppointmentId);
     if (!await this.state.scheduleDataController.deleteScheduleAsync(targetAppointment.scheduleNo)) {
       return false;
@@ -242,10 +253,11 @@ class TimeTable extends React.PureComponent {
     if (changed) {
       console.log('changed: ', changed.toString());
       console.log('changed: ', changed);
-      
-      // data = data.map(appointment => (
-      //   changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
-      
+
+      var editedAppointment = ({ ...this.state.editingAppointment, ...changed[this.state.editingAppointment.id] });
+      console.log('editedAppointment: ', editedAppointment);
+
+
     }
     if (deleted) {
       console.log('deleted: ', deleted);
@@ -253,7 +265,9 @@ class TimeTable extends React.PureComponent {
       this.toggleConfirmationVisible();
       console.log('deleted: FINISHED ');
     }
-    this.setState({ data, addedAppointment: {} });
+
+
+    this.setState({ editedAppointment, data, addedAppointment: {} });
   }
   //#endregion
 
@@ -278,7 +292,7 @@ class TimeTable extends React.PureComponent {
     const { classes } = this.props;
 
     return (
-      <Paper style={{ height: 'calc(100vh - 90px)'}}>
+      <Paper style={{ height: 'calc(100vh - 90px)' }}>
 
         <Dialog
           open={this.state.isSignInAlertDialogOn}
@@ -333,7 +347,6 @@ class TimeTable extends React.PureComponent {
             visible={editingFormVisible}
             onVisibilityChange={this.toggleEditingFormVisibility}
           />
-          <ConfirmationDialog />
           <DragDropProvider />
           <CustomCurrentTimeIndicator />
 
@@ -361,7 +374,6 @@ class TimeTable extends React.PureComponent {
           </DialogActions>
 
         </Dialog>
-
         <Fab
           color="secondary"
           className={classes.addButton}

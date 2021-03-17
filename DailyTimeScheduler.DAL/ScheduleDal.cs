@@ -206,7 +206,7 @@ namespace DailyTimeScheduler.DAL
                 var schedule = db.Schedules.Where(schedule => schedule.No == no).FirstOrDefault();
                 if (schedule == null)
                     return false;
-                schedule = updatedSchedule;
+                db.Entry<Schedule>(schedule).CurrentValues.SetValues(updatedSchedule);
 
                 return (db.SaveChanges() > 0);
             }
@@ -221,11 +221,11 @@ namespace DailyTimeScheduler.DAL
         {
             using (var db = new DailyTimeSchedulerDbContext(_connectionString))
             {
+
                 var schedule = await db.Schedules.Where(schedule => schedule.No == no).FirstOrDefaultAsync();
                 if (schedule == null)
                     return false;
-                schedule = updatedSchedule;
-
+                db.Entry<Schedule>(schedule).CurrentValues.SetValues(updatedSchedule);
                 return (db.SaveChanges() > 0);
             }
         }
