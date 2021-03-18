@@ -33,7 +33,8 @@ export default class SignInButton extends PureComponent {
             palette: {
                 secondary: {
                     main: "#212121"
-                }
+                },
+
             }
         });
 
@@ -46,9 +47,7 @@ export default class SignInButton extends PureComponent {
                         onMouseUp={() => this.setSignInBtn(false)}
                         onMouseLeave={() => this.setSignInBtn(false)}
                         onClick={() => this.setSignInDialog(true)}
-                        color={this.state.isSigInBtnDown ? "secondary" : "default"}
-                        variant="contained"
-                        style={this.props.style}
+                        color={this.state.isSigInBtnDown ? "secondary" : "primary"}
                     >
                         SIGN IN
                     </Button>

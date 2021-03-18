@@ -251,21 +251,12 @@ class TimeTable extends React.PureComponent {
       }
     }
     if (changed) {
-      console.log('changed: ', changed.toString());
-      console.log('changed: ', changed);
-
       var editedAppointment = ({ ...this.state.editingAppointment, ...changed[this.state.editingAppointment.id] });
-      console.log('editedAppointment: ', editedAppointment);
-
-
     }
     if (deleted) {
-      console.log('deleted: ', deleted);
       this.setDeletedAppointmentId(deleted);
       this.toggleConfirmationVisible();
-      console.log('deleted: FINISHED ');
     }
-
 
     this.setState({ editedAppointment, data, addedAppointment: {} });
   }

@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   flexItem: {
     display: "flex",
     flexGrow: 1,
-    justifyContent:"space-between",
+    justifyContent: "space-between",
     backgroundColor: theme.palette.primary.light,
   },
   tabItem: {
@@ -34,7 +34,12 @@ const useStyles = makeStyles(theme => ({
   },
   tabNotSelected: {
     backgroundColor: theme.palette.primary.light,
-  }
+  },
+  buttonSpacing: {
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
 }));
 
 export default function NavMenuTab(props) {
@@ -98,7 +103,7 @@ export default function NavMenuTab(props) {
       </Box>
 
       <AppBar className={classes.flexItem} elevation={3}>
-        <Toolbar style={{ padding: 0, alignItems:"space-between" }}>
+        <Toolbar style={{ padding: 0, alignItems: "space-between" }}>
           {(windowWidth > 500) ?
             <Tabs
               value={tabValue}
@@ -133,40 +138,39 @@ export default function NavMenuTab(props) {
             <NavMenu></NavMenu>
           }
           <div>
-          {isSignedIn ? (
-            <div>
-              <IconButton
-                aria-label="account of current user"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle fontSize="large" />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-              </Menu>
-            </div>) :
-            (<Fragment >
-              <RegisterButton />
-
-              <SignInButton />
-            </Fragment>)}
-            </div>
+            {isSignedIn ? (
+              <div>
+                <IconButton
+                  aria-label="account of current user" S
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle fontSize="large" />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={open}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={handleClose}>My account</MenuItem>
+                </Menu>
+              </div>) :
+              (<div className={classes.buttonSpacing}>
+                <RegisterButton />
+                <SignInButton />
+              </div>)}
+          </div>
         </Toolbar>
       </AppBar>
     </Fragment>

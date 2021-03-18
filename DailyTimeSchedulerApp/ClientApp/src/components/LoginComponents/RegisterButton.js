@@ -30,32 +30,25 @@ export default class RegisterButton extends PureComponent {
 
     render() {
 
-        const btnTheme = createMuiTheme({
-            palette: {
-                secondary: {
-                    main: "#212121"
-                }
-            }
-        });
+
 
         return (
             <Fragment>
-                <ThemeProvider theme={btnTheme}>
-                    <Button
-                        style={this.props.style}
-                        onMouseDown={() => this.setRegisterBtn(true)}
-                        onMouseUp={() => this.setRegisterBtn(false)}
-                        onMouseLeave={() => this.setRegisterBtn(false)}
-                        onClick={() => this.setRegisterDialog(true)}
-                        color={this.state.isRegisterBtnDown ? "secondary" : "primary"}
-                        variant="contained"
-                    >
-                        REGISTER
+                <Button
+                    style={this.props.style}
+                    onMouseDown={() => this.setRegisterBtn(true)}
+                    onMouseUp={() => this.setRegisterBtn(false)}
+                    onMouseLeave={() => this.setRegisterBtn(false)}
+                    onClick={() => this.setRegisterDialog(true)}
+                    color={this.state.isRegisterBtnDown ? "default" : "secondary"}
+                    variant="outlined"
+                >
+                    REGISTER
                     </Button>
-                </ThemeProvider>
-                <RegisterDialog 
-                    isOpen={this.state.isDialogOpen} 
+                <RegisterDialog
+                    isOpen={this.state.isDialogOpen}
                     closeDialogCallBack={(bool) => this.setRegisterDialog(bool)} />
+                    
             </Fragment>
         )
 
