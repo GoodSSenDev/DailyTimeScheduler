@@ -191,6 +191,47 @@ namespace DailyTimeScheduler.DAL
         #region Update
 
         /// <summary>
+        /// Update first TimeBlock at TimeBlock Table that have scheduleNo 
+        /// </summary>
+        /// <returns>True if Success else false </returns>
+        public bool UpdateTimeBlockByScheduleNo(int scheduleNo,TimeBlock updatedTimeBlock)
+        {
+            using (var db = new DailyTimeSchedulerDbContext(_connectionString))
+            {
+                var timeBlock = db.TimeBlocks.Where(timeBlock => timeBlock.ScheduleNo == scheduleNo).FirstOrDefault();
+                if (timeBlock == null)
+                    return false;
+                updatedTimeBlock.No = timeBlock.No;
+                updatedTimeBlock.ScheduleNo = scheduleNo;
+
+                db.Entry<TimeBlock>(timeBlock).CurrentValues.SetValues(updatedTimeBlock);
+
+                return (db.SaveChanges() > 0);
+            }
+        }
+
+        /// <summary>
+        /// Update first TimeBlock at TimeBlock Table that have scheduleNo Async
+        /// </summary>
+        /// <returns>True if Success else false </returns>
+        public async Task<bool> UpdateTimeBlockByScheduleNoAsync(int scheduleNo,TimeBlock updatedTimeBlock)
+        {
+            using (var db = new DailyTimeSchedulerDbContext(_connectionString))
+            {
+                var timeBlock = await db.TimeBlocks.Where(timeBlock => timeBlock.ScheduleNo == scheduleNo).FirstOrDefaultAsync();
+                if (timeBlock == null)
+                    return false;
+
+                updatedTimeBlock.No = timeBlock.No;
+                updatedTimeBlock.ScheduleNo = scheduleNo;
+
+                db.Entry<TimeBlock>(timeBlock).CurrentValues.SetValues(updatedTimeBlock);
+
+                return (db.SaveChanges() > 0);
+            }
+        }
+
+        /// <summary>
         /// Update IntialUTCTime using timeBlockNo
         /// </summary>
         /// <returns> return true if success else false </returns>

@@ -83,6 +83,24 @@ namespace DailyTimeSchedulerApp.Controllers
             return Conflict();
         }
 
+        [HttpPost("UpdateSchedule")]
+        public async Task<IActionResult> UpdateScheduleAsync([FromBody] ScheduleDto scheduleDto)
+        {
+            var userNo = HttpContext.User.FindFirstValue("no");
+            if (userNo == null)
+                return Unauthorized();
+
+            if (!Int32.TryParse(userNo, out int noValue))
+                return NotFound("User no can not be transfered to int32");
+
+            scheduleDto.Schedule.UserNo = noValue;
+            bool isSuccess = await this._scheduleDataBll.UpdateScheduleAsync(scheduleDto);
+
+            if (!isSuccess)
+                return Conflict();
+
+            return Ok();
+        }
 
     }
 }

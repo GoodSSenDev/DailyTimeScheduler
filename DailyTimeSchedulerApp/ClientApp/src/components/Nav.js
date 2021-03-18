@@ -1,44 +1,29 @@
 import React, { Fragment, useEffect } from 'react';
 import classNames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, Tabs, Tab, Typography } from '@material-ui/core';
+import { Toolbar, AppBar, Tabs, Tab, IconButton, Menu, MenuItem, Box } from '@material-ui/core';
 import RegisterButton from './LoginComponents/RegisterButton'
 import SignInButton from './LoginComponents/SignInButton'
 import { Link } from 'react-router-dom';
 
 import DateRangeSharpIcon from '@material-ui/icons/DateRangeSharp';
+
+import AccountCircle from '@material-ui/icons/AccountCircle';
 import HomeIcon from '@material-ui/icons/Home';
 import TimelineSharpIcon from '@material-ui/icons/TimelineSharp';
 
-import NavPoperover from './NavPopover';
+import NavMenu from './NavMenu';
 import _ from "lodash";
 
 const useStyles = makeStyles(theme => ({
-  flexContainer: {
-    display: "flex",
-    flexDirection: '',
-  },
-
   flexItem: {
-    type: "light",
-    marginBottom: 10,
-    flexShrink: 1,
-    "&:nth-child(1)": {
-      minWidth: 200,
-      width: "100%",
-    },
-    "&:nth-child(3)": {
-      flexShrink: 0,
-      flexBasis: "100px",
-      padding: "3px",
-    }
-  },
-  tabSpace: {
+    display: "flex",
+    flexGrow: 1,
+    justifyContent: "space-between",
     backgroundColor: theme.palette.primary.light,
-    borderRadius: "0",
   },
   tabItem: {
-    color:"#9e9e9e",
+    color: "#9e9e9e",
     backgroundColor: theme.palette.primary.light,
     fontWeight: 'bold'
   },
@@ -47,17 +32,26 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: theme.palette.primary.main
     },
   },
-  tabNotSelected: { 
-    backgroundColor: theme.palette.primary.light, }
+  tabNotSelected: {
+    backgroundColor: theme.palette.primary.light,
+  },
+  buttonSpacing: {
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
 }));
 
 export default function NavMenuTab(props) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [tabValue, setTabValue] = React.useState(0);
   const [isSignedIn, setIsSignedIn] = React.useState(false);
-  const [nickName, setNickName] = React.useState("");
   const [isNavClosed, setIsNavClosed] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const [navTabColour, setNavTabColor] = React.useState("#1c54b2");
+  const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
+  const open = Boolean(anchorEl);
+
 
   const handelScroll = () => {
     window.scrollY > 80
@@ -65,27 +59,37 @@ export default function NavMenuTab(props) {
       : setIsNavClosed(false)
   }
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setTabValue(newValue);
+  };
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   const scrollDebounceDelay = 50;
   const activeNavDebounce = _.debounce(handelScroll, scrollDebounceDelay);
 
-
-
   //remove event when this component unmount
   useEffect(() => {
-    window.addEventListener("scroll", activeNavDebounce);
+
+    const changeWindowSize = () => {
+      setWindowWidth(window.innerWidth);
+    }
+    window.addEventListener('scroll', activeNavDebounce);
+    window.addEventListener('resize', changeWindowSize);
     return () => {
-      window.removeEventListener("scroll", activeNavDebounce)
+      window.removeEventListener('scroll', activeNavDebounce)
+      window.removeEventListener('resize', changeWindowSize)
     }
   }, []);
 
   useEffect(() => {
     let userNickName = sessionStorage.getItem('user');
+
     if (userNickName != null) {
       setIsSignedIn(true);
-      setNickName(userNickName);
     }
     else {
       setIsSignedIn(false);
@@ -94,63 +98,81 @@ export default function NavMenuTab(props) {
 
   return (
     <Fragment>
-      <NavPoperover style={{height: props.height}} isDisplay={isNavClosed}></NavPoperover>
-      <div className={classes.flexContainer}>
-        <Paper className={classNames(classes.flexItem, classes.tabSpace)} elevation={3}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            textColor="primary"
-          >
-            <Tab
-              value={0}
-              color="secondary.main"
-              style={(value === 0) ? { backgroundColor: navTabColour } :{}}
-              className={classNames(classes.tabHoverColor, classes.tabItem)}
-              to='/' component={Link}
-              label="Home"
-              icon={<HomeIcon fontSize="large" />} />
-            <Tab
-              value={1}
-              style={(value === 1) ? { backgroundColor: navTabColour } :{}}
-              className={classNames(classes.tabHoverColor, classes.tabItem)}
-              to='/calendar' component={Link}
-              label="Calendar"
-              icon={<DateRangeSharpIcon fontSize="large" />} />
-            <Tab
-              value={2}
-              style={(value === 2) ? { backgroundColor: navTabColour } :{}}
-              className={classNames(classes.tabHoverColor, classes.tabItem)}
-              to='/analysis' component={Link}
-              label="Analysis"
-              icon={<TimelineSharpIcon fontSize="large" />} />
-            <Tab
-              value={3}
-              style={(value === 3) ? { backgroundColor: navTabColour } :{}}
-              className={classNames(classes.tabHoverColor, classes.tabItem)}
-              label="Item Three" />
-            <Tab
-              value={4}
-              style={(value === 4) ? { backgroundColor: navTabColour } :{}}
-              className={classNames(classes.tabHoverColor, classes.tabItem)}
-              label="Item Three" />
-            <Tab
-              value={5}
-              style={(value === 5) ? { backgroundColor: navTabColour } :{}}
-              className={classNames(classes.tabHoverColor, classes.tabItem)}
-              label="Item Three" />
-          </Tabs>
+      <Box style={{ height: props.height }} display={isNavClosed ? "inline" : "none"} style={{ padding: "10px", position: "fixed", zIndex: 1400 }}>
+        <NavMenu></NavMenu>
+      </Box>
 
-        </Paper>
-
-        <Paper className={classNames(classes.flexItem, classes.tabSpace)} elevation={3}>
-          {isSignedIn ? (<Typography variant="h6" > Hello {nickName}</Typography>) :
-            (<Fragment>
-              <RegisterButton style={{ width: "100%", marginTop: "2px", borderRadius: "0" }} />
-              <SignInButton style={{ width: "100%", marginTop: "3px", borderRadius: "0" }} />
-            </Fragment>)}
-        </Paper>
-      </div>
+      <AppBar className={classes.flexItem} elevation={3}>
+        <Toolbar style={{ padding: 0, alignItems: "space-between" }}>
+          {(windowWidth > 500) ?
+            <Tabs
+              value={tabValue}
+              className={classes.flexItem}
+              onChange={handleChange}
+              textColor="primary"
+              scrollButtons="auto"
+            >
+              <Tab
+                value={0}
+                style={(tabValue === 0) ? { backgroundColor: navTabColour } : {}}
+                className={classNames(classes.tabHoverColor, classes.tabItem)}
+                to='/' component={Link}
+                label="Home"
+                icon={<HomeIcon fontSize="large" />} />
+              <Tab
+                value={1}
+                style={(tabValue === 1) ? { backgroundColor: navTabColour } : {}}
+                className={classNames(classes.tabHoverColor, classes.tabItem)}
+                to='/calendar' component={Link}
+                label="Calendar"
+                icon={<DateRangeSharpIcon fontSize="large" />} />
+              <Tab
+                value={2}
+                style={(tabValue === 2) ? { backgroundColor: navTabColour } : {}}
+                className={classNames(classes.tabHoverColor, classes.tabItem)}
+                to='/analysis' component={Link}
+                label="Analysis"
+                icon={<TimelineSharpIcon fontSize="large" />} />
+            </Tabs>
+            :
+            <NavMenu></NavMenu>
+          }
+          <div>
+            {isSignedIn ? (
+              <div>
+                <IconButton
+                  aria-label="account of current user" S
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle fontSize="large" />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={open}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={handleClose}>My account</MenuItem>
+                </Menu>
+              </div>) :
+              (<div className={classes.buttonSpacing}>
+                <RegisterButton />
+                <SignInButton />
+              </div>)}
+          </div>
+        </Toolbar>
+      </AppBar>
     </Fragment>
   );
 }

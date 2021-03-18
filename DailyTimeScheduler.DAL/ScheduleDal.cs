@@ -193,7 +193,42 @@ namespace DailyTimeScheduler.DAL
         #endregion
 
         #region Update
+        /// <summary>
+        /// Update Schedule using no 
+        /// </summary>
+        /// <param name="no"></param>
+        /// <param name="updatedSchedule"></param>
+        /// <returns>return true if success else false</returns>
+        public bool UpdateScheduleByNo(int no, Schedule updatedSchedule)
+        {
+            using (var db = new DailyTimeSchedulerDbContext(_connectionString))
+            {
+                var schedule = db.Schedules.Where(schedule => schedule.No == no).FirstOrDefault();
+                if (schedule == null)
+                    return false;
+                db.Entry<Schedule>(schedule).CurrentValues.SetValues(updatedSchedule);
 
+                return (db.SaveChanges() > 0);
+            }
+        }
+        /// <summary>
+        /// Update Schedule using no 
+        /// </summary>
+        /// <param name="no"></param>
+        /// <param name="updatedSchedule"></param>
+        /// <returns>return true if success else false</returns>
+        public async Task<bool> UpdateScheduleByNoAsync(int no, Schedule updatedSchedule)
+        {
+            using (var db = new DailyTimeSchedulerDbContext(_connectionString))
+            {
+
+                var schedule = await db.Schedules.Where(schedule => schedule.No == no).FirstOrDefaultAsync();
+                if (schedule == null)
+                    return false;
+                db.Entry<Schedule>(schedule).CurrentValues.SetValues(updatedSchedule);
+                return (db.SaveChanges() > 0);
+            }
+        }
         /// <summary>
         /// Update Schedule's Title using no 
         /// </summary>

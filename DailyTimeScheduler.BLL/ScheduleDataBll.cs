@@ -172,7 +172,24 @@ namespace DailyTimeScheduler.BLL
 
             return true;
         }
-    }
 
+        /// <summary>
+        /// Method that can UpdateSchedule
+        /// </summary>
+        ///  <param name="scheduleDto"> need correct ScheduleNo</param>
+        /// <returns>retrun true if success or no error else return false </returns>
+        public async Task<bool> UpdateScheduleAsync(ScheduleDto scheduleDto)
+        {
+            bool isChanged = false;
+
+            if (await this._scheduleDal.UpdateScheduleByNoAsync(scheduleDto.Schedule.No, scheduleDto.Schedule))
+                isChanged = true;
+            if (await this._timeBlockDal.UpdateTimeBlockByScheduleNoAsync(scheduleDto.Schedule.No, scheduleDto.Timeblocks[0]))
+                isChanged = true;
+
+
+            return isChanged;
+        }
+    }
 
 }
