@@ -19,6 +19,7 @@ export class Home extends Component {
             <ul>Calendar - adding a schedule</ul>
             <ul>Calendar - saving a schedule</ul>
             <ul>Calendar - deleting a schedule</ul>
+            <ul>Calendar - updating a schedule</ul>
           </ol>
         </Paper>
         <br />
@@ -26,8 +27,6 @@ export class Home extends Component {
           <h2>Future Functionalities</h2>
           <ol>
             <ul>Analyse schedules(pattern, rate)</ul>
-            <ul>Improve SignIn, Registering button UI</ul>
-            <ul>Calendar - updating a schedule</ul>
             <ul>Calendar - having different types of schedule e.g. (bool, progress, milestone ...)</ul>
           </ol>
         </Paper>
