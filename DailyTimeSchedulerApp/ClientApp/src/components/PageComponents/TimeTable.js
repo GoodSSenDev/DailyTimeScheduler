@@ -198,7 +198,6 @@ class TimeTable extends React.PureComponent {
   }
 
   onAddedAppointmentChange(addedAppointment) {
-    console.log('addedAppointment: ', addedAppointment);
     this.setState({ addedAppointment });
     const { editingAppointment } = this.state;
     if (editingAppointment !== undefined) {

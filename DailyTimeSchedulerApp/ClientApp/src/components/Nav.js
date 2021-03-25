@@ -103,7 +103,7 @@ export default function NavMenuTab(props) {
       </Box>
 
       <AppBar className={classes.flexItem} elevation={3}>
-        <Toolbar style={{ padding: 0, alignItems: "space-between" }}>
+        <Toolbar style={{ padding: 0, alignItems: "Space-between" }}>
           {(windowWidth > 500) ?
             <Tabs
               value={tabValue}
@@ -141,7 +141,7 @@ export default function NavMenuTab(props) {
             {isSignedIn ? (
               <div>
                 <IconButton
-                  aria-label="account of current user" S
+                  aria-label="account of current user"
                   onClick={handleMenu}
                   color="inherit"
                 >

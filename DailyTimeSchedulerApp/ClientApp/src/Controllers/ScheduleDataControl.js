@@ -39,7 +39,6 @@ export default class ScheduleDataControl {
     async UpdateEditedSchedule(changedAppointment) {
         let scheduleDto = this.convertAppointmentsToScheduleData(changedAppointment);
         scheduleDto.Schedule.No = changedAppointment.scheduleNo;
-        console.log('scheduleDto: ', scheduleDto);
 
         const response = await fetch(`api/TimeData/UpdateSchedule`, {
             method: 'POST',
@@ -116,6 +115,8 @@ export default class ScheduleDataControl {
     //method that create new Schedule from appointmentFrom server 
     async createNewScheduleAsync(appointment) {
         let scheduleDto = this.convertAppointmentsToScheduleData(appointment);
+        console.log('scheduleDto: ', scheduleDto);
+        
         if (scheduleDto == null) {
             return null;
         }
@@ -181,7 +182,6 @@ export default class ScheduleDataControl {
                 RepeatPeriod: repeatPeriod,
                 EndUTCTime: endUTCTime,
                 IsAllDay: appointment.allDay,
-                ScheduleNo: -1
             }]
         }
 
@@ -308,7 +308,7 @@ export default class ScheduleDataControl {
     }
 
     //A method that gets data and returns Appointments 
-    convertDataToAppointments(schedulesData) {
+    convertDataToAppointments(schedulesData) {        
         if (schedulesData.schedules.length <= 0) {
             return [];
         }
