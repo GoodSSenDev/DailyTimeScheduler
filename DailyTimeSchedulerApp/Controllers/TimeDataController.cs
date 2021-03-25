@@ -39,7 +39,7 @@ namespace DailyTimeSchedulerApp.Controllers
 
             if (result == null)
                 return NotFound();
-            return Ok(result);                                  
+            return Ok(result);                                      
              
         }
 
