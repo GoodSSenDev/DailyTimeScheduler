@@ -266,7 +266,7 @@ class TimeTable extends React.PureComponent {
   }
 
   getLocalDataString() {
-    let dateStrings = new Date().toLocaleDateString().split("/");
+    let dateStrings = new Date().toLocaleDateString('en-US').split("/");
     return `${dateStrings[2]}-${dateStrings[0]}-${dateStrings[1]}`;
   }
 
