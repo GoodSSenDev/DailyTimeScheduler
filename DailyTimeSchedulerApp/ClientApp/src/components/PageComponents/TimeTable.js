@@ -27,7 +27,8 @@ import * as React from 'react';
 import AppointmentFormTask from '../AppointmentFormTask';
 import ScheduleDataControl from '../../Controllers/ScheduleDataControl'
 import CustomCurrentTimeIndicator from '../CustomCurrentTimeIndicator'
-
+import { connect } from 'react-redux'
+import { Satellite } from '@material-ui/icons';
 
 const containerStyles = theme => ({
   container: {
@@ -73,7 +74,23 @@ const containerStyles = theme => ({
   textField: {
     width: '100%',
   },
+  flexibleSpace: {
+    flex: 'none',
+  },
+  flexContainer: {
+    display: 'flex',
+    alignItems: 'center',
+  },
 });
+
+const FlexibleSpace = withStyles(containerStyles, { name: 'ToolbarContent' })((classes, ...restProps) => (
+  <Toolbar.FlexibleSpace {...restProps} className={classes.flexibleSpace}>
+    <Button color="secondary" variant="outlined">
+      Sync Data
+    </Button>
+  </Toolbar.FlexibleSpace>
+));
+
 
 const AppointmentFormContainer = withStyles(containerStyles, { name: 'AppointmentFormContainer' })(AppointmentFormTask);
 
@@ -104,7 +121,7 @@ class TimeTable extends React.PureComponent {
       isNewAppointment: false,
       scheduleDataController: new ScheduleDataControl(),
       isDataLoaded: false,
-      isSignInAlertDialogOn: false,
+      // isSignInAlertDialogOn: false,
       editedAppointment: undefined,
     };
     this.currentDateChange = (currentDate) => { this.setState({ currentDate }); };
@@ -148,9 +165,9 @@ class TimeTable extends React.PureComponent {
     });
   }
 
-
+  //#region ComponentUpdate functionalities
   async componentDidMount() {
-    if (!this.checkLogin()) {
+    if (!this.props.isSignedIn) {
       return null;
     }
     if (!this.state.isDataLoaded) {
@@ -163,21 +180,19 @@ class TimeTable extends React.PureComponent {
     this.appointmentForm.update();
   }
 
-  checkLogin() {
-    let userNickName = window.sessionStorage.getItem('user');
-    if (userNickName === null) {
-      this.setState({ isSignInAlertDialogOn: true });
-      return false;
-    }
-    return true;
-  }
+  //#endregion
 
-  async loadAppointmentData() {
-    let result = await this.state.scheduleDataController.loadData();
-    if (result !== null) {
-      this.setState({ data: result });
-    }
-  }
+  // //method that check wether the user log-ined or not by checking the sessionStorage on browser.
+  // checkLogin() {
+  //   let userNickName = window.sessionStorage.getItem('user');
+  //   if (userNickName === null) {
+  //     this.setState({ isSignInAlertDialogOn: true });
+  //     return false;
+  //   }
+  //   return true;
+  // }
+
+
 
   //#region TimeTable functionalities
   onEditingAppointmentChange(editingAppointment) {
@@ -195,6 +210,13 @@ class TimeTable extends React.PureComponent {
 
     this.setState({ editingAppointment });
     return false;
+  }
+
+  async loadAppointmentData() {
+    let result = await this.state.scheduleDataController.loadData();
+    if (result !== null) {
+      this.setState({ data: result });
+    }
   }
 
   onAddedAppointmentChange(addedAppointment) {
@@ -238,7 +260,7 @@ class TimeTable extends React.PureComponent {
     return true;
   }
 
-  //method that reacting to change on timeblocks 
+  //method that reacting to change on timeblocks in the timetable/appointment form
   async commitChanges({ added, changed, deleted }) {
     let { data } = this.state;
     if (added) {
@@ -261,10 +283,12 @@ class TimeTable extends React.PureComponent {
   }
   //#endregion
 
+  //method that routes the browser when the alert dialog is closed.
   handleAlertDialogClose() {
     this.props.history.push('/');
   }
 
+  //method that gets a local date with the en-US format string
   getLocalDataString() {
     let dateStrings = new Date().toLocaleDateString('en-US').split("/");
     return `${dateStrings[2]}-${dateStrings[0]}-${dateStrings[1]}`;
@@ -285,7 +309,7 @@ class TimeTable extends React.PureComponent {
       <Paper style={{ height: 'calc(100vh - 90px)' }}>
 
         <Dialog
-          open={this.state.isSignInAlertDialogOn}
+          open={!this.props.isSignedIn}
           onClose={() => this.handleAlertDialogClose()}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
@@ -302,7 +326,9 @@ class TimeTable extends React.PureComponent {
           </Button>
           </DialogActions>
         </Dialog>
+
         <Scheduler
+          visible={this.props.isSignedIn}
           data={data}
           height={"auto"}
         >
@@ -330,7 +356,7 @@ class TimeTable extends React.PureComponent {
             showCloseButton
             showDeleteButton
           />
-          <Toolbar />
+          <Toolbar flexibleSpaceComponent={FlexibleSpace}/>
           <DateNavigator />
           <ViewSwitcher />
           <AppointmentForm
@@ -383,4 +409,11 @@ class TimeTable extends React.PureComponent {
   }
 }
 
-export default withStyles(styles, {})(TimeTable);
+const mapStateToProps = (state) => {
+  return {
+    isSignedIn: state.isSignedIn,
+  }
+}
+
+
+export default connect(mapStateToProps)(withStyles(styles, {})(TimeTable));

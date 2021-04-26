@@ -11,7 +11,7 @@ import DateRangeSharpIcon from '@material-ui/icons/DateRangeSharp';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import HomeIcon from '@material-ui/icons/Home';
 import TimelineSharpIcon from '@material-ui/icons/TimelineSharp';
-
+import { connect } from 'react-redux';
 import NavMenu from './NavMenu';
 import _ from "lodash";
 
@@ -42,10 +42,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function NavMenuTab(props) {
+function NavMenuTab(props) {
   const classes = useStyles();
   const [tabValue, setTabValue] = React.useState(0);
-  const [isSignedIn, setIsSignedIn] = React.useState(false);
   const [isNavClosed, setIsNavClosed] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [navTabColour, setNavTabColor] = React.useState("#1c54b2");
@@ -84,17 +83,6 @@ export default function NavMenuTab(props) {
       window.removeEventListener('resize', changeWindowSize)
     }
   }, []);
-
-  useEffect(() => {
-    let userNickName = sessionStorage.getItem('user');
-
-    if (userNickName != null) {
-      setIsSignedIn(true);
-    }
-    else {
-      setIsSignedIn(false);
-    }
-  });
 
   return (
     <Fragment>
@@ -138,7 +126,7 @@ export default function NavMenuTab(props) {
             <NavMenu></NavMenu>
           }
           <div>
-            {isSignedIn ? (
+            {props.isSignedIn ? (
               <div>
                 <IconButton
                   aria-label="account of current user"
@@ -176,3 +164,11 @@ export default function NavMenuTab(props) {
     </Fragment>
   );
 }
+
+const mapStateToProps = (state) => {
+  return {
+    isSignedIn: state.isSignedIn,
+  }
+}
+
+export default connect(mapStateToProps)(NavMenuTab)

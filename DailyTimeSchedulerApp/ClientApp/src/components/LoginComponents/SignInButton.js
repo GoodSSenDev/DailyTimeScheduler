@@ -2,7 +2,7 @@ import React, { Fragment, PureComponent } from 'react'
 import { Button } from '@material-ui/core'
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
-import SigninDialog from './SignInDialog'
+import SigninDialog from './SignInDialog';
 
 
 export default class SignInButton extends PureComponent {
@@ -60,3 +60,4 @@ export default class SignInButton extends PureComponent {
 
     }
 }
+

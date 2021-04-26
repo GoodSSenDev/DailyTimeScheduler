@@ -12,9 +12,11 @@ import {
 } from "@material-ui/core";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
+import { connect } from 'react-redux';
+import {signIn} from '../../redux/signIn/actions';
 
 
-export default class SignInForm extends PureComponent {
+class SignInForm extends PureComponent {
 
     constructor(props) {
         super(props)
@@ -53,10 +55,11 @@ export default class SignInForm extends PureComponent {
             console.log("this is login");
             let responseResult = await response.json();
             console.log(responseResult);
-            console.log(responseResult);    
+            console.log(responseResult);   
+
             window.sessionStorage.setItem('user',responseResult);
             this.props.closeDialogCallBack(false)
-            window.location.reload();
+            this.props.signIn();
             return;
         }
         else {
@@ -138,3 +141,14 @@ export default class SignInForm extends PureComponent {
     }
 
 }
+
+const mapStateToProps = (state) => {
+    return {
+      isSignedIn: state.isSignedIn,
+    }
+  }
+const mapDispatchToProps = {
+    signIn
+}
+
+export default connect(mapStateToProps,mapDispatchToProps) (SignInForm);

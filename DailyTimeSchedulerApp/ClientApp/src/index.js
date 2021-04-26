@@ -4,9 +4,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
-import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles"
-import {blue}from '@material-ui/core/colors';
-
+import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles";
 
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 const rootElement = document.getElementById('root');

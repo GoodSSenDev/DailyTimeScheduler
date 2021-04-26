@@ -26,6 +26,11 @@ export default class ScheduleDataControl {
                 return JSON.parse(appointmentData);
             }
         }
+        return this.syncData(userNickName);
+    }   
+
+    //method that syncs the data from database to localStorage
+    async syncData(userNickName){
         let rawData = await this.getScheduleRawDataFromServerAsync();
         let appointmentData = this.convertDataToAppointments(rawData);
 
@@ -35,7 +40,9 @@ export default class ScheduleDataControl {
 
         window.localStorage.setItem(userNickName + '_AppointmentData', JSON.stringify(appointmentData));
         return appointmentData;
-    }   
+    }
+
+    //method that Update Edited schedules 
     async UpdateEditedSchedule(changedAppointment) {
         let scheduleDto = this.convertAppointmentsToScheduleData(changedAppointment);
         scheduleDto.Schedule.No = changedAppointment.scheduleNo;
@@ -188,6 +195,7 @@ export default class ScheduleDataControl {
         return scheduleDto
     }
 
+    //method that returns Repeat Period with endUTCTime with ticks from rRuleFormat
     getRepeatPeriodFromRRuleFormat(rRuleFormat, startDateInTicks) {
 
         if (rRuleFormat == null) {
@@ -347,7 +355,7 @@ export default class ScheduleDataControl {
         return appointmentsData
     }
 
-
+    //method that return RRuleFormat from repeatPeriod, intialUTCTime,endUTCTime
     getRepeatedRRuleFormat(repeatPeriod, intialUTCTime, endUTCTime) {
         if (repeatPeriod === 0) {
             return "";
