@@ -4,8 +4,6 @@ import { Layout } from './components/Layout';
 import { Home } from './components/PageComponents/Home';
 import { Analysis } from './components/PageComponents/Analysis';
 import TimeTablePage from './components/PageComponents/TimeTablePage';
-import { Provider } from 'react-redux';
-import store from './redux/store';
 import './custom.css'
 
 export default class App extends Component {
@@ -38,13 +36,11 @@ export default class App extends Component {
 
   render() {
     return (
-      <Provider store={store}>
         <Layout>
           <Route exact path='/' component={Home} />
           <Route path='/calendar' component={TimeTablePage} />
           <Route path='/analysis' component={Analysis} />
         </Layout>
-      </Provider>
     );
   }
 }

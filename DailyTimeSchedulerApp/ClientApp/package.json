@@ -19,6 +19,8 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.4",
     "reactstrap": "^8.4.1",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-logger": "^3.0.6",
     "rimraf": "^2.6.2"
   },
   "devDependencies": {
