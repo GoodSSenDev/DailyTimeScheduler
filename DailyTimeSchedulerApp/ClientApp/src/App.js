@@ -18,6 +18,7 @@ export default class App extends Component {
     await this.checkIsSignedIn()
   } 
 
+  //a method that checks the user signedIn status to server when reloading the page.
   async checkIsSignedIn() {
     if(window.sessionStorage.getItem('user') === null){
       return null;

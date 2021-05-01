@@ -52,13 +52,13 @@ class SignInForm extends PureComponent {
             return;
         }
         else if (response.status === 200){
-            console.log("this is login");
             let responseResult = await response.json();
             console.log(responseResult);
             console.log(responseResult);   
 
             window.sessionStorage.setItem('user',responseResult);
-            this.props.closeDialogCallBack(false)
+            this.props.closeDialogCallBack(false);
+            //Call 
             this.props.signIn();
             return;
         }

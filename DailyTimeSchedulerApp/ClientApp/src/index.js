@@ -18,18 +18,18 @@ const theme = createMuiTheme({
       dark: "#1c54b2",
       main: "#2979ff",
       light: "#222222",
-    },  
+    },
   }
 })
 
 ReactDOM.render(
-  <Provider store={store}>
-    <BrowserRouter basename={baseUrl}>
+  <BrowserRouter basename={baseUrl}>
+    <Provider store={store}>
       <ThemeProvider theme={theme}>
         <App />
       </ThemeProvider>
-    </BrowserRouter>,
-  </Provider>,
+    </Provider>,
+  </BrowserRouter>,
   rootElement);
 
 registerServiceWorker();

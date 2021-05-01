@@ -178,7 +178,7 @@ export default class ScheduleDataControl {
         let scheduleDto = {
             Schedule: {
                 Title: title,
-                Description: description,
+                Description: ((description === "")? "- " : description),
                 IsScheduleEnd: false,
                 UserNo: 0,
                 Type: 0
