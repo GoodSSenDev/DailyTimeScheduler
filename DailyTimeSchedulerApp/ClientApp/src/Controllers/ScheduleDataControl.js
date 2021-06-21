@@ -44,9 +44,12 @@ export default class ScheduleDataControl {
 
     //method that Update Edited schedules 
     async UpdateEditedSchedule(changedAppointment) {
+        console.log('changedAppointment: ', changedAppointment);
+
         let scheduleDto = this.convertAppointmentsToScheduleData(changedAppointment);
         scheduleDto.Schedule.No = changedAppointment.scheduleNo;
 
+        console.log('scheduleDto: ', scheduleDto);
         const response = await fetch(`api/TimeData/UpdateSchedule`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

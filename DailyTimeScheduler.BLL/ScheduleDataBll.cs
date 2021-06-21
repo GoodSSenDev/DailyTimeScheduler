@@ -175,10 +175,9 @@ namespace DailyTimeScheduler.BLL
         public async Task<bool> UpdateScheduleAsync(ScheduleDto scheduleDto)
         {
             bool isChanged = false;
-
-            if (await this._scheduleDal.UpdateScheduleByNoAsync(scheduleDto.Schedule.No, scheduleDto.Schedule))
-                isChanged = true;
-            if (await this._timeBlockDal.UpdateTimeBlockByScheduleNoAsync(scheduleDto.Schedule.No, scheduleDto.Timeblocks[0]))
+      
+            if (await this._scheduleDal.UpdateScheduleByNoAsync(scheduleDto.Schedule.No, scheduleDto.Schedule) ||
+                await this._timeBlockDal.UpdateTimeBlockByScheduleNoAsync(scheduleDto.Schedule.No, scheduleDto.Timeblocks[0]))
                 isChanged = true;
 
             return isChanged;

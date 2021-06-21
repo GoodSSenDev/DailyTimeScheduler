@@ -191,17 +191,17 @@ class TimeTable extends React.PureComponent {
   //   }
   //   return true;
   // }
-
-
-
   //#region TimeTable functionalities
+
   onEditingAppointmentChange(editingAppointment) {
     console.log('editingAppointment: ', editingAppointment);
     console.log('editedAppointment: ', this.state.editedAppointment);
 
     if (editingAppointment === undefined) {
       if (this.state.scheduleDataController.UpdateEditedSchedule(this.state.editedAppointment)) {
-        let data = this.state.data.map(appointment => (appointment.id === this.state.editedAppointment.id) ? this.state.editedAppointment : appointment);
+        let data = this.state.data.map(appointment => 
+          (appointment.id === this.state.editedAppointment.id) ? this.state.editedAppointment : appointment);
+          //do something about local storeage
         this.setState({ data, editingAppointment });
         return true;
       }
@@ -262,13 +262,13 @@ class TimeTable extends React.PureComponent {
 
   //method that reacting to change on timeblocks in the timetable/appointment form
   async commitChanges({ added, changed, deleted }) {
+    console.log('added, changed, deleted: ', added, changed, deleted);
     let { data } = this.state;
     if (added) {
       let result = await this.state.scheduleDataController.createNewScheduleAsync(added);
       if (result !== null) {
         const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
         data = [...data, { id: startingAddedId, scheduleNo: result, ...added }];
-        this.state.scheduleDataController.updateDataOnLocalStorage(data);
       }
     }
     if (changed) {
@@ -278,7 +278,7 @@ class TimeTable extends React.PureComponent {
       this.setDeletedAppointmentId(deleted);
       this.toggleConfirmationVisible();
     }
-
+    this.state.scheduleDataController.updateDataOnLocalStorage(data);
     this.setState({ editedAppointment, data, addedAppointment: {} });
   }
   //#endregion
